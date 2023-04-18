@@ -1,2 +1,9 @@
 # CSE115a-TrainingControlCenter
-# test
+
+```
+cd my-app
+```
+
+```
+npm start
+```
