@@ -1,8 +1,11 @@
 import React from 'react';
-const Workouts = () => {
+
+
+const Form = () => {
+
   return (
     <h1>Form</h1>
   );
 }
 
-export default Workouts;
+export default Form;
