@@ -96,6 +96,9 @@ const Login = () => {
    <Button variant="contained" color="primary" onClick={onSubmit}>
      Login
    </Button>
+   <Button variant="contained" color="secondary" href="https://www.strava.com/oauth/authorize?client_id=105867&redirect_uri=http://localhost:3000&response_type=code&scope=read_all">
+   Login with Strava
+   </Button>   
    <p>Don't have an account? <Link to="/signup">Signup</Link></p>
  </form>
 }
