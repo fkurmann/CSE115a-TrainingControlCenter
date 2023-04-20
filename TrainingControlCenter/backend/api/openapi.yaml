@@ -1,0 +1,82 @@
+#
+# Preliminary API, includes login only right now 
+#
+
+openapi: '3.0.3'
+
+info:
+  description: Training Control Center Backend
+  version: 0.1.0
+  title: Training Control Center Backend
+
+servers:
+  - url: http://localhost:3010/v0
+
+paths:
+  /login:
+    post:
+      description: Login
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        200:
+          description: Login successful, return user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          description: Credentials invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+ 
+components:
+  schemas:
+    Error:
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      required:
+        - code
+        - message
+
+    Credentials:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+    User:
+      type: object
+      properties:
+        fullname:
+          type: string
+        username:
+          type: string
+        accessToken:
+          type: string
+      required:
+        - fullname
+        - username
+        - accessToken
+  
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
