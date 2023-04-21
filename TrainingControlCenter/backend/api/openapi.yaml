@@ -59,6 +59,190 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  /favorites:
+    post:
+      description: New favorite sport
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Favorite'
+      responses:
+        200:
+          description: New favorite saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorite'
+        401:
+          description: Error saving favorite
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      description: Get all user's favorites
+      - name: username
+        in: query
+        description: User
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Favorites returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorites'
+        401:
+          description: Error getting favorites
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Delete favorites
+      parameters:
+      - name: username
+        in: query
+        description: User
+        required: true
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Name of favorite
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Favorite deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorite'
+        401:
+          description: Error deleting favorite
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /goals:
+    post:
+      description: New goal
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Goal'
+      responses:
+        200:
+          description: New goal saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Goal'
+        401:
+          description: Error saving goal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      description: Get goals
+      parameters:
+      - name: username
+        in: query
+        description: User
+        required: true
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Name of goal
+        required: false
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Sport of goal
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: Goals returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Goals'
+        401:
+          description: Error getting goal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Delete goal
+      parameters:
+      - name: username
+        in: query
+        description: User
+        required: true
+        schema:
+          type: string
+      parameters:
+      - name: name
+        in: query
+        description: Name of goal
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: New goal deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Goal'
+        401:
+          description: Error deleting goal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /graphs:
+    post:
+      description: New graph
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Graph'
+      responses:
+        200:
+          description: New graph saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Graph'
+        401:
+          description: Error saving graph
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
  
 components:
   schemas:
@@ -85,6 +269,56 @@ components:
         - password
 
     User:
+      type: object
+      properties:
+        fullname:
+          type: string
+        username:
+          type: string
+        accessToken:
+          type: string
+      required:
+        - fullname
+        - username
+        - accessToken
+    
+    Favorites:
+      type: array
+      items:
+        $ref: '#/components/schemas/Favorite'
+    Favorite:
+      type: object
+      properties:
+        sport:
+          type: string
+      required:
+        - soirt
+
+    Goals:
+     type: array
+      items:
+        $ref: '#/components/schemas/Goal'
+    Goal:
+      type: object
+      properties:
+        username:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        distance:
+          type: int32
+        time:
+          type: int32
+      required:
+        - username
+        - name
+        - type
+        - distance
+        - time
+
+    Graph:
       type: object
       properties:
         fullname:

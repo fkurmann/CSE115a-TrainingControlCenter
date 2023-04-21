@@ -19,6 +19,7 @@ exports.createUser = async (username, password) => {
   const credentials = {
     user: username,
     pw: password,
+    favorites: []
   } 
  
   // Access database
@@ -67,5 +68,51 @@ exports.findUser = async (username, password) => {
   }
 }
 
+// Add favorites
+exports.addFavorites = async (username, favorite) => {
+  // Access database
+  try {
+    await client.connect();
+    const result = await client.db("TCC").collection("users").updateOne({user: username}, { $push: {favorites: favorite} });
+    
+    if (result) {
+      console.log(`Updated user: ${username}'s favorites ${favorite}':`);
+      console.log(result);
+      await client.close();
+      return result;
+    } else {
+      console.log(`Error during updating of favorites`);
+      await client.close();
+      return -1;
+    }
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+// Delete favorites
+exports.deleteFavorites = async (username, favorite) => {
+  // Access database
+  try {
+    await client.connect();
+    const result = await client.db("TCC").collection("users").updateOne({user: username}, { $pop: {favorites: favorite} });
+    
+    if (result) {
+      console.log(`Deleted user: ${username}'s favorites ${favorite}':`);
+      console.log(result);
+      await client.close();
+      return result;
+    } else {
+      console.log(`Error during deleting of favorites`);
+      await client.close();
+      return -1;
+    }
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+// Get favorites
+// Just use findUser function
 
 // Collections = tables, documents = rows
