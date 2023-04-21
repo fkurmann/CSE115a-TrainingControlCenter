@@ -7,6 +7,7 @@ const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
 
 const auth = require('./auth');
+const settings = require('./settings');
 
 const app = express();
 app.use(cors());
@@ -34,6 +35,14 @@ app.post('/v0/register', auth.register);
 // Login
 app.post('/v0/login', auth.login);
 
+// Potential future paths
+
+// Get, add, delete favorite sports
+app.get('/v0/favorites', auth.check, settings.getFavorites);
+
+app.post('/v0/favorites', auth.check, settings.addFavorite);
+
+app.delete('/v0/favorites', auth.check, settings.deleteFavorite);
 
 
 // // Examples for future routes

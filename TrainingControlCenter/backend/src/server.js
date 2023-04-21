@@ -1,3 +1,5 @@
+// No code goes here, just runs the backend server
+
 const app = require('./app.js');
 
 app.listen(3010, () => {
