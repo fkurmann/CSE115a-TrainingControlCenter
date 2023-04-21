@@ -13,6 +13,29 @@ servers:
   - url: http://localhost:3010/v0
 
 paths:
+  /register:
+    post:
+      description: Register
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        200:
+          description: Registration successful, return credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Credentials'
+        401:
+          description: Username taken
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /login:
     post:
       description: Login

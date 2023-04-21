@@ -1,28 +1,50 @@
 const jwt = require('jsonwebtoken');
+const db = require('../db/db')
 
 const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ
 lbWFpbCI6ImFubmFAYm9va3MuY29tIiwicm9sZSI6ImFkbWluIiwiaW
 F0IjoxNjA2Mjc3MDAxLCJleHAiOjE2MDYyNzcwNjF9.1nwY0lDMGrb7
 AUFFgSaYd4Q7Tzr-BjABclmoKZOqmr4`;
 
+// Login as a user, returns access token
 exports.login = async (req, res) => {
-  const {email, password} = req.body;
-  const returnValue = await db.checkCred(email, password);
-  if (returnValue == undefined) {
+  const {username, password} = req.body;
+  // Check if user with these credentials exists
+  const returnValue = await db.findUser(username, password);
+  if (returnValue === -1) {
     res.status(401).send('Invalid credentials');
   } else {
+    // Issue JSON web token for user
     const accessToken = jwt.sign(
-      {email: email},
+      {username: username},
       token, {
         expiresIn: '30m',
         algorithm: 'HS256',
       });
     res.status(200).json({
-      fullname: returnValue, email: email, accessToken: accessToken,
+      username: username, accessToken: accessToken
     });
   }
 };
 
+// Register a new user
+exports.register = async (req, res) => {
+  // See if username is already taken
+  const {username, password} = req.body;
+  let returnValue = await db.findUser(username, 'BLANK');
+  if (returnValue !== -1) {
+    res.status(401).send('Username already taken');
+  } else {
+    // If username is availible, issue it
+    returnValue = await db.createUser(username, password);
+    res.status(200).json({
+      username: username, password: password
+    });
+  }
+};
+
+
+// Check that authentication token is issued
 exports.check = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const userToken = authHeader.split(' ')[1];
