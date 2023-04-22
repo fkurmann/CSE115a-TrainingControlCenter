@@ -38,11 +38,11 @@ app.post('/v0/login', auth.login);
 // Potential future paths
 
 // Get, add, delete favorite sports
-app.get('/v0/favorites', auth.check, settings.getFavorites);
+app.get('/v0/favorites', settings.getFavorites);//auth.check,
 
-app.post('/v0/favorites', auth.check, settings.addFavorite);
+app.post('/v0/favorites', settings.addFavorite);// auth.check,
 
-app.delete('/v0/favorites', auth.check, settings.deleteFavorite);
+app.delete('/v0/favorites', settings.deleteFavorite);//auth.check,
 
 
 // // Examples for future routes

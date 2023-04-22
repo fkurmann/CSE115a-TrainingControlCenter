@@ -50,6 +50,7 @@ exports.findUser = async (username, password) => {
 
   // Access database
   try {
+    console.log('Accessing db');
     await client.connect();
     const result = await client.db('TCC').collection('users').findOne(credentials);
     if (result) {
@@ -69,7 +70,7 @@ exports.findUser = async (username, password) => {
 }
 
 // Add favorites
-exports.addFavorites = async (username, favorite) => {
+exports.addFavorite = async (username, favorite) => {
   // Access database
   try {
     await client.connect();
@@ -91,7 +92,7 @@ exports.addFavorites = async (username, favorite) => {
   }
 }
 // Delete favorites
-exports.deleteFavorites = async (username, favorite) => {
+exports.deleteFavorite = async (username, favorite) => {
   // Access database
   try {
     await client.connect();

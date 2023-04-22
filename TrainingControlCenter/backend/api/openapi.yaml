@@ -63,13 +63,19 @@ paths:
   /favorites:
     post:
       description: New favorite sport
-      requestBody:
-        description: Request Body
+      parameters:
+      - name: username
+        in: query
+        description: User
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Favorite'
+        schema:
+          type: string
+      - name: sport
+        in: query
+        description: New favorite sport
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: New favorite saved
@@ -85,6 +91,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     get:
       description: Get all user's favorites
+      parameters:
       - name: username
         in: query
         description: User
@@ -113,9 +120,9 @@ paths:
         required: true
         schema:
           type: string
-      - name: name
+      - name: sport
         in: query
-        description: Name of favorite
+        description: Name of favorite to delete
         required: true
         schema:
           type: string
@@ -199,7 +206,6 @@ paths:
         required: true
         schema:
           type: string
-      parameters:
       - name: name
         in: query
         description: Name of goal
@@ -271,16 +277,18 @@ components:
     User:
       type: object
       properties:
-        fullname:
-          type: string
         username:
+          type: string
+        password:
           type: string
         accessToken:
           type: string
+        favorites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Favorite'
       required:
-        - fullname
         - username
-        - accessToken
     
     Favorites:
       type: array
@@ -292,10 +300,10 @@ components:
         sport:
           type: string
       required:
-        - soirt
+        - sport
 
     Goals:
-     type: array
+      type: array
       items:
         $ref: '#/components/schemas/Goal'
     Goal:
@@ -308,9 +316,11 @@ components:
         type:
           type: string
         distance:
-          type: int32
+          type: integer
+          format: int32
         time:
-          type: int32
+          type: integer
+          format: int32
       required:
         - username
         - name
