@@ -82,7 +82,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Favorite'
+                type: string
         401:
           description: Error saving favorite
           content:
@@ -132,7 +132,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Favorite'
+                type: string
         401:
           description: Error deleting favorite
           content:
@@ -156,7 +156,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Goal'
+                type: string
         401:
           description: Error saving goal
           content:
@@ -178,7 +178,13 @@ paths:
         required: false
         schema:
           type: string
-      - name: name
+      - name: type
+        in: query
+        description: Type of goal
+        required: false
+        schema:
+          type: string
+      - name: sport
         in: query
         description: Sport of goal
         required: false
@@ -218,7 +224,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Goal'
+                type: string
         401:
           description: Error deleting goal
           content:
@@ -285,22 +291,15 @@ components:
           type: string
         favorites:
           type: array
-          items:
-            $ref: '#/components/schemas/Favorite'
+          items: 
+            type: string
       required:
         - username
     
     Favorites:
       type: array
-      items:
-        $ref: '#/components/schemas/Favorite'
-    Favorite:
-      type: object
-      properties:
-        sport:
-          type: string
-      required:
-        - sport
+      items: 
+        type: string
 
     Goals:
       type: array
@@ -315,18 +314,22 @@ components:
           type: string
         type:
           type: string
+          nullable: true
+        sport:
+          type: string
+          nullable: true
         distance:
           type: integer
           format: int32
+          nullable: true
         time:
           type: integer
           format: int32
+          nullable: true
+
       required:
         - username
         - name
-        - type
-        - distance
-        - time
 
     Graph:
       type: object

@@ -31,7 +31,7 @@ exports.login = async (req, res) => {
 exports.register = async (req, res) => {
   // See if username is already taken
   const {username, password} = req.body;
-  let returnValue = await dbUsers.findUser(username, 'BLANK');
+  let returnValue = await dbUsers.findUser(username, null);
   if (returnValue !== -1) {
     res.status(401).send('Username already taken');
   } else {

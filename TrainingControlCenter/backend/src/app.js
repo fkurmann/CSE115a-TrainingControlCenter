@@ -44,6 +44,12 @@ app.post('/v0/favorites', settings.addFavorite);// auth.check,
 
 app.delete('/v0/favorites', settings.deleteFavorite);//auth.check,
 
+// Get, add, delete goals
+app.get('/v0/goals', settings.getGoals);//auth.check,
+
+app.post('/v0/goals', settings.addGoal);// auth.check,
+
+app.delete('/v0/goals', settings.deleteGoal);//auth.check,
 
 // // Examples for future routes
 // app.get('/v0/mailbox', auth.check, mailboxes.getAllMB);
