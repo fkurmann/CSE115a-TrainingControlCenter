@@ -25,6 +25,7 @@ function ResponsiveAppBar() {
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
+    console.log(localStorage);
   };
 
   const handleCloseNavMenu = () => {
@@ -33,6 +34,13 @@ function ResponsiveAppBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLogout = () => {
+    console.log("Logging out!");
+    setAnchorElUser(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('accessToken');
   };
 
   return (
@@ -147,11 +155,8 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+                <MenuItem component='a' onClick={handleCloseUserMenu} href='/settings'>Settings</MenuItem>
+                <MenuItem component='a' onClick={handleLogout} href='/login'>Logout</MenuItem>
             </Menu>
           </Box>
         </Toolbar>

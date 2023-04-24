@@ -22,7 +22,7 @@ exports.login = async (req, res) => {
         algorithm: 'HS256',
       });
     res.status(200).json({
-      username: username, accessToken: accessToken
+      username: username, accessToken: accessToken, favorites: returnValue.favorites
     });
   }
 };

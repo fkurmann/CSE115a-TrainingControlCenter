@@ -23,10 +23,11 @@ const theme = createTheme();
  */
 export default function Login() {
   const history = useNavigate();
-  const [user, setUser] = React.useState({Username: '', password: ''});
+  const [user, setUser] = React.useState({username: '', password: ''});
 
   React.useEffect(() => {
     localStorage.removeItem('user');
+    localStorage.removeItem('accessToken');
   }, []);
 
   const handleInputChange = (event) => {
@@ -38,6 +39,12 @@ export default function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    // localStorage.setItem('user', user.username);
+    // localStorage.setItem('accessToken', 'im_a_key');
+    // history('/');
+    // return;
+
     fetch('http://localhost:3010/v0/login', {
       method: 'POST',
       body: JSON.stringify(user),
@@ -52,7 +59,9 @@ export default function Login() {
         return res.json();
       })
       .then((json) => {
-        localStorage.setItem('user', JSON.stringify(json));
+        localStorage.setItem('user', json.username);
+        localStorage.setItem('accessToken', json.accessToken);
+        localStorage.setItem('favorites', json.favorites);
         history('/');
       })
       .catch((err) => {
