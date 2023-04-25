@@ -31,7 +31,8 @@ exports.addActivity = async (req, res) => {
   const activityJson = {
 
   }
-  let returnValue = await dbActivities.createActivity(username, name, sport, activityJson);
+
+  const returnValue = await dbActivities.createActivity(username, name, sport, activityJson);
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error adding activity');

@@ -22,9 +22,6 @@ exports.createActivity = async (username, name, sport, json) => {
     sport: sport,
     json: json
   }
-
-
-  activitySkeleton[activityJson] = activityJson
  
   // Access database
   try {
