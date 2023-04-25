@@ -13,7 +13,7 @@ import requests
 import os
 import json
 
-TOKEN = os.getenv('TOKEN') # TBD
+TOKEN = localStorage.getItem('token')
 HEADER = {'Authorization': f"Bearer {TOKEN}"}
 JSON_DIR = "./data"
 
