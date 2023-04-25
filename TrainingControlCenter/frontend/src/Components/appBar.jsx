@@ -37,7 +37,6 @@ function ResponsiveAppBar() {
   };
 
   const handleLogout = () => {
-    console.log("Logging out!");
     setAnchorElUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');

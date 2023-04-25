@@ -39,12 +39,6 @@ export default function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    // localStorage.setItem('user', user.username);
-    // localStorage.setItem('accessToken', 'im_a_key');
-    // history('/');
-    // return;
-
     fetch('http://localhost:3010/v0/login', {
       method: 'POST',
       body: JSON.stringify(user),
@@ -61,7 +55,7 @@ export default function Login() {
       .then((json) => {
         localStorage.setItem('user', json.username);
         localStorage.setItem('accessToken', json.accessToken);
-        localStorage.setItem('favorites', json.favorites);
+        localStorage.setItem('favorites', JSON.stringify(json.favorites)); // localStorage can only store strings
         history('/');
       })
       .catch((err) => {
