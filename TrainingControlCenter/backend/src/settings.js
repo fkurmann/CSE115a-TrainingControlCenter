@@ -102,7 +102,7 @@ exports.addGoal = async (req, res) => {
 
 };
 
-// Get all user's favorite sports
+// Get all goals that match query
 exports.getGoals = async (req, res) => {
   const username = req.query.username;
   let name = null;
