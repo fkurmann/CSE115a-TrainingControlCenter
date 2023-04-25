@@ -232,6 +232,92 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /activities:
+    post:
+      description: New activity
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activity'
+      responses:
+        200:
+          description: New activity saved
+          content:
+            application/json:
+              schema:
+                type: string
+        401:
+          description: Error saving activity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      description: Get activities
+      parameters:
+      - name: username
+        in: query
+        description: User
+        required: true
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Name of activity
+        required: false
+        schema:
+          type: string
+      - name: sport
+        in: query
+        description: Sport of activity
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: Activities returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activities'
+        401:
+          description: Error getting goal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Delete activity
+      parameters:
+      - name: username
+        in: query
+        description: User
+        required: true
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Name of activity
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: New activity deleted
+          content:
+            application/json:
+              schema:
+                type: string
+        401:
+          description: Error deleting activity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /graphs:
     post:
       description: New graph
@@ -326,7 +412,35 @@ components:
           type: integer
           format: int32
           nullable: true
+      required:
+        - username
+        - name
 
+    Activities:
+      type: array
+      items:
+        $ref: '#/components/schemas/Activity'
+    Activity:
+      type: object
+      properties:
+        username:
+          type: string
+        name:
+          type: string
+        sport:
+          type: string
+          nullable: true
+        type:
+          type: string
+          nullable: true
+        distance:
+          type: integer
+          format: int32
+          nullable: true
+        time:
+          type: integer
+          format: int32
+          nullable: true
       required:
         - username
         - name
