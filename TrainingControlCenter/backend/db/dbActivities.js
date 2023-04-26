@@ -47,7 +47,7 @@ exports.findActivity = async (username, name, sport) => {
   }
   // Find by sport
   if (sport != null) {
-    parameters.type = sport;
+    parameters.sport = sport;
   }
 
   // Access database

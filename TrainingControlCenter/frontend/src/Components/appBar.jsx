@@ -35,6 +35,12 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+  const handleLogout = () => {
+    setAnchorElUser(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('accessToken');
+  };
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -147,11 +153,8 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+                <MenuItem component='a' onClick={handleCloseUserMenu} href='/settings'>Settings</MenuItem>
+                <MenuItem component='a' onClick={handleLogout} href='/login'>Logout</MenuItem>
             </Menu>
           </Box>
         </Toolbar>
