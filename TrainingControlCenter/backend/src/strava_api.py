@@ -12,8 +12,9 @@ __author__ = "Ethan Ma"
 import requests
 import os
 import json
+import js2py
 
-TOKEN = localStorage.getItem('token')
+TOKEN = js2py.eval_js('localStorage.getItem("token");') # page must be loaded on client, window defined
 HEADER = {'Authorization': f"Bearer {TOKEN}"}
 JSON_DIR = "./data"
 
