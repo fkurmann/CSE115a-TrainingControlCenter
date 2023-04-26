@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes, Navigate, Switch } from 'react-router-dom';
 
 import Home from './Components/Home';
+import Settings from './Components/Settings';
 import Login from './Components/auth';
 
 
@@ -20,6 +21,13 @@ export default function App() {
           // <AuthenticatedRoute>
             <Home />
           // </AuthenticatedRoute>
+        }
+      />
+      <Route path='/settings'
+        element={
+          <AuthenticatedRoute>
+            <Settings />
+          </AuthenticatedRoute>
         }
       />
       <Route path='/login' element={<Login />} />
