@@ -8,6 +8,7 @@ const OpenApiValidator = require('express-openapi-validator');
 
 const auth = require('./auth');
 const settings = require('./settings');
+const activities = require('./activities');
 
 const app = express();
 app.use(cors());
@@ -51,7 +52,32 @@ app.post('/v0/goals', settings.addGoal);// auth.check,
 
 app.delete('/v0/goals', settings.deleteGoal);//auth.check,
 
+// Get, add, delete activities
+app.get('/v0/activities', activities.getActivities);//auth.check,
+
+// Manual Entry
+app.post('/v0/activities', activities.addActivity);// auth.check,
+
+// Strava Entry
+//TODO
+
+app.delete('/v0/activities', activities.deleteActivity);//auth.check,
+
+
+app.use((err, req, res, next) => {
+  // console.log(req);
+  res.status(err.status).json({
+    message: err.message,
+    errors: err.errors,
+    status: err.status,
+  });
+});
+
+module.exports = app;
+
+
 // // Examples for future routes
+
 // app.get('/v0/mailbox', auth.check, mailboxes.getAllMB);
 // // To make/delete mailboxes
 // app.post('/v0/mailbox', auth.check, mailboxes.post);
@@ -69,13 +95,3 @@ app.delete('/v0/goals', settings.deleteGoal);//auth.check,
 // app.get('/v0/mail/:id', auth.check, mails.getID);
 
 
-app.use((err, req, res, next) => {
-  // console.log(req);
-  res.status(err.status).json({
-    message: err.message,
-    errors: err.errors,
-    status: err.status,
-  });
-});
-
-module.exports = app;
