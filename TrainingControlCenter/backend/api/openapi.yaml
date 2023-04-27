@@ -62,7 +62,7 @@ paths:
 
   /token:
     post:
-      description: Add or update user's strave token
+      description: Add or update user's strava token
       parameters:
       - name: username
         in: query
