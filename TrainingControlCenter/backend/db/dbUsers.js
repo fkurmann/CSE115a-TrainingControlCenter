@@ -19,8 +19,7 @@ exports.createUser = async (username, password) => {
   const credentials = {
     user: username,
     pw: password,
-    favorites: [],
-    stravaToken: null
+    favorites: []
   } 
   // Access database
   try {
@@ -29,22 +28,6 @@ exports.createUser = async (username, password) => {
     console.log(`New user created with the following id: ${result.insertedId}`);
     await client.close();
     return credentials;
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-
-// Function to update the Strava token which will expire regularly
-exports.updateUser = async (username, token) => {
-  // Access database
-  try {
-    await client.connect();
-    const result = await client.db("TCC").collection("users").updateOne({user: username}, { $set: {stravaToken: token}});
-
-    console.log(`User token updated to: ${token}`);
-    await client.close();
-    return result;
   } finally {
     // Ensures that the client will close when you finish/error
     await client.close();
@@ -63,12 +46,15 @@ exports.findUser = async (username, password) => {
       user: username
     }
   }
+
   // Access database
   try {
+    console.log('Accessing db');
     await client.connect();
     const result = await client.db('TCC').collection('users').findOne(credentials);
     if (result) {
       console.log(`Found a user with the credentials '${credentials}':`);
+      console.log(result);
       await client.close();
       return result;
     } else {

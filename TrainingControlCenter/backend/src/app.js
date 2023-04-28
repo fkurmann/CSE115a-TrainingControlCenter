@@ -36,20 +36,20 @@ app.post('/v0/register', auth.register);
 // Login
 app.post('/v0/login', auth.login);
 
-// Get and post strava token to user collection in db
-app.post('/v0/token', auth.updateToken);//auth.check,
-app.get('/v0/token', auth.getToken);//auth.check,
-
-
+// Potential future paths
 
 // Get, add, delete favorite sports
 app.get('/v0/favorites', settings.getFavorites);//auth.check,
+
 app.post('/v0/favorites', settings.addFavorite);// auth.check,
+
 app.delete('/v0/favorites', settings.deleteFavorite);//auth.check,
 
 // Get, add, delete goals
 app.get('/v0/goals', settings.getGoals);//auth.check,
+
 app.post('/v0/goals', settings.addGoal);// auth.check,
+
 app.delete('/v0/goals', settings.deleteGoal);//auth.check,
 
 // Get, add, delete activities

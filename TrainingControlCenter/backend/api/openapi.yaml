@@ -60,58 +60,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /token:
-    post:
-      description: Add or update user's strava token
-      parameters:
-      - name: username
-        in: query
-        description: User
-        required: true
-        schema:
-          type: string
-      - name: token
-        in: query
-        description: New token
-        required: true
-        schema:
-          type: string
-      responses:
-        200:
-          description: Token updated
-          content:
-            application/json:
-              schema:
-                type: string
-        401:
-          description: Username not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    get:
-      description: Get user's token
-      parameters:
-      - name: username
-        in: query
-        description: User
-        required: true
-        schema:
-          type: string
-      responses:
-        200:
-          description: Token returned
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        401:
-          description: Error getting token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
   /favorites:
     post:
       description: New favorite sport
@@ -427,10 +375,6 @@ components:
           type: string
         accessToken:
           type: string
-          nullable: true
-        stravaToken:
-          type: string
-          nullable: true
         favorites:
           type: array
           items: 
