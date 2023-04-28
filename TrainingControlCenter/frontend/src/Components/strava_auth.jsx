@@ -29,7 +29,6 @@ export default function StravaAuth() {
 }
 
 function storeAccessTokenInDB(data) {
-    console.log('access_token', data['access_token']);
     const user = localStorage.getItem('user');
     const token = data['access_token']
     localStorage.setItem('stravaAccessToken', token);
