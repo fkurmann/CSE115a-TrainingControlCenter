@@ -4,6 +4,7 @@ import Home from './Components/Home';
 import Settings from './Components/Settings';
 import Login from './Components/auth';
 import StravaButton from './Components/strava';
+import StravaAuth from './Components/strava_auth';
 
 
 const AuthenticatedRoute = ({children}) => {
@@ -32,6 +33,7 @@ export default function App() {
         }
       />
       <Route path='/stravaToken' element={<StravaButton />}/>
+      <Route path='/stravaAuth' element={<StravaAuth />}/>
 
       <Route path='/login' element={<Login />} />
     </Routes>
