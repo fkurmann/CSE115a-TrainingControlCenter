@@ -56,3 +56,35 @@ exports.check = (req, res, next) => {
     next();
   });
 };
+
+// Add or update strava token
+exports.updateToken = async (req, res) => {
+  // See if username is already taken
+  const username = req.query.username;
+  const token = req.query.token;
+  let returnValue = await dbUsers.findUser(username, null);
+  if (returnValue === -1) {
+    res.status(401).send('No such username');
+  } else {
+    // If username is issued, update token
+    returnValue = await dbUsers.updateUser(username, token);
+    res.status(200).send(token);  
+  }
+};
+
+// Get strava token
+exports.getToken = async (req, res) => {
+  const username = req.query.username;
+
+  const returnValue = await dbUsers.findUser(username, null);
+  // Error case
+  if (returnValue === -1) {
+    res.status(401).send('Error getting token, user may not exist');
+  } else {
+    // On success return 200
+    const token = returnValue.stravaToken;
+    res.status(200).json({
+      username: username, stravaToken: returnValue.stravaToken
+    });
+  }
+};
