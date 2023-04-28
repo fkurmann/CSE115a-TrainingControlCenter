@@ -1,7 +1,5 @@
 import React from "react";
 
-const axios = require('axios');
-
 export default function StravaAuth() {
     const queryParameters = new URLSearchParams(window.location.search)
     const code = queryParameters.get("code") // auth code from URL
@@ -32,7 +30,6 @@ function storeAccessTokenInDB(data) {
     const user = localStorage.getItem('user');
     const token = data['access_token']
     localStorage.setItem('stravaAccessToken', token);
-
     fetch('http://localhost:3010/v0/token?' + new URLSearchParams({username: user, token: token}), {
         method: 'POST',
         headers: {
@@ -43,7 +40,7 @@ function storeAccessTokenInDB(data) {
           if (!res.ok) {
               throw res;
           }
-          return res.json()
+          return res
       })
       .catch((err) => {
           alert('Error storing strava access token, please try again.');
