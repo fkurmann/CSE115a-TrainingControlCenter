@@ -30,4 +30,23 @@ export default function StravaAuth() {
 
 function storeAccessTokenInDB(data) {
     console.log('access_token', data['access_token']);
+    const user = localStorage.getItem('user');
+    const token = data['access_token']
+    localStorage.setItem('stravaAccessToken', token);
+
+    fetch('http://localhost:3010/v0/token?' + new URLSearchParams({username: user, token: token}), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+      .then((res) => {
+          if (!res.ok) {
+              throw res;
+          }
+          return res.json()
+      })
+      .catch((err) => {
+          alert('Error storing strava access token, please try again.');
+      });
 }
