@@ -39,6 +39,7 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('stravaAccessToken');
   };
 
   return (

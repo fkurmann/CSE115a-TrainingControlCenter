@@ -28,6 +28,7 @@ export default function Login() {
   React.useEffect(() => {
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('stravaAccessToken');
   }, []);
 
   const handleInputChange = (event) => {
