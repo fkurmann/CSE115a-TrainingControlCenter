@@ -68,56 +68,22 @@ exports.deleteActivity = async (req, res) => {
 // Get all activities that match query
 exports.getActivities = async (req, res) => {
   const username = req.query.username;
-  let name = null;
-  let sport = null;
-  let type = null;
-  let minDuration = null;
-  let maxDuration = null;
-  let minDistance = null;
-  let maxDistance = null;
-  let minDate = null;
-  let maxDate = null;
+  let name = req.query.name;
+  let sport = req.query.sport;
+  let type = req.query.type;
+  let minDuration = req.query.minDuration;
+  let maxDuration = req.query.maxDuration;
+  let minDistance = req.query.minDistance;
+  let maxDistance = req.query.maxDistance;
+  let minDate = req.query.minDate;
+  let maxDate = req.query.maxDate;
   
-  for (item of [username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
-    if (req.query.item) {
-      item = req.query.item;
+  for (item of [name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
+    if (item == undefined) {
+      item = null;
     }
   }
-
-  // if (req.query.name) {
-  //   name = req.query.name;
-  // }
-  // if (req.query.sport) {
-  //   sport = req.query.sport;
-  // }
-  // if (req.query.type) {
-  //   type = req.query.type;
-  // }
-  // if (req.query.minDuration) {
-  //   minDuration = req.query.minDuration;
-  // }
-  // if (req.query.maxDuration) {
-  //   maxDuration = req.query.maxDuration;
-  // }
-  // if (req.query.minDistance) {
-  //   minDistance = req.query.minDistance;
-  // }
-  // if (req.query.maxDistance) {
-  //   maxDistance = req.query.maxDistance;
-  // }
-  // if (req.query.minDate) {
-  //   minDate = req.query.minDate;
-  // }
-  // if (req.query.maxDate) {
-  //   maxDate = req.query.maxDate;
-  // }
-
-  for (item of [username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
-    if (item != null) {
-      parameters.item = item;
-    }
-  }
-
+  
   const returnValue = await dbActivities.findActivity(username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate);
   // Error case
   if (returnValue === -1) {
