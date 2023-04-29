@@ -37,18 +37,43 @@ exports.createActivity = async (username, name, sport, json) => {
 }
 
 // Find activity
-exports.findActivity = async (username, name, sport) => {
+exports.findActivity = async (username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate) => {
   let parameters = {
     username: username
   }
-  // Find by name
-  if (name != null) {
-    parameters.name = name;
+  
+  for (item of [username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
+    if (item != null) {
+      parameters.item = item;
+    }
   }
-  // Find by sport
-  if (sport != null) {
-    parameters.sport = sport;
-  }
+  // if (name != null) {
+  //   parameters.name = name;
+  // }
+  // if (sport != null) {
+  //   parameters.sport = sport;
+  // }
+  // if (type != null) {
+  //   parameters.type = type;
+  // }
+  // if (minDuration != null) {
+  //   parameters.minDuration = minDuration;
+  // }
+  // if (sport != null) {
+  //   parameters.sport = sport;
+  // }
+  // if (sport != null) {
+  //   parameters.sport = sport;
+  // }
+  // if (sport != null) {
+  //   parameters.sport = sport;
+  // }
+  // if (sport != null) {
+  //   parameters.sport = sport;
+  // }
+  // if (sport != null) {
+  //   parameters.sport = sport;
+  // }
 
   // Access database
   try {
