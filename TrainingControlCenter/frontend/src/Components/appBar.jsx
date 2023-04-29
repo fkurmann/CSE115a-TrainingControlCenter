@@ -91,9 +91,9 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              <MenuItem onClick={handleCloseNavMenu} href='/'>Home</MenuItem>
+              <MenuItem component='a' onClick={handleCloseNavMenu} href='/'>Home</MenuItem>
               <MenuItem component='a' onClick={handleCloseNavMenu} href='/dataCenter'>Data Center</MenuItem>
-              <MenuItem onClick={handleCloseNavMenu} href='/planTraining'>Plan Training</MenuItem>
+              <MenuItem component='a' onClick={handleCloseNavMenu} href='/planTraining'>Plan Training</MenuItem>
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
