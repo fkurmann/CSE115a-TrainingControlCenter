@@ -13,9 +13,6 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
-const pages = ['Home', 'Data Center', 'Plan Training'];
-const settings = ['Profile', 'Logout'];
-
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -94,11 +91,9 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={handleCloseNavMenu} href='/'>Home</MenuItem>
+              <MenuItem component='a' onClick={handleCloseNavMenu} href='/dataCenter'>Data Center</MenuItem>
+              <MenuItem onClick={handleCloseNavMenu} href='/planTraining'>Plan Training</MenuItem>
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -106,7 +101,7 @@ function ResponsiveAppBar() {
             variant="h5"
             noWrap
             component="a"
-            href=""
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -118,24 +113,38 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            TCC
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+            <Button
+              onClick={handleCloseNavMenu}
+              href='/'
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Home
+            </Button>
+            <Button
+              onClick={handleCloseNavMenu}
+              href='/dataCenter'
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Data Center
+            </Button>
+            <Button
+              onClick={handleCloseNavMenu}
+              href='/planTraining'
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Plan Training
+            </Button>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="avatar">
+                  {localStorage.getItem('user').charAt(0)}
+                </Avatar>
               </IconButton>
             </Tooltip>
             <Menu

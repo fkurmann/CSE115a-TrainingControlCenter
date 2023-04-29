@@ -4,6 +4,8 @@ import Home from './Components/Home';
 import Settings from './Components/Settings';
 import Login from './Components/auth';
 import StravaAuth from './Components/stravaAuth';
+import DataCenter from './Components/DataCenter';
+import PlanTraining from './Components/PlanTraining';
 
 
 const AuthenticatedRoute = ({children}) => {
@@ -28,6 +30,20 @@ export default function App() {
         element={
           <AuthenticatedRoute>
             <Settings />
+          </AuthenticatedRoute>
+        }
+      />
+      <Route path='/dataCenter'
+        element={
+          <AuthenticatedRoute>
+            <DataCenter />
+          </AuthenticatedRoute>
+        }
+      />
+      <Route path='/planTraining'
+        element={
+          <AuthenticatedRoute>
+            <PlanTraining />
           </AuthenticatedRoute>
         }
       />
