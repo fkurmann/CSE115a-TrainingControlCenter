@@ -3,8 +3,7 @@ import { BrowserRouter, Route, Routes, Navigate, Switch } from 'react-router-dom
 import Home from './Components/Home';
 import Settings from './Components/Settings';
 import Login from './Components/auth';
-import StravaButton from './Components/strava';
-import StravaAuth from './Components/strava_auth';
+import StravaAuth from './Components/stravaAuth';
 
 
 const AuthenticatedRoute = ({children}) => {
@@ -32,7 +31,6 @@ export default function App() {
           </AuthenticatedRoute>
         }
       />
-      <Route path='/stravaToken' element={<StravaButton />}/>
       <Route path='/stravaAuth' element={<StravaAuth />}/>
 
       <Route path='/login' element={<Login />} />

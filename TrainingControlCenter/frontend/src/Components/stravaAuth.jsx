@@ -24,6 +24,9 @@ export default function StravaAuth() {
         .then((data) => {
             storeAccessTokenInDB(data);
         })
+    return (
+        <div>Strava Token Stored</div>
+    );
 }
 
 function storeAccessTokenInDB(data) {

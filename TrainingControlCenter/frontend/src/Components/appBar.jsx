@@ -155,6 +155,12 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
                 <MenuItem component='a' onClick={handleCloseUserMenu} href='/settings'>Settings</MenuItem>
+                <MenuItem component='a' href={`https://www.strava.com/oauth/authorize` +
+                                                                            `?client_id=105448` +
+                                                                            `&response_type=code` +
+                                                                            `&redirect_uri=http://localhost:3000/stravaAuth` +
+                                                                            `&approval_prompt=force&scope=read_all,activity:read_all,profile:read_all`}>Sync Strava Profile
+                </MenuItem>
                 <MenuItem component='a' onClick={handleLogout} href='/login'>Logout</MenuItem>
             </Menu>
           </Box>
