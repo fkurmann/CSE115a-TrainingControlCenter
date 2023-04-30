@@ -68,16 +68,23 @@ exports.deleteActivity = async (req, res) => {
 // Get all activities that match query
 exports.getActivities = async (req, res) => {
   const username = req.query.username;
-  let name = null;
-  let sport = null;
-  if (req.query.name) {
-    name = req.query.name;
+  let name = req.query.name;
+  let sport = req.query.sport;
+  let type = req.query.type;
+  let minDuration = req.query.minDuration;
+  let maxDuration = req.query.maxDuration;
+  let minDistance = req.query.minDistance;
+  let maxDistance = req.query.maxDistance;
+  let minDate = req.query.minDate;
+  let maxDate = req.query.maxDate;
+  
+  for (item of [name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
+    if (item == undefined) {
+      item = null;
+    }
   }
-  if (req.query.sport) {
-    sport = req.query.sport;
-  }
-
-  const returnValue = await dbActivities.findActivity(username, name, sport);
+  
+  const returnValue = await dbActivities.findActivity(username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate);
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error getting activities, user may not exist');

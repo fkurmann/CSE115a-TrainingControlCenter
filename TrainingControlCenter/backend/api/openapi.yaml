@@ -328,6 +328,52 @@ paths:
         required: false
         schema:
           type: string
+      - name: type
+        in: query
+        description: type of activity
+        required: false
+        schema:
+          type: string
+      - name: minDuration
+        in: query
+        description: minDuration of activity, seconds
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: maxDuration
+        in: query
+        description: maxDuration of activity, seconds
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: minDistance
+        in: query
+        description: minDistance of activity (activity dependent units)
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: maxDistance
+        in: query
+        description: maxDistance of activity (activity dependent units)
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: minDate
+        in: query
+        description: minDate of activity, 2017-07-21T17:32:28Z format
+        required: false
+        schema:
+          type: string
+      - name: maxDate
+        in: query
+        description: maxDate of activity, 2017-07-21T17:32:28Z format
+        required: false
+        schema:
+          type: string
       responses:
         200:
           description: Activities returned
@@ -489,13 +535,8 @@ components:
         type:
           type: string
           nullable: true
-        distance:
-          type: integer
-          format: int32
-          nullable: true
-        time:
-          type: integer
-          format: int32
+        json:
+          type: object
           nullable: true
       required:
         - username
