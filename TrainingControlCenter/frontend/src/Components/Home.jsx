@@ -9,7 +9,7 @@ export default function Home() {
       <ResponsiveAppBar>
 
       </ResponsiveAppBar>
-    <h1>Training Control Center, Home</h1>
+    <h1>Training Control Center, {localStorage.getItem('user')}</h1>
     <Workouts></Workouts>
     </>
   );
