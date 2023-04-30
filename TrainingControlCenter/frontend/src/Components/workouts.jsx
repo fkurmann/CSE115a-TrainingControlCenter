@@ -5,7 +5,7 @@ import NestedList from './list';
 export default function Workouts() {
   return (
     <>
-      <h1>Workouts</h1>
+      <h2>Workouts</h2>
       <NestedList></NestedList>
     </>
     
