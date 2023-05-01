@@ -38,6 +38,7 @@ export default function Favorites() {
     setMyFavorites(myFavs);
     setMyShownFavorites([ ...myShownFavorites, sport]);
     localStorage.setItem('favorites', JSON.stringify(myFavs));
+    /*
     fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams(addFav), {
       method: 'POST',
       headers: {
@@ -58,6 +59,7 @@ export default function Favorites() {
         setMyShownFavorites(myShownFavs);
         localStorage.setItem('favorites', JSON.stringify(myFavs));
       });
+    */
   }
 
   const handleDelete = (sport) => {
@@ -68,6 +70,7 @@ export default function Favorites() {
     const myFavs = myFavorites.filter((favSport) => favSport !== sport);
     setMyFavorites(myFavs);
     localStorage.setItem('favorites', JSON.stringify(myFavs));
+    /*
     fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams(deleteFav), {
       method: 'DELETE',
       headers: {
@@ -86,6 +89,7 @@ export default function Favorites() {
         setMyFavorites(myFavs);
         localStorage.setItem('favorites', JSON.stringify(myFavs));
       });
+    */
   }
 
   const handleReadd = (sport) => {
@@ -95,6 +99,7 @@ export default function Favorites() {
     const myFavs = [ ...myFavorites, sport];
     setMyFavorites(myFavs);
     localStorage.setItem('favorites', JSON.stringify(myFavs));
+    /*
     fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: sport}), {
       method: 'POST',
       headers: {
@@ -113,6 +118,7 @@ export default function Favorites() {
         setMyFavorites(myFavs);
         localStorage.setItem('favorites', JSON.stringify(myFavs));
       });
+    */
   }
 
   return (
