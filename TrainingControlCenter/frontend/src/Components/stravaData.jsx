@@ -3,20 +3,18 @@ import React from "react";
 
 const stravaBaseURL = 'https://www.strava.com/api/v3';
 
-export default function getActivities = async (start_date, end_date) => {
+export default function getAllActivities = async () => {
     const user = localStorage.getItem('user');
     const stravaAccessToken = localStorage.getItem('stravaAccessToken');
 
     var all_activities = [{}];
     try {
         page = 1;
-        const res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
+        var res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
             headers: {
                 'Authorization': `Bearer ${stravaAccessToken}`,
             },
             params: {
-                'after': start_date,
-                'before': end_date,
                 'page': page,
                 'per_page': 200,
             },
@@ -26,23 +24,44 @@ export default function getActivities = async (start_date, end_date) => {
         }
         while (res.length !== 0) {}
             page += 1;
-            const looped_res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
+            res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
                 headers: {
                     'Authorization': `Bearer ${stravaAccessToken}`,
                 },
                 params: {
-                    'after': start_date,
-                    'before': end_date,
                     'page': page,
                     'per_page': 200,
                 },
             });
-            if (looped_res.status === 200) {
-                all_activities += looped_res.data;
+            if (res.status === 200) {
+                all_activities += res.data;
             }
     } catch (error) {
         console.error('Error fetching all activities:', error);
         return null;
     }
     return all_activities; // here should be uploading to DB not return.
+}
+
+export default function getFiveActivities = async () => {
+    const user = localStorage.getItem('user');
+    const stravaAccessToken = localStorage.getItem('stravaAccessToken');
+    var activities = [{}];
+    try {
+        const res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
+            headers: {
+                'Authorization': `Bearer ${stravaAccessToken}`,
+            },
+            params: {
+                'per_page': 5,
+            },
+        });
+        if (res.status === 200) {
+            activities += res
+        }
+    } catch (error) {
+        console.error('Error fetching recent 5 activities:', error);
+        return null;
+    }
+    return activites;
 }
