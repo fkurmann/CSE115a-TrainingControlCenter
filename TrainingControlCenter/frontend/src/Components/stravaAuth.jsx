@@ -24,6 +24,7 @@ export default function StravaAuth() {
         .then((data) => {
             storeAccessTokenInDB(data);
         })
+    window.location.href = 'http://localhost:3000';
     return (
         <div>Strava Token Stored</div>
     );
@@ -32,6 +33,7 @@ export default function StravaAuth() {
 function storeAccessTokenInDB(data) {
     const user = localStorage.getItem('user');
     const token = data['access_token']
+    console.log(token);
     localStorage.setItem('stravaAccessToken', token);
     fetch('http://localhost:3010/v0/token?' + new URLSearchParams({username: user, token: token}), {
         method: 'POST',
