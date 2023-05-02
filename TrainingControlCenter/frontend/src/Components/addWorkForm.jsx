@@ -1,54 +1,138 @@
 import React, { useState } from 'react';
-import { TextField, Button } from '@material-ui/core';
 
-export default function AddWorkoutForm({ addWorkout }) {
-  const [name, setName] = useState('');
-  const [type, setType] = useState('');
-  const [sport, setSport] = useState('');
-  const [distance, setDistance] = useState('');
-  const [time, setTime] = useState('');
+const username = localStorage.getItem('user');
 
-  const handleSubmit = (e) => {
+export default function AddWorkoutForm() {
+  const [{ name, type, sport, distance, time}, setState] = useState({
+    name: '',
+    type: '',
+    sport: '',
+    distance: '',
+    time: ''
+  });
+
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addWorkout(name, type, sport, distance, time);
-    setName('');
-    setType('');
-    setSport('');
-    setDistance('');
-    setTime('');
+    try {
+      const response = await fetch('http://localhost:3010/v0/activities?' , {
+        method: "POST",
+        body: JSON.stringify({
+          username: username,
+          name: name,
+          sport: sport,
+          distance: distance,
+          time: time,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      if (response.status === 200) {
+        setShowSuccessMessage(true);
+        setState({ name: "", type: "", sport: "", distance: "", time: "" });
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 10000);        
+      } else {
+        const data = await response.json();
+        setErrorMessage(data.message);
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 10000);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage('An error occurred. Please try again.');
+  
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 10000);
+    }
   };
+  
+  
+
 
   return (
     <form onSubmit={handleSubmit}>
-      <TextField
-        label="Name"
+      <label htmlFor="name">Name</label>
+      <input
+        id="name"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => setState(prevState => ({...prevState, name: e.target.value}))}
         required
       />
-      <TextField
-        label="Type"
+      <label htmlFor="type">Type</label>
+      <input
+        id="type"
         value={type}
-        onChange={(e) => setType(e.target.value)}
+        onChange={(e) => setState(prevState => ({...prevState, type: e.target.value}))}
       />
-      <TextField
-        label="Sport"
+      <label htmlFor="sport">Sport</label>
+      <input
+        id="sport"
         value={sport}
-        onChange={(e) => setSport(e.target.value)}
+        onChange={(e) => setState(prevState => ({...prevState, sport: e.target.value}))}
       />
-      <TextField
-        label="Distance"
+      <label htmlFor="distance" style={{ marginBottom: 8 }}>Distance (mile)</label>
+      <input
+        id="distance"
         value={distance}
-        onChange={(e) => setDistance(e.target.value)}
+        onChange={(e) => setState(prevState => ({...prevState, distance: e.target.value}))}
         type="number"
+        style={{ marginBottom: 16 }}
       />
-      <TextField
-        label="Time"
+      <label htmlFor="time" style={{ marginBottom: 8 }}>Time (min)</label>
+      <input
+        id="time"
         value={time}
-        onChange={(e) => setTime(e.target.value)}
+        onChange={(e) => setState(prevState => ({...prevState, time: e.target.value}))}
         type="number"
+        style={{ marginBottom: 16 }}
       />
-      <Button type="submit">Add Workout</Button>
+      <button type="submit">Add Workout</button>
+      {showSuccessMessage && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 10,
+            right: 10,
+            backgroundColor: 'green',
+            color: 'white',
+            padding: 10,
+            borderRadius: 5,
+            boxShadow: '2px 2px 2px rgba(0, 0, 0, 0.25)',
+            zIndex: 9999
+          }}
+        >
+          Workout added successfully!
+        </div>
+      )}
+      {errorMessage && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 10,
+            right: 10,
+            backgroundColor: 'red',
+            color: 'white',
+            padding: 10,
+            borderRadius: 5,
+            boxShadow: '2px 2px 2px rgba(0, 0, 0, 0.25)',
+            zIndex: 9999
+          }}
+        >
+          {errorMessage}
+        </div>                  
+      )}
     </form>
   );
 }

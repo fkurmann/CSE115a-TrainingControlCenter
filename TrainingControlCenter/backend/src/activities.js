@@ -5,7 +5,7 @@ const dbActivities = require('../db/dbActivities');
 exports.addActivity = async (req, res) => {
   let {username, name, type, sport, distance, time} = req.body;
 
-  // Checks that values are not defaults, it they are, replacaed with null
+  // Checks that values are not defaults, if they are, replace with null
   if (username === 'string') {
     res.status(401).send('Error, need a username');
     return;
@@ -20,16 +20,11 @@ exports.addActivity = async (req, res) => {
   if (sport === 'string') {
     sport = null;
   }
-  if (distance === 0) {
-    distance = null;
-  }
-  if (time === 0) {
-    time = null;
-  }
 
   // Add activity metadata to JSON in format similar to strava activity jsons
   const activityJson = {
-
+    distance: distance || undefined,
+    time: time || undefined
   }
 
   const returnValue = await dbActivities.createActivity(username, name, sport, activityJson);
@@ -38,9 +33,8 @@ exports.addActivity = async (req, res) => {
     res.status(401).send('Error adding activity');
   } else {
     // On success return 200
-    res.status(200).send(name);
+    res.status(200).send(`Activity "${name}" added successfully for user "${username}".`);
   }
-
 };
 
 
