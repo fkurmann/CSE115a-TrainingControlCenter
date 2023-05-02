@@ -12,7 +12,7 @@ export default function Settings() {
 
       </ResponsiveAppBar>
     
-    <Grid container spacing={2}>
+    <Grid container spacing={12}>
     <Grid xs={6}>
         <h1>Favorites</h1>
         <Favorites></Favorites>

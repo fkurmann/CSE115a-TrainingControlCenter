@@ -14,14 +14,14 @@ import Divider from '@mui/material/Divider';
 export default function Favorites() {
   const user = localStorage.getItem('user');
   const [addFav, setAddFav] = React.useState({username: user, sport: ''});
-  const [myFavorites, setMyFavorites] = React.useState(JSON.parse(localStorage.getItem('favorites')) || []);
+  const [myFavorites, setMyFavorites] = React.useState(localStorage.getItem('favorites') === null ? [] : JSON.parse(localStorage.getItem('favorites')));
   const [myShownFavorites, setMyShownFavorites] = React.useState(myFavorites);
  
   
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let sport = addFav.sport;
+    const sport = addFav.sport;
     setAddFav({...addFav, sport: ''});
     if(sport === ''){
       return;
@@ -38,8 +38,7 @@ export default function Favorites() {
     setMyFavorites(myFavs);
     setMyShownFavorites([ ...myShownFavorites, sport]);
     localStorage.setItem('favorites', JSON.stringify(myFavs));
-    /*
-    fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams(addFav), {
+    fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: sport}), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,19 +58,16 @@ export default function Favorites() {
         setMyShownFavorites(myShownFavs);
         localStorage.setItem('favorites', JSON.stringify(myFavs));
       });
-    */
   }
 
   const handleDelete = (sport) => {
     if(!myFavorites.includes(sport)){
       return;
     }
-    const deleteFav = {username: user, sport: sport};
     const myFavs = myFavorites.filter((favSport) => favSport !== sport);
     setMyFavorites(myFavs);
     localStorage.setItem('favorites', JSON.stringify(myFavs));
-    /*
-    fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams(deleteFav), {
+    fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: sport}), {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -89,7 +85,6 @@ export default function Favorites() {
         setMyFavorites(myFavs);
         localStorage.setItem('favorites', JSON.stringify(myFavs));
       });
-    */
   }
 
   const handleReadd = (sport) => {
@@ -99,7 +94,6 @@ export default function Favorites() {
     const myFavs = [ ...myFavorites, sport];
     setMyFavorites(myFavs);
     localStorage.setItem('favorites', JSON.stringify(myFavs));
-    /*
     fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: sport}), {
       method: 'POST',
       headers: {
@@ -118,12 +112,11 @@ export default function Favorites() {
         setMyFavorites(myFavs);
         localStorage.setItem('favorites', JSON.stringify(myFavs));
       });
-    */
   }
 
   return (
     <>
-    <List sx={{ width: '100%', maxWidth: 222}}>
+    <List sx={{ width: '100%', maxWidth: 500}}>
       {myShownFavorites.map((sport) => (
         <div key={sport}>
         <ListItem disablePadding>
