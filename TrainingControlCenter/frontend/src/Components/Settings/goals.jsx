@@ -14,6 +14,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
@@ -46,10 +47,12 @@ export default function Goals() {
   const [openAddGoal, setOpenAddGoal] = React.useState(false);
   const [addGoal, setAddGoal] = React.useState({username: user, name: '', type: '', sport: '', distance: '', time: ''});
   const [anchorElGoal, setAnchorElGoal] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     if(!myGoals || myGoals.length === 0){
       console.log('Loading goals');
+      setIsLoading(true);
       fetch('http://localhost:3010/v0/goals?' + new URLSearchParams({username: user}), {
         method: 'GET',
         headers: {
@@ -66,13 +69,14 @@ export default function Goals() {
           if(res.length > 0){
             localStorage.setItem('goals', JSON.stringify(res));
             setMyGoals(res);
+            setIsLoading(false);
           }
         })
         .catch((err) => {
           alert(`Error retrieving goals for user ${user}`);
         });
     }
-  });
+  }, [user, myGoals, isLoading]);
 
   React.useEffect(() => {
     console.log('useEffect() goal categories');
@@ -210,6 +214,10 @@ export default function Goals() {
 
   return (
     <>
+    {
+    isLoading ?
+    <CircularProgress /> :
+    <>
     <List sx={{ width: '100%', maxWidth: 500}}>
       {goalCategories.map((sport) => (
         <Box key={sport}>
@@ -284,6 +292,8 @@ export default function Goals() {
       ))}
     </List>
     <Button onClick={() => handleOpenAddGoal()}>Add Goal</Button>
+    </>
+    }
     <Modal
       open={openAddGoal}
       onClose={handleCloseAddGoal}
