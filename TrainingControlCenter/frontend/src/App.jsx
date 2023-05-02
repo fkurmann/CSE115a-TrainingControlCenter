@@ -21,9 +21,9 @@ export default function App() {
     <Routes>
       <Route path='/'
         element={
-          <AuthenticatedRoute>
+          // <AuthenticatedRoute>
             <Home />
-          </AuthenticatedRoute>
+          // </AuthenticatedRoute>
         }
       />
       <Route path='/settings'
