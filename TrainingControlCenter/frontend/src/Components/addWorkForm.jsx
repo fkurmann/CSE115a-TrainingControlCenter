@@ -1,4 +1,12 @@
 import React, { useState } from 'react';
+import {
+  TextField,
+  Button,
+  //Typography,
+  Snackbar,
+  Alert,
+  Box,
+} from '@mui/material';
 
 const username = localStorage.getItem('user');
 
@@ -58,81 +66,93 @@ export default function AddWorkoutForm() {
     }
   };
   
-  
-
-
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="name">Name</label>
-      <input
-        id="name"
-        value={name}
-        onChange={(e) => setState(prevState => ({...prevState, name: e.target.value}))}
-        required
-      />
-      <label htmlFor="type">Type</label>
-      <input
-        id="type"
-        value={type}
-        onChange={(e) => setState(prevState => ({...prevState, type: e.target.value}))}
-      />
-      <label htmlFor="sport">Sport</label>
-      <input
-        id="sport"
-        value={sport}
-        onChange={(e) => setState(prevState => ({...prevState, sport: e.target.value}))}
-      />
-      <label htmlFor="distance" style={{ marginBottom: 8 }}>Distance (mile)</label>
-      <input
-        id="distance"
-        value={distance}
-        onChange={(e) => setState(prevState => ({...prevState, distance: e.target.value}))}
-        type="number"
-        style={{ marginBottom: 16 }}
-      />
-      <label htmlFor="time" style={{ marginBottom: 8 }}>Time (min)</label>
-      <input
-        id="time"
-        value={time}
-        onChange={(e) => setState(prevState => ({...prevState, time: e.target.value}))}
-        type="number"
-        style={{ marginBottom: 16 }}
-      />
-      <button type="submit">Add Workout</button>
-      {showSuccessMessage && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-            backgroundColor: 'green',
-            color: 'white',
-            padding: 10,
-            borderRadius: 5,
-            boxShadow: '2px 2px 2px rgba(0, 0, 0, 0.25)',
-            zIndex: 9999
-          }}
+    <>
+      {/* <Typography variant="h4" gutterBottom>
+        Log a Workout
+      </Typography> */}
+      <h2>Log a Workout</h2>
+      <form onSubmit={handleSubmit}>
+        <Box mb={2}>
+          <TextField
+            id="name"
+            label="Name"
+            value={name}
+            onChange={(e) =>
+              setState((prevState) => ({ ...prevState, name: e.target.value }))
+            }
+            required
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            id="type"
+            label="Type"
+            value={type}
+            onChange={(e) =>
+              setState((prevState) => ({ ...prevState, type: e.target.value }))
+            }
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            id="sport"
+            label="Sport"
+            value={sport}
+            onChange={(e) =>
+              setState((prevState) => ({ ...prevState, sport: e.target.value }))
+            }
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            id="distance"
+            label="Distance (mile)"
+            value={distance}
+            onChange={(e) =>
+              setState((prevState) => ({
+                ...prevState,
+                distance: e.target.value,
+              }))
+            }
+            type="number"
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            id="time"
+            label="Time (min)"
+            value={time}
+            onChange={(e) =>
+              setState((prevState) => ({ ...prevState, time: e.target.value }))
+            }
+            type="number"
+          />
+        </Box>
+        <Button variant="contained" color="primary" type="submit">
+          Add Workout
+        </Button>
+        <Snackbar
+          open={showSuccessMessage}
+          autoHideDuration={10000}
+          onClose={() => setShowSuccessMessage(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          Workout added successfully!
-        </div>
-      )}
-      {errorMessage && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-            backgroundColor: 'red',
-            color: 'white',
-            padding: 10,
-            borderRadius: 5,
-            boxShadow: '2px 2px 2px rgba(0, 0, 0, 0.25)',
-            zIndex: 9999
-          }}
+          <Alert severity="success" onClose={() => setShowSuccessMessage(false)}>
+            Workout added successfully!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={!!errorMessage}
+          autoHideDuration={10000}
+          onClose={() => setErrorMessage('')}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          {errorMessage}
-        </div>                  
-      )}
-    </form>
+          <Alert severity="error" onClose={() => setErrorMessage('')}>
+            {errorMessage}
+          </Alert>
+        </Snackbar>
+      </form>
+    </>
   );
 }
