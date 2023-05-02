@@ -1,9 +1,11 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
 
+import { getFiveActivities } from './stravaData';
 import ResponsiveAppBar from './appBar';
 import Workouts from './workouts';
-import { Button } from 'react-bootstrap';
-import { getFiveActivities } from './stravaData';
+import AddWorkForm from './addWorkForm';
+
 
 export default function Home() {
   return (
@@ -16,6 +18,9 @@ export default function Home() {
     <Button
       onClick={() => getFiveActivities()}>Upload Activities From Strava!
     </Button>
+
+    <AddWorkForm />
     </>
   );
 }
+
