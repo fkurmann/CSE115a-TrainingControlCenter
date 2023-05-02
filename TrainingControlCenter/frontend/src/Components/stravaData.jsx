@@ -3,7 +3,7 @@ import React from 'react';
 
 const stravaBaseURL = 'https://www.strava.com/api/v3';
 
-export const getAllActivities = async () => {
+export async function getAllActivities() {
     const user = localStorage.getItem('user');
     const stravaAccessToken = localStorage.getItem('stravaAccessToken');
 
@@ -43,7 +43,7 @@ export const getAllActivities = async () => {
     return all_activities; // here should be uploading to DB not return.
 }
 
-export const getFiveActivities = async () => {
+export async function getFiveActivities() {
     const user = localStorage.getItem('user');
     const stravaAccessToken = localStorage.getItem('stravaAccessToken');
     var activities = [{}];
@@ -57,7 +57,7 @@ export const getFiveActivities = async () => {
             },
         });
         if (res.status === 200) {
-            activities += res
+            activities += res;
         }
     } catch (error) {
         console.error('Error fetching recent 5 activities:', error);
@@ -65,7 +65,7 @@ export const getFiveActivities = async () => {
     }
     for (let i = 0; i < activities.length; i++) {
         try {
-            const res = await axios.post('localhost:3010/activities/', {
+            const res = await axios.post('http://localhost:3010/v0/activities', {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -81,9 +81,9 @@ export const getFiveActivities = async () => {
                 continue;
             }
         } catch (error) {
-            console.error('Error posting activity', activities[i]);
+            console.error('Error posting activity', activities[i], error);
             return null;
         }
     }
-    return activities;
+    console.log("Stored activities for: ", user);
 }
