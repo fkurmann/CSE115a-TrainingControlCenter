@@ -8,18 +8,17 @@ async function uploadActivities(activities) {
     try {
       const res = await axios.post('http://localhost:3010/v0/activities',
         {
-          username: JSON.stringify(user),
+          username: user,
           name: JSON.stringify(activities[i]['id']),
-          sport: JSON.stringify(activities[i]['sport_type']),
+          sport: activities[i]['sport_type'],
           type: JSON.stringify(activities[i]['type']),
-          json: activities[i],
+          json: JSON.parse(JSON.stringify(activities[i])),
         },
         {
           headers: {
             'Content-Type': 'application/json'
           },
-        },
-      );
+        });
       if (res.status === 200) {
         continue;
       }
