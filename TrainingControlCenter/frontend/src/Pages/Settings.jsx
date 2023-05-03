@@ -1,9 +1,9 @@
 import * as React from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
 
-import ResponsiveAppBar from './appBar';
-import Favorites from './Settings/favorites';
-import Goals from './Settings/goals';
+import ResponsiveAppBar from '../Components/appBar';
+import Favorites from '../Components/Settings/favorites';
+import Goals from '../Components/Settings/goals';
 
 export default function Settings() {
   return (

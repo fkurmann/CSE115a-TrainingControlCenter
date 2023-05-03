@@ -29,6 +29,7 @@ exports.login = async (req, res) => {
 
 // Register a new user
 exports.register = async (req, res) => {
+  console.log('Registration function');
   // See if username is already taken
   const {username, password} = req.body;
   let returnValue = await dbUsers.findUser(username, null);

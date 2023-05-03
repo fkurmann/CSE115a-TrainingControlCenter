@@ -64,6 +64,30 @@ export default function Login() {
       });
   };
 
+  const handleRegister = (event) => {
+    event.preventDefault();
+    fetch('http://localhost:3010/v0/register', {
+      method: 'POST',
+      body: JSON.stringify(user),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw res;
+        }
+        return res.json();
+      })
+      .then((json) => {
+        alert('Account saved, ready to sign in');
+        
+      })
+      .catch((err) => {
+        alert('Error, please enter a unique username and password');
+      });
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Container component='main' maxWidth='xs'>
@@ -119,6 +143,14 @@ export default function Login() {
               Sign In
             </Button>
           </Box>
+          <Button onClick={handleRegister}
+              type='register'
+              fullWidth
+              variant='contained'
+              sx={{mt: 3, mb: 2}}
+            >
+              Register
+            </Button>
         </Box>
       </Container>
     </ThemeProvider>

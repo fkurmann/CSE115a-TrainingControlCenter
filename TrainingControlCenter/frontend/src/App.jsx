@@ -1,11 +1,11 @@
 import { BrowserRouter, Route, Routes, Navigate, Switch } from 'react-router-dom';
 
-import Home from './Components/Home';
-import Settings from './Components/Settings';
-import Login from './Components/auth';
-import StravaAuth from './Components/stravaAuth';
-import DataCenter from './Components/DataCenter';
-import PlanTraining from './Components/PlanTraining';
+import Home from './Pages/Home';
+import Settings from './Pages/Settings';
+import Login from './Pages/Auth';
+import StravaAuth from './Pages/stravaAuth';
+import DataCenter from './Pages/DataCenter';
+import PlanTraining from './Pages/PlanTraining';
 
 
 const AuthenticatedRoute = ({children}) => {
@@ -13,7 +13,7 @@ const AuthenticatedRoute = ({children}) => {
     return children;
   }
   return <Navigate to='/login' replace />;
-}; // Authentication to be added 
+};
 
 export default function App() {
   return (
@@ -21,9 +21,9 @@ export default function App() {
     <Routes>
       <Route path='/'
         element={
-          // <AuthenticatedRoute>
+          <AuthenticatedRoute>
             <Home />
-          // </AuthenticatedRoute>
+          </AuthenticatedRoute>
         }
       />
       <Route path='/settings'
