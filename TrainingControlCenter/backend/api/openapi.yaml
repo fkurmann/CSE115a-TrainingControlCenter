@@ -414,6 +414,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /activitiesStrava:
+    post:
+      description: New strava activity
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activity'
+      responses:
+        200:
+          description: New activity saved
+          content:
+            application/json:
+              schema:
+                type: string
+        401:
+          description: Error saving activity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /graphs:
     post:

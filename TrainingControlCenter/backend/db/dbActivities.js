@@ -14,11 +14,12 @@ const client = new MongoClient(uri, {
 // Activitiy collection functions
 
 // Response to manual entry of activity create activity
-exports.createActivity = async (username, name, sport, json) => {
+exports.createActivity = async (username, name, type, sport, json) => {
   // Credentials into object
   const activitySkeleton = {
     username: username,
     name: name,
+    type: type,
     sport: sport,
     json: json
   }
