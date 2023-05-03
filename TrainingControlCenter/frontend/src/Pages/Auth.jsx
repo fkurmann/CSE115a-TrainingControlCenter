@@ -90,8 +90,8 @@ export default function Login() {
 
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Container component='main' maxWidth='xs'>
-        <CssBaseline />
         <Box
           sx={{
             marginTop: 8,
@@ -150,7 +150,7 @@ export default function Login() {
               sx={{mt: 3, mb: 2}}
             >
               Register
-            </Button>
+          </Button>
         </Box>
       </Container>
     </ThemeProvider>

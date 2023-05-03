@@ -39,17 +39,20 @@ exports.addActivity = async (req, res) => {
   }
 };
 
-
-
 // Strava upload activities
 // TODO
 
-// Delete activity from user's goals TODO check for goals with same name, existence, 
+// Delete activity from user's activities, either one if name is given or all
 exports.deleteActivity = async (req, res) => {
   const username = req.query.username;
   const name = req.query.name;
+  if (name != undefined) {
+    returnValue = await dbActivities.deleteActivity(username, name);
+  }
+  else {
+    returnValue = await dbActivities.clearActivities(username);
+  }
     
-  returnValue = await dbActivities.deleteActivity(username, name);
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error deleting activity');

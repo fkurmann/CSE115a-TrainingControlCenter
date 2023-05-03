@@ -399,7 +399,6 @@ paths:
       - name: name
         in: query
         description: Name of activity
-        required: true
         schema:
           type: string
       responses:

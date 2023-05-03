@@ -93,3 +93,27 @@ exports.deleteActivity = async (username, name) => {
     await client.close();
   }
 }
+
+// Delete activity (must be done by name)
+exports.clearActivities = async (username) => {
+  const parameters = {
+    username: username,
+  }
+  // Access database
+  try {
+    await client.connect();
+    const result = await client.db("TCC").collection("activities").deleteMany(parameters);
+    if (result) {
+      console.log(`Deleted all user: ${username}'s activities`);
+      await client.close();
+      return 0;
+    } else {
+      console.log(`Error during deleting of activities`);
+      await client.close();
+      return -1;
+    }
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
