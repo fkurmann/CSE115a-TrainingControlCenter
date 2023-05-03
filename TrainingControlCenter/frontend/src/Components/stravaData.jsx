@@ -6,7 +6,7 @@ async function uploadActivities(activities) {
   const user = localStorage.getItem('user');
   for (let i = 0; i < activities.length; i++) {
     try {
-      const res = await axios.post('http://localhost:3010/v0/activities',
+      const res = await axios.post('http://localhost:3010/v0/activitiesStrava',
         {
           username: user,
           name: JSON.stringify(activities[i]['id']),
