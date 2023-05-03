@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ResponsiveAppBar from './appBar';
+import ResponsiveAppBar from '../Components/appBar';
 
 export default function PlanTraining() {
   return (

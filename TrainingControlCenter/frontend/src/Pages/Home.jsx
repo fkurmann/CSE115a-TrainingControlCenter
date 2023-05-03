@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
-import { getFiveActivities } from './stravaData';
-import ResponsiveAppBar from './appBar';
-import Workouts from './workouts';
-import AddWorkForm from './addWorkForm';
+import { getFiveActivities } from '../Components/stravaData';
+import ResponsiveAppBar from '../Components/appBar';
+import Workouts from '../Components/workouts';
+import AddWorkForm from '../Components/addWorkoutForm';
 
 
 export default function Home() {
