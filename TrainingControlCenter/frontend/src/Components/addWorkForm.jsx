@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import {
   TextField,
   Button,
-  //Typography,
   Snackbar,
   Alert,
   Box,
+  Collapse,
 } from '@mui/material';
 
 const username = localStorage.getItem('user');
@@ -19,8 +19,21 @@ export default function AddWorkoutForm() {
     time: ''
   });
 
+  // successMessage
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // additionalInfo
+  const [additionalInfo, setAdditionalInfo] = useState({
+    minDuration: '',
+    maxDuration: '',
+    minDistance: '',
+    maxDistance: '',
+    minDate: '',
+    maxDate: ''
+  });
+
+  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,9 +81,6 @@ export default function AddWorkoutForm() {
   
   return (
     <>
-      {/* <Typography variant="h4" gutterBottom>
-        Log a Workout
-      </Typography> */}
       <h2>Log a Workout</h2>
       <form onSubmit={handleSubmit}>
         <Box mb={2}>
@@ -129,6 +139,83 @@ export default function AddWorkoutForm() {
             type="number"
           />
         </Box>
+        <Box mt={2} mb={2}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => setShowAdditionalInfo(!showAdditionalInfo)}
+          >
+            {showAdditionalInfo ? 'Hide' : 'Add'} Additional Info
+          </Button>
+        </Box>
+        <Collapse in={showAdditionalInfo}>
+          <Box mb={2}>
+            <TextField
+              id="minDuration"
+              label="The minimum duration of an activity, seconds"
+              value={additionalInfo.minDuration}
+              style={{ width: "20%" }}
+              onChange={(e) =>
+                setAdditionalInfo((prevState) => ({ ...prevState, minDuration: e.target.value }))
+              }
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              id="maxDuration"
+              label="The maximum duration of an activity, seconds"
+              value={additionalInfo.maxDuration}
+              style={{ width: "20%" }}
+              onChange={(e) =>
+                setAdditionalInfo((prevState) => ({ ...prevState, maxDuration: e.target.value }))
+              }
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              id="minDistance"
+              label="The minimum distance of an activity"
+              value={additionalInfo.minDistance}
+              style={{ width: "20%" }}
+              onChange={(e) =>
+                setAdditionalInfo((prevState) => ({ ...prevState, minDistance: e.target.value }))
+              }
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              id="maxDistance"
+              label="The maximum distance of an activity"
+              value={additionalInfo.maxDistance}
+              style={{ width: "20%" }}
+              onChange={(e) =>
+                setAdditionalInfo((prevState) => ({ ...prevState, maxDistance: e.target.value }))
+              }
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              id="minDate"
+              label="minDate"
+              value={additionalInfo.minDate}
+              style={{ width: "20%" }}
+              onChange={(e) =>
+                setAdditionalInfo((prevState) => ({ ...prevState, minDate: e.target.value }))
+              }
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              id="maxDate"
+              label="maxDate"
+              value={additionalInfo.maxDate}
+              style={{ width: "20%" }}
+              onChange={(e) =>
+                setAdditionalInfo((prevState) => ({ ...prevState, maxDate: e.target.value }))
+              }
+            />
+          </Box>          
+        </Collapse>
         <Button variant="contained" color="primary" type="submit">
           Add Workout
         </Button>
