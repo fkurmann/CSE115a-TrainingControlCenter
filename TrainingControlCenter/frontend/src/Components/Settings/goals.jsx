@@ -40,17 +40,21 @@ export default function Goals() {
   };
   const [openSport, setOpenSport] = React.useState([]);
   const [openGoal, setOpenGoal] = React.useState([]);
-  // const [myGoals, setMyGoals] = React.useState(localStorage.getItem('goals') === null ? [] : JSON.parse(localStorage.getItem('goals')));
-  const [myGoals, setMyGoals] = React.useState([]);
+  const [myGoals, setMyGoals] = React.useState(localStorage.getItem('goals') === null ? null : JSON.parse(localStorage.getItem('goals')));
+  // const [myGoals, setMyGoals] = React.useState(null);
   const [goalsByCategory, setGoalsByCategory] = React.useState({});
   const [goalCategories, setGoalCategories] = React.useState([]);
   const [openAddGoal, setOpenAddGoal] = React.useState(false);
   const [addGoal, setAddGoal] = React.useState({username: user, name: '', type: '', sport: '', distance: '', time: ''});
+  const [editedGoal, setEditedGoal] = React.useState({});
   const [anchorElGoal, setAnchorElGoal] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [goalToAdd, setGoalToAdd] = React.useState({});
+  const [goalToDelete, setGoalToDelete] = React.useState({});
 
+  // Initializes myGoals
   React.useEffect(() => {
-    if(!myGoals || myGoals.length === 0){
+    if(!myGoals){
       console.log('Loading goals');
       setIsLoading(true);
       fetch('http://localhost:3010/v0/goals?' + new URLSearchParams({username: user}), {
@@ -66,7 +70,8 @@ export default function Goals() {
           return res.json();
         })
         .then((res) => {
-          if(res.length > 0){
+          if(res){
+            console.log('Loaded goals');
             localStorage.setItem('goals', JSON.stringify(res));
             setMyGoals(res);
             setIsLoading(false);
@@ -76,85 +81,82 @@ export default function Goals() {
           alert(`Error retrieving goals for user ${user}`);
         });
     }
+    else{
+      setIsLoading(false);
+    }
   }, [user, myGoals, isLoading]);
 
+  // Updates localStorage whenever myGoals is updated
   React.useEffect(() => {
-    console.log('useEffect() goal categories');
+    localStorage.setItem('goals', JSON.stringify(myGoals));
+  }, [myGoals]);
+
+  // Updates goalsByCategory and goalCategories whenever myGoals is updated
+  React.useEffect(() => {
+    console.log('useEffect() goals');
     if(myGoals){
+      let goals = {};
       myGoals.forEach((goal) => {
-        let temp = goalsByCategory;
         let sport = goal.sport ? goal.sport : misc;
-        if(!(sport in temp)){
-          temp[sport] = [];
-          setGoalsByCategory(temp);
+        if(!(sport in goals)){
+          goals[sport] = [];
         }
-        if(!temp[sport].find(g => g.name === goal.name)){
-          temp[sport].push(goal);
-          setGoalsByCategory(temp);
-        }
+        goals[sport].push(goal);
       });
-      let goalCats = Object.keys(goalsByCategory);
-      if(goalCats.join(',') !== goalCategories.join(',')){
+
+      let eq = true;
+      const goals2 = goalsByCategory;
+      Object.keys(goals).forEach((sport) => {
+        if (!(sport in goals2)){
+          eq = false;
+        }
+        else{
+          goals[sport].forEach((goal) => {
+            if(!(goals2[sport].find(g => g.name === goal.name))){
+              eq = false;
+            }
+          })
+        }
+      })
+      Object.keys(goals2).forEach((sport) => {
+        if (!(sport in goals)){
+          eq = false;
+        }
+        else{
+          goals2[sport].forEach((goal) => {
+            if(!(goals[sport].find(g => g.name === goal.name))){
+              eq = false;
+            }
+          })
+        }
+      })
+      
+      if(!eq){
+        console.log('not equal!');
+        console.log(goals);
+        setGoalsByCategory(goals);
+      }
+      const goalCats = Object.keys(goals);
+      if(JSON.stringify(goalCats) !== JSON.stringify(goalCategories)){
         setGoalCategories(goalCats);
       }
     }
   }, [myGoals, goalsByCategory, goalCategories]);
   
-  const handleClickSport = (sport) => {
-    if(openSport.includes(sport)){
-      setOpenSport(openSport.filter((a) => a !== sport));
-    }
-    else{
-      // setOpenSport([ ...open, sport]);
-      setOpenSport([sport]);
-    }
-  }
-
-  const handleClickGoal = (goalName) => {
-    if(openGoal.includes(goalName)){
-      setOpenGoal(openGoal.filter((a) => a !== goalName));
-    }
-    else{
-      setOpenGoal([goalName]);
-    }
-  }
-
-  const handleOpenAddGoal = () => setOpenAddGoal(true);
-  const handleCloseAddGoal = () => setOpenAddGoal(false);
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let goal = addGoal;
-    console.log(`Trying to add goal: ${goal}`);
-    setAddGoal({username: user, name: '', type: '', sport: '', distance: '', time: ''});
-    if(!goal.name || goal.name === ''){
+  // Adds goal whenever goalToAdd is set
+  React.useEffect(() => {
+    if(!('name' in goalToAdd)){
       return;
     }
-    if(goal.type === ''){
-      delete goal.type;
-    }
-    if(goal.sport === ''){
-      delete goal.sport;
-    }
-    if(goal.distance === ''){
-      delete goal.distance;
-    }
-    if(goal.time === ''){
-      delete goal.time;
-    }
-    const sport = 'sport' in goal ? goal.sport : misc;
-    let temp = goalsByCategory;
-    if(!(sport in temp)){
-      temp[sport] = [];
-      setGoalsByCategory(temp);
-    }
-    if(!((temp[sport].find(g => g.name === goal.name)))){
-      temp[sport].push(goal);
-      setGoalsByCategory(temp);
-    }
-    let goalCats = Object.keys(goalsByCategory);
-    if(goalCats.join(',') !== goalCategories.join(',')){
-      setGoalCategories(goalCats);
-    }
+    let goal = goalToAdd;
+    setGoalToAdd({});
+    console.log(`Trying to add goal: ${goal.name}`);
+    if(goal.type === '') delete goal.type;
+    if(goal.sport === '') delete goal.sport;
+    if(goal.distance === '') delete goal.distance;
+    if(goal.time === '') delete goal.time;
+    setMyGoals([...myGoals, goal]);
+
     fetch('http://localhost:3010/v0/goals', {
       method: 'POST',
       body: JSON.stringify(goal),
@@ -167,27 +169,30 @@ export default function Goals() {
           throw res;
         }
         console.log(`Added ${goal.name} to goals`);
-        setMyGoals([...myGoals, goal]);
-        localStorage.setItem('goals', myGoals);
       })
       .catch((err) => {
         alert(`Error adding goal ${goal.name}`);
       });
-  }
+  }, [myGoals, goalToAdd]);
 
-  // TODO: Deleting goals with names containing spaces doesn't work
-  const handleDelete = (goal) => {
-    handleCloseGoalMenu();
-    if(!myGoals.find(g => g.name === goal.name)){
+  // Deletes goal whenever goalToDelete is set
+  React.useEffect(() => {
+    if('name' in goalToAdd){
+      console.log(`Can't delete rn, currently adding a goal`);
       return;
     }
-    const goals = myGoals.filter((g) => g.name !== goal.name);
-    setMyGoals(goals);
-    localStorage.setItem('goals', JSON.stringify(goals));
-    const sport = 'sport' in goal ? goal.sport : misc;
-    let temp = goalsByCategory;
-    temp[sport] = temp[sport].filter((g) => g.name !== goal.name);
-    setGoalsByCategory(temp);
+    if(!('name' in goalToDelete)){
+      return;
+    }
+    const goal = goalToDelete;
+    setGoalToDelete({});
+    if(!myGoals.find(g => g.name === goal.name)){
+      console.log(`Not deleting goal ${goal.name}, not found`);
+      return;
+    }
+    if(anchorElGoal !== null) setAnchorElGoal(null);
+    setMyGoals(myGoals.filter((g) => g.name !== goal.name));
+
     fetch('http://localhost:3010/v0/goals?' + new URLSearchParams({username: user, name: goal.name}), {
       method: 'DELETE',
       headers: {
@@ -203,14 +208,64 @@ export default function Goals() {
       .catch((err) => {
         alert(`Error deleting goal ${goal.name}. Uh-oh.`);
       });
+
+  }, [user, myGoals, goalToDelete, goalToAdd, anchorElGoal]);
+  
+  // Called when user submits the modal
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const goal = addGoal;
+    if(!goal.name || goal.name === ''){
+      return;
+    }
+    if(JSON.stringify(goal) === JSON.stringify(editedGoal)){
+      console.log('Goal was not edited');
+      return;
+    }
+    else if(editedGoal.username){
+      console.log('Goal was edited, deleting old goal');
+      const oldGoal = editedGoal;
+      setEditedGoal({});
+      setGoalToDelete(oldGoal);
+      await new Promise(r => setTimeout(r, 3000));
+    }
+    setGoalToAdd(goal);
   }
 
-  const handleOpenGoalMenu = (event) => {
-    setAnchorElGoal(event.currentTarget);
+  // Called when user clicks edit option
+  const handleEdit = (goal) => {
+    if(!goal.type) goal.type = '';
+    if(!goal.sport) goal.sport = '';
+    if(!goal.distance) goal.distance = '';
+    if(!goal.time) goal.time = '';
+    setEditedGoal(goal);
+    setAddGoal(goal);
+    handleOpenAddGoal();
   }
-  const handleCloseGoalMenu = (event) => {
-    setAnchorElGoal(null);
+  const handleClickSport = (sport) => {
+    if(openSport.includes(sport)){
+      setOpenSport(openSport.filter((a) => a !== sport));
+    }
+    else{
+      // setOpenSport([ ...open, sport]);
+      setOpenSport([sport]);
+    }
   }
+  const handleClickGoal = (goalName) => {
+    if(openGoal.includes(goalName)){
+      setOpenGoal(openGoal.filter((a) => a !== goalName));
+    }
+    else{
+      setOpenGoal([goalName]);
+    }
+  }
+  const handleOpenAddGoal = () => setOpenAddGoal(true);
+  const handleCloseAddGoal = () => {
+    setOpenAddGoal(false);
+    setEditedGoal({});
+  }
+  const handleOpenGoalMenu = (event) => setAnchorElGoal(event.currentTarget);
+  const handleCloseGoalMenu = () => setAnchorElGoal(null);
 
   return (
     <>
@@ -278,8 +333,8 @@ export default function Goals() {
                           open={Boolean(anchorElGoal)}
                           onClose={handleCloseGoalMenu}
                         >
-                          <MenuItem component='a' onClick={handleCloseGoalMenu}>Edit</MenuItem>
-                          <MenuItem component='a' onClick={() => handleDelete(goal)}>Delete</MenuItem>
+                          <MenuItem component='a' onClick={() => handleEdit(goal)}>Edit</MenuItem>
+                          <MenuItem component='a' onClick={() => setGoalToDelete(goal)}>Delete</MenuItem>
                         </Menu>
                       </Box>
                   </Collapse>
