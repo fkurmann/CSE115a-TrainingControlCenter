@@ -1,3 +1,5 @@
+//import activityTypes from './Types/activityTypes';
+
 import React, { useState } from 'react';
 import {
   TextField,
@@ -6,6 +8,9 @@ import {
   Alert,
   Box,
   Collapse,
+  MenuItem, 
+  Select, 
+  InputLabel
 } from '@mui/material';
 
 const username = localStorage.getItem('user');
@@ -43,9 +48,16 @@ export default function AddWorkoutForm() {
         body: JSON.stringify({
           username: username,
           name: name,
+          type: type, 
           sport: sport,
           distance: distance,
           time: time,
+          minDuration: additionalInfo.minDuration,
+          maxDuration: additionalInfo.maxDuration,
+          minDistance: additionalInfo.minDistance,
+          maxDistance: additionalInfo.maxDistance,
+          minDate: additionalInfo.minDate,
+          maxDate: additionalInfo.maxDate
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -79,6 +91,107 @@ export default function AddWorkoutForm() {
     }
   };
   
+  // get activity types
+  const getActivityTypes = () => {
+    const activityTypes = [
+        "AlpineSki",
+        "BackcountrySki",
+        "Canoeing",
+        "Crossfit",
+        "EBikeRide",
+        "Elliptical",
+        "Golf",
+        "Handcycle",
+        "Hike",
+        "IceSkate",
+        "InlineSkate",
+        "Kayaking",
+        "Kitesurf",
+        "NordicSki",
+        "Ride",
+        "RockClimbing",
+        "RollerSki",
+        "Rowing",
+        "Run",
+        "Sail",
+        "Skateboard",
+        "Snowboard",
+        "Snowshoe",
+        "Soccer",
+        "StairStepper",
+        "StandUpPaddling",
+        "Surfing",
+        "Swim",
+        "Velomobile",
+        "VirtualRide",
+        "VirtualRun",
+        "Walk",
+        "WeightTraining",
+        "Wheelchair",
+        "Windsurf",
+        "Workout",
+        "Yoga",
+      ];
+  
+    return activityTypes;
+  };
+
+  // get sport types
+  const getSportTypes = () => {
+    const activityTypes = [
+      "Canoeing",
+      "Crossfit",
+      "EBikeRide",
+      "Elliptical",
+      "EMountainBikeRide",
+      "Golf",
+      "GravelRide",
+      "Handcycle",
+      "HighIntensityIntervalTraining",
+      "Hike",
+      "IceSkate",
+      "InlineSkate",
+      "Kayaking",
+      "Kitesurf",
+      "MountainBikeRide",
+      "NordicSki",
+      "Pickleball",
+      "Pilates",
+      "Racquetball",
+      "Ride",
+      "RockClimbing",
+      "RollerSki",
+      "Rowing",
+      "Run",
+      "Sail",
+      "Skateboard",
+      "Snowboard",
+      "Snowshoe",
+      "Soccer",
+      "Squash",
+      "StairStepper",
+      "StandUpPaddling",
+      "Surfing",
+      "Swim",
+      "TableTennis",
+      "Tennis",
+      "TrailRun",
+      "Velomobile",
+      "VirtualRide",
+      "VirtualRow",
+      "VirtualRun",
+      "Walk",
+      "WeightTraining",
+      "Wheelchair",
+      "Windsurf",
+      "Workout",
+      "Yoga"
+    ];
+  
+    return activityTypes;
+  };
+  
+
   return (
     <>
       <h2>Log a Workout</h2>
@@ -87,6 +200,7 @@ export default function AddWorkoutForm() {
           <TextField
             id="name"
             label="Name"
+            helperText="Name of activity"
             value={name}
             onChange={(e) =>
               setState((prevState) => ({ ...prevState, name: e.target.value }))
@@ -95,24 +209,40 @@ export default function AddWorkoutForm() {
           />
         </Box>
         <Box mb={2}>
-          <TextField
+          <InputLabel id="activity type">Type</InputLabel>
+          <Select
+            labelId="activity type"
             id="type"
-            label="Type"
             value={type}
             onChange={(e) =>
               setState((prevState) => ({ ...prevState, type: e.target.value }))
             }
-          />
+            fullWidth
+          >
+            {getActivityTypes().map((activityType) => (
+              <MenuItem key={activityType} value={activityType}>
+                {activityType}
+              </MenuItem>
+            ))}
+          </Select>
         </Box>
         <Box mb={2}>
-          <TextField
+          <InputLabel id="sport type">Type</InputLabel>
+          <Select
+            labelId="sport type"
             id="sport"
-            label="Sport"
             value={sport}
             onChange={(e) =>
               setState((prevState) => ({ ...prevState, sport: e.target.value }))
             }
-          />
+            fullWidth
+          >
+            {getSportTypes().map((sportType) => (
+              <MenuItem key={sportType} value={sportType}>
+                {sportType}
+              </MenuItem>
+            ))}
+          </Select>
         </Box>
         <Box mb={2}>
           <TextField
@@ -154,7 +284,8 @@ export default function AddWorkoutForm() {
               id="minDuration"
               label="The minimum duration of an activity, seconds"
               value={additionalInfo.minDuration}
-              style={{ width: "20%" }}
+              //style={{ width: "30%" }}
+              fullWidth
               onChange={(e) =>
                 setAdditionalInfo((prevState) => ({ ...prevState, minDuration: e.target.value }))
               }
