@@ -18,6 +18,10 @@ exports.addActivity = async (req, res) => {
     res.status(401).send('Error, need an activity type');
     return;
   }
+  if (typeof sport !== 'undefined' && time < 0) {
+    res.status(401).send('Error, need an sport type');
+    return;
+  }  
   if (typeof distance !== 'undefined' && distance < 0) {
     res.status(401).send('Error, distance cannot be negative');
     return;
