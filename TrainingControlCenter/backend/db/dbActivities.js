@@ -14,11 +14,12 @@ const client = new MongoClient(uri, {
 // Activitiy collection functions
 
 // Response to manual entry of activity create activity
-exports.createActivity = async (username, name, sport, json) => {
+exports.createActivity = async (username, name, type, sport, json) => {
   // Credentials into object
   const activitySkeleton = {
     username: username,
     name: name,
+    type: type,
     sport: sport,
     json: json
   }
@@ -85,6 +86,30 @@ exports.deleteActivity = async (username, name) => {
       return 0;
     } else {
       console.log(`Error during deleting of activity`);
+      await client.close();
+      return -1;
+    }
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+
+// Delete activity (must be done by name)
+exports.clearActivities = async (username) => {
+  const parameters = {
+    username: username,
+  }
+  // Access database
+  try {
+    await client.connect();
+    const result = await client.db("TCC").collection("activities").deleteMany(parameters);
+    if (result) {
+      console.log(`Deleted all user: ${username}'s activities`);
+      await client.close();
+      return 0;
+    } else {
+      console.log(`Error during deleting of activities`);
       await client.close();
       return -1;
     }

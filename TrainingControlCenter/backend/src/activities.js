@@ -14,6 +14,10 @@ exports.addActivity = async (req, res) => {
     res.status(401).send('Error, need an activity name');
     return;
   }
+  if (type === 'string') {
+    res.status(401).send('Error, need an activity type');
+    return;
+  }
   if (typeof distance !== 'undefined' && distance < 0) {
     res.status(401).send('Error, distance cannot be negative');
     return;
@@ -29,7 +33,7 @@ exports.addActivity = async (req, res) => {
     time: time || undefined
   }
 
-  const returnValue = await dbActivities.createActivity(username, name, sport, activityJson);
+  const returnValue = await dbActivities.createActivity(username, name, type, sport, activityJson);
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error adding activity');
@@ -39,17 +43,31 @@ exports.addActivity = async (req, res) => {
   }
 };
 
-
-
 // Strava upload activities
-// TODO
+exports.addActivityStrava = async (req, res) => {
+  let {username, name, type, sport, json} = req.body;
 
-// Delete activity from user's goals TODO check for goals with same name, existence, 
+  // No checking for parameters since this is not a direct interaction with user
+  const returnValue = await dbActivities.createActivity(username, name, type, sport, json);
+  // Error case
+  if (returnValue === -1) {
+    res.status(401).send('Error adding activity');
+  } else {
+    // On success return 200
+    res.status(200).send(`Activity "${name}" added successfully for user "${username}".`);
+  }
+};
+// Delete activity from user's activities, either one if name is given or all
 exports.deleteActivity = async (req, res) => {
   const username = req.query.username;
   const name = req.query.name;
+  if (name != undefined) {
+    returnValue = await dbActivities.deleteActivity(username, name);
+  }
+  else {
+    returnValue = await dbActivities.clearActivities(username);
+  }
     
-  returnValue = await dbActivities.deleteActivity(username, name);
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error deleting activity');

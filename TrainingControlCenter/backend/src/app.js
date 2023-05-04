@@ -59,7 +59,7 @@ app.get('/v0/activities', activities.getActivities);//auth.check,
 app.post('/v0/activities', activities.addActivity);// auth.check,
 
 // Strava Entry
-//TODO
+app.post('/v0/activitiesStrava', activities.addActivityStrava);//auth.check,
 
 app.delete('/v0/activities', activities.deleteActivity);//auth.check,
 
