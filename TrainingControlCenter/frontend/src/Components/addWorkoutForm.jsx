@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TextField,
   Button,
@@ -99,19 +99,36 @@ export default function AddWorkoutForm() {
         "Social",
         "Commute"
       ];
-  
     return activityTypes;
   };
 
-  // get sport types
-  const getSportTypes = () => {
-    const activityTypes = [
-      "Favorites"
-    ];
-  
-    return activityTypes;
+  // get user favorite for sport types
+  const [favoriteSports, setFavoriteSports] = useState([]);
+
+  const fetchFavorites = async () => {
+    try {
+      const response = await fetch('http://localhost:3010/v0/favorites?' 
+                        + new URLSearchParams({username: username}));
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const favoriteSports = await response.json();
+      setFavoriteSports(favoriteSports);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage('An error occurred. Please try again.');
+
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 10000);
+    }
   };
-  
+
+  useEffect(() => {
+    fetchFavorites();
+  }, []);
 
   return (
     <>
@@ -148,23 +165,23 @@ export default function AddWorkoutForm() {
           </Select>
         </Box>
         <Box mb={2}>
-          <InputLabel id="sport type">Type</InputLabel>
-          <Select
-            labelId="sport type"
-            id="sport"
-            value={sport}
-            onChange={(e) =>
-              setState((prevState) => ({ ...prevState, sport: e.target.value }))
-            }
-            fullWidth
-          >
-            {getSportTypes().map((sportType) => (
-              <MenuItem key={sportType} value={sportType}>
-                {sportType}
-              </MenuItem>
-            ))}
-          </Select>
-        </Box>
+        <InputLabel id="sport type">Sport</InputLabel>
+        <Select
+          labelId="sport type"
+          id="sport"
+          value={sport}
+          onChange={(e) =>
+            setState((prevState) => ({ ...prevState, sport: e.target.value }))
+          }
+          fullWidth
+        >
+          {favoriteSports.map((sportType) => (
+            <MenuItem key={sportType} value={sportType}>
+              {sportType}
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
         <Box mb={2}>
           <TextField
             id="distance"
