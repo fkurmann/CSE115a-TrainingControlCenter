@@ -23,7 +23,7 @@ exports.createActivity = async (username, name, type, sport, json) => {
     sport: sport,
     json: json
   }
- 
+
   // Access database
   try {
     await client.connect();
@@ -41,13 +41,36 @@ exports.createActivity = async (username, name, type, sport, json) => {
 exports.findActivity = async (username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate) => {
   let parameters = {
   }
-  let variablesIndex = 0;
-  const variables = ['username', 'name', 'sport', 'type', 'minDuration', 'maxDuration', 'minDistance', 'maxDistance', 'minDate', 'maxDate']
-  for (item of [username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
+
+  const variables = ['username', 'name', 'sport_type', 'type', 'minDuration',
+                     'maxDuration', 'minDistance', 'maxDistance', 'minDate', 'maxDate']
+  for (const[idx, item] of [username, name, sport, type].entries()) {
     if (item != null) {
-      parameters[variables[variablesIndex]] = item;
+      parameters[variables[idx]] = item;
     }
-    variablesIndex+=1;
+  }
+  if ((minDuration != null) && (maxDuration != null)) {
+    parameters["json.moving_time"] = {$gt: minDuration, $lt: maxDuration}
+  } else if ((minDuration == null) && (maxDuration != null)) {
+    parameters["json.moving_time"] = {$lt: maxDuration}
+  } else if ((minDuration != null) && (maxDuration == null)) {
+    parameters["json.moving_time"] = {$gt: minDuration}
+  }
+
+  if ((minDistance != null) && (maxDistance != null)) {
+    parameters["json.distance"] = {$gt: minDistance, $lt: maxDistance}
+  } else if ((minDistance == null) && (maxDistance != null)) {
+    parameters["json.distance"] = {$lt: maxDistance}
+  } else if ((minDistance != null) && (maxDistance == null)) {
+    parameters["json.distance"] = {$gt: minDistance}
+  }
+
+  if ((minDate != null) && (maxDate != null)) {
+    parameters["json.start_date"] = {$gt: new Date(minDate), $lt: new Date(maxDate)}
+  } else if ((minDate == null) && (maxDate != null)) {
+    parameters["json.start_date"] = {$lt: new Date(maxDate)}
+  } else if ((minDate != null) && (maxDate == null)) {
+    parameters["json.start_date"] = {$gt: new Date(minDate)}
   }
 
   // Access database
