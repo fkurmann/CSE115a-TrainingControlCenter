@@ -42,35 +42,47 @@ exports.findActivity = async (username, name, sport, type, minDuration, maxDurat
   let parameters = {
   }
 
-  const variables = ['username', 'name', 'sport_type', 'type', 'minDuration',
-                     'maxDuration', 'minDistance', 'maxDistance', 'minDate', 'maxDate']
+  const variables = ['username', 'name', 'sport', 'type'];
   for (const[idx, item] of [username, name, sport, type].entries()) {
     if (item != null) {
       parameters[variables[idx]] = item;
     }
   }
   if ((minDuration != null) && (maxDuration != null)) {
-    parameters["json.moving_time"] = {$gt: minDuration, $lt: maxDuration}
+    parameters["json.moving_time"] = {$gte: minDuration, $lte: maxDuration};
   } else if ((minDuration == null) && (maxDuration != null)) {
-    parameters["json.moving_time"] = {$lt: maxDuration}
+    parameters["json.moving_time"] = {$lte: maxDuration};
   } else if ((minDuration != null) && (maxDuration == null)) {
-    parameters["json.moving_time"] = {$gt: minDuration}
+    parameters["json.moving_time"] = {$gte: minDuration};
   }
 
   if ((minDistance != null) && (maxDistance != null)) {
-    parameters["json.distance"] = {$gt: minDistance, $lt: maxDistance}
+    parameters["json.distance"] = {$gte: minDistance, $lte: maxDistance};
   } else if ((minDistance == null) && (maxDistance != null)) {
-    parameters["json.distance"] = {$lt: maxDistance}
+    parameters["json.distance"] = {$lte: maxDistance};
   } else if ((minDistance != null) && (maxDistance == null)) {
-    parameters["json.distance"] = {$gt: minDistance}
+    parameters["json.distance"] = {$gte: minDistance};
+  }
+
+  if (minDate != null) {
+    if (isNaN(Date.parse(minDate))) {
+      console.error(`Invalid date format '${minDate}'`);
+      return -1;
+    }
+  }
+  if (maxDate != null) {
+    if (isNaN(Date.parse(maxDate))) {
+      console.error(`Invalid date format '${maxDate}'`);
+      return -1;
+    }
   }
 
   if ((minDate != null) && (maxDate != null)) {
-    parameters["json.start_date"] = {$gt: new Date(minDate), $lt: new Date(maxDate)}
+    parameters["json.start_date"] = {$gte: new Date(minDate).toISOString(), $lte: new Date(maxDate).toISOString()};
   } else if ((minDate == null) && (maxDate != null)) {
-    parameters["json.start_date"] = {$lt: new Date(maxDate)}
+    parameters["json.start_date"] = {$lte: new Date(maxDate).toISOString()};
   } else if ((minDate != null) && (maxDate == null)) {
-    parameters["json.start_date"] = {$gt: new Date(minDate)}
+    parameters["json.start_date"] = {$gte: new Date(minDate).toISOString()};
   }
 
   // Access database
