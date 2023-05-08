@@ -4,7 +4,8 @@ const dbActivities = require('../db/dbActivities');
 // Add manual entry activity
 exports.addActivity = async (req, res) => {
   let {username, name, type, sport, distance,
-       altitude, duration, datetime, description, feelingLevel} = req.body;
+       altitude, duration, datetime, description, feelingLevel,
+       intervalCount, intervalDistance} = req.body;
 
   // Checks that values are not defaults, if they are, replace with null
   if (username === 'string') {
@@ -19,7 +20,9 @@ exports.addActivity = async (req, res) => {
     duration: duration || undefined,
     datetime: datetime || undefined,
     description: description || undefined,
-    feelingLevel: feelingLevel || undefined
+    feelingLevel: feelingLevel || undefined,
+    intervalCount: intervalCount || undefined,
+    intervalDistance: intervalDistance || undefined
   };  
   
   const returnValue = await dbActivities.createActivity(username, name, type, sport, activityJson);
@@ -84,9 +87,12 @@ exports.getActivities = async (req, res) => {
   let datetime = req.query.datetime;
   let description = req.query.description;
   let feelingLevel = req.query.feelingLevel;
+  let intervalDistance = req.query.intervalDistance;
+  let intervalCount = req.query.intervalCount;
   
   for (item of [name, sport, type, distance, altitude, 
-    duration, datetime, description, feelingLevel]) {
+    duration, datetime, description, feelingLevel,
+    intervalDistance, intervalCount]) {
     if (item == undefined) {
       item = null;
     }

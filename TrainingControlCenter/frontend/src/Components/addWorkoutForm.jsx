@@ -10,7 +10,8 @@ import {
   MenuItem, 
   Select,
   Typography,
-  Slider
+  Slider,
+  Grid
 } from '@mui/material';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -43,7 +44,10 @@ export default function AddWorkoutForm() {
     
     datetime: null,
     description: '',
-    feelingLevel: ''
+    feelingLevel: '',
+
+    intervalCount: '',
+    intervalDistance: '',
   });
 
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
@@ -68,7 +72,9 @@ export default function AddWorkoutForm() {
           duration: duration,
           datetime: additionalInfo.datetime,
           description: additionalInfo.description,
-          feelingLevel: additionalInfo.feelingLevel
+          feelingLevel: additionalInfo.feelingLevel,
+          intervalCount: additionalInfo.intervalCount,
+          intervalDistance: additionalInfo.intervalDistance
         }),        
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -83,7 +89,8 @@ export default function AddWorkoutForm() {
         setShowSuccessMessage(true);
         setState({ name: '', type: '', sport: '' });
         setAdditionalInfo({ distance: '', altitude: '', durationHours: '', durationMinutes: '', durationSeconds: '', 
-                            date: null, time: null, description: '', feelingLevel: '' });
+                            date: null, time: null, description: '', feelingLevel: '',
+                            intervalCount: '', intervalDistance: ''});
         setTimeout(() => {
           setShowSuccessMessage(false);
         }, 10000);       
@@ -252,6 +259,34 @@ export default function AddWorkoutForm() {
       </Box>
 
       <Collapse in={showAdditionalInfo}>
+      <Typography variant="h6" ml={2}>Interval</Typography>
+      <Box display="flex" alignItems="center" ml={2}>
+      <TextField
+        id="intervalCount"
+        label="Interval count"
+        value={additionalInfo.intervalCount}
+        onChange={(e) =>
+          setAdditionalInfo((prevState) => ({
+            ...prevState,
+            intervalCount: e.target.value,
+          }))
+        }
+        type="number"
+        sx={{ mr: 2 }}
+      />
+      <TextField
+        id="intervalDistance"
+        label="Interval distance (mi)"
+        value={additionalInfo.intervalDistance}
+        onChange={(e) =>
+          setAdditionalInfo((prevState) => ({
+            ...prevState,
+            intervalDistance: e.target.value,
+          }))
+        }
+        type="number"
+      />
+    </Box>    
         <Box mb={2} ml={2}>
           {/* Altitude */}
           <Typography variant="h6">Altitude (ft)</Typography>
