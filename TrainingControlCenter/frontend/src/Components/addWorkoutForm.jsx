@@ -9,15 +9,13 @@ import {
   Collapse,
   MenuItem, 
   Select,
-  Typography,
-  Slider,
-  Grid
+  Typography
 } from '@mui/material';
-
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { StaticDateTimePicker } from '@mui/x-date-pickers/StaticDateTimePicker';
-
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 const username = localStorage.getItem('user');
 
@@ -35,16 +33,10 @@ export default function AddWorkoutForm() {
   // additionalInfo
   const [additionalInfo, setAdditionalInfo] = useState({
     distance: '',
-    altitude: '',
-
     duration: null,
-    durationHours: '',
-    durationMinutes: '',
-    durationSeconds: '',
     
     datetime: null,
     description: '',
-    feelingLevel: '',
 
     intervalCount: '',
     intervalDistance: '',
@@ -55,10 +47,6 @@ export default function AddWorkoutForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const duration =
-      additionalInfo.durationHours !== '' || additionalInfo.durationMinutes !== '' || additionalInfo.durationSeconds !== ''
-        ? (additionalInfo.durationHours * 3600) + (additionalInfo.durationMinutes * 60) + additionalInfo.durationSeconds
-        : null;
     
       const response = await fetch('http://localhost:3010/v0/activities?' , {
         method: "POST",
@@ -68,11 +56,9 @@ export default function AddWorkoutForm() {
           type: type, 
           sport: sport,
           distance: additionalInfo.distance,
-          altitude: additionalInfo.altitude,
-          duration: duration,
+          duration: additionalInfo.duration,
           datetime: additionalInfo.datetime,
           description: additionalInfo.description,
-          feelingLevel: additionalInfo.feelingLevel,
           intervalCount: additionalInfo.intervalCount,
           intervalDistance: additionalInfo.intervalDistance
         }),        
@@ -88,8 +74,8 @@ export default function AddWorkoutForm() {
       if (response.status === 200) {
         setShowSuccessMessage(true);
         setState({ name: '', type: '', sport: '' });
-        setAdditionalInfo({ distance: '', altitude: '', durationHours: '', durationMinutes: '', durationSeconds: '', 
-                            date: null, time: null, description: '', feelingLevel: '',
+        setAdditionalInfo({ distance: '', duration: '', 
+                            date: null, time: null, description: '',
                             intervalCount: '', intervalDistance: ''});
         setTimeout(() => {
           setShowSuccessMessage(false);
@@ -146,7 +132,6 @@ export default function AddWorkoutForm() {
       }, 10000);
     }
   };
-
   useEffect(() => {
     fetchFavorites();
   }, []);
@@ -225,24 +210,15 @@ export default function AddWorkoutForm() {
         </Box>
         {/* Duration */}
         <Box mb={2} ml={2}>
-          <Typography variant="h6">Duration (hh:mm:ss)</Typography>
+          <Typography variant="h6">Duration (minutes)</Typography>
           <TextField
             id="duration"
-            value={`${String(additionalInfo.durationHours).padStart(2, '0')}:${String(
-              additionalInfo.durationMinutes
-            ).padStart(2, '0')}:${String(additionalInfo.durationSeconds).padStart(
-              2,
-              '0'
-            )}`}
+            label="Duration (minute)"
+            value={additionalInfo.duration}
             onChange={(e) => {
-              const [hours, minutes, seconds] = e.target.value
-                .split(':')
-                .map((val) => parseInt(val) || 0);
               setAdditionalInfo((prevState) => ({
                 ...prevState,
-                durationHours: hours,
-                durationMinutes: minutes,
-                durationSeconds: seconds,
+                duration: e.target.value
               }));
             }}
           />
@@ -257,7 +233,6 @@ export default function AddWorkoutForm() {
           {showAdditionalInfo ? 'Hide' : 'Add'} Additional Information
         </Button>
       </Box>
-
       <Collapse in={showAdditionalInfo}>
       <Typography variant="h6" ml={2}>Interval</Typography>
       <Box display="flex" alignItems="center" ml={2}>
@@ -288,67 +263,20 @@ export default function AddWorkoutForm() {
       />
     </Box>    
         <Box mb={2} ml={2}>
-          {/* Altitude */}
-          <Typography variant="h6">Altitude (ft)</Typography>
-          <TextField
-            id="altitude"
-            label="Altitude (ft)"
-            value={additionalInfo.altitude}
-            onChange={(e) =>
-              setAdditionalInfo((prevState) => ({
-                ...prevState,
-                altitude: e.target.value,
-              }))
-            }
-            type="number"
+        {/* Date */}
+        <Typography variant="h6">Date</Typography>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DemoContainer components={['DateTimePicker', 'DateTimePicker']}>
+          <DateTimePicker
+            defaultValue={dayjs().startOf('day')}
+            inputFormat="YYYY-MM-DD hh:mm A"
           />
-        </Box>
-        <Box mb={2} ml={2} sx={{ width: 300 }}>
-          {/* Feeling level */}
-          <Typography variant="h6" id="feeling-slider" gutterBottom>
-            Feeling
-          </Typography>
-          <Slider
-            aria-labelledby="feeling-slider"
-            value={additionalInfo.feelingLevel}
-            marks={[
-              { value: 1, label: 'Easy' },
-              { value: 5, label: 'Moderate' },
-              { value: 10, label: 'Difficult' },
-            ]}
-            min={1}
-            max={10}
-            step={1}
-            valueLabelDisplay="auto"
-            onChange={(event, value) => {
-              setAdditionalInfo((prevState) => ({
-                ...prevState,
-                feelingLevel: value
-              }));
-            }}
-          />
-        </Box>
-        <Box mb={2} ml={2}>
-          {/* Date and time */}
-          <Typography variant="h6">Date</Typography>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <StaticDateTimePicker
-              label="Pick a date and time"
-              inputFormat="MM/dd/yyyy hh:mm a"
-              value={additionalInfo.datetime}
-              onChange={(newValue) => {
-                setAdditionalInfo((prevState) => ({
-                  ...prevState,
-                  datetime: newValue
-                }));
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
+        </DemoContainer>
+        </LocalizationProvider>
         </Box>
         <Box mb={2}>
         {/* Description */}
-          <Typography variant="h6" ml={2}>Description</Typography>
+          <Typography variant="h6" ml={2} align="top">Description</Typography>
           <TextField
             id="outlined-multiline-static"
             value={additionalInfo.description}
@@ -361,10 +289,10 @@ export default function AddWorkoutForm() {
             multiline
             fullWidth
             rows={4}
+            sx={{ ml: 2 }}
           />
         </Box>
       </Collapse>
-
         <Button variant="contained" color="primary" type="submit" ml={2}>
           Add Workout
         </Button>

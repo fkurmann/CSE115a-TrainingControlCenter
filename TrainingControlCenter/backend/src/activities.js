@@ -3,9 +3,9 @@ const dbActivities = require('../db/dbActivities');
 // Maual entry activities
 // Add manual entry activity
 exports.addActivity = async (req, res) => {
-  let {username, name, type, sport, distance,
-       altitude, duration, datetime, description, feelingLevel,
-       intervalCount, intervalDistance} = req.body;
+  let { username, name, type, sport, distance,
+    duration, datetime, description,
+    intervalCount, intervalDistance } = req.body;
 
   // Checks that values are not defaults, if they are, replace with null
   if (username === 'string') {
@@ -13,17 +13,19 @@ exports.addActivity = async (req, res) => {
     return;
   }
 
+  if (description === 'undefined' || description === '') {
+    description = 'No Description';
+  }
+
   // Add activity metadata to JSON in format similar to strava activity jsons
   const activityJson = {
     distance: distance || undefined,
-    altitude: altitude || undefined,
     duration: duration || undefined,
     datetime: datetime || undefined,
-    description: description || undefined,
-    feelingLevel: feelingLevel || undefined,
+    description: description,
     intervalCount: intervalCount || undefined,
     intervalDistance: intervalDistance || undefined
-  };  
+  };
   
   const returnValue = await dbActivities.createActivity(username, name, type, sport, activityJson);
   // Error case
@@ -83,21 +85,17 @@ exports.getActivities = async (req, res) => {
   let distance = req.query.distance;
   let type = req.query.type;
   let duration = req.query.duration;
-  let altitude = req.query.altitude;
   let datetime = req.query.datetime;
-  let description = req.query.description;
-  let feelingLevel = req.query.feelingLevel;
   let intervalDistance = req.query.intervalDistance;
   let intervalCount = req.query.intervalCount;
   
-  for (item of [name, sport, type, distance, altitude, 
-    duration, datetime, description, feelingLevel,
-    intervalDistance, intervalCount]) {
-    if (item == undefined) {
+  for (item of [name, sport, type, distance, 
+    duration, datetime, intervalDistance, intervalCount]) {
+      if (item == undefined) {
       item = null;
     }
   }
-  
+
   const returnValue = await dbActivities.findActivity(username, name, sport);
 
   // Error case
