@@ -11,11 +11,10 @@ import {
   Select,
   Typography
 } from '@mui/material';
-import dayjs from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const username = localStorage.getItem('user');
 
@@ -33,13 +32,10 @@ export default function AddWorkoutForm() {
   // additionalInfo
   const [additionalInfo, setAdditionalInfo] = useState({
     distance: '',
-    duration: null,
+    time: null,
     
-    datetime: null,
+    start_date_local: null,
     description: '',
-
-    intervalCount: '',
-    intervalDistance: '',
   });
 
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
@@ -47,7 +43,7 @@ export default function AddWorkoutForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-    
+      const formattedDate = additionalInfo.start_date_local ? new Date(additionalInfo.start_date_local) : null;
       const response = await fetch('http://localhost:3010/v0/activities?' , {
         method: "POST",
         body: JSON.stringify({
@@ -55,12 +51,12 @@ export default function AddWorkoutForm() {
           name: name,
           type: type, 
           sport: sport,
-          distance: additionalInfo.distance,
-          duration: additionalInfo.duration,
-          datetime: additionalInfo.datetime,
           description: additionalInfo.description,
-          intervalCount: additionalInfo.intervalCount,
-          intervalDistance: additionalInfo.intervalDistance
+          json: {
+            distance: additionalInfo.distance,
+            time: additionalInfo.time,
+            start_date_local: formattedDate
+          }
         }),        
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -74,9 +70,8 @@ export default function AddWorkoutForm() {
       if (response.status === 200) {
         setShowSuccessMessage(true);
         setState({ name: '', type: '', sport: '' });
-        setAdditionalInfo({ distance: '', duration: '', 
-                            date: '', time: '', description: '',
-                            intervalCount: '', intervalDistance: ''});
+        setAdditionalInfo({ distance: '', time: '', 
+                            date: '', start_date_local: '', description: ''});
         setShowAdditionalInfo(false);
         setTimeout(() => {
           setShowSuccessMessage(false);
@@ -209,17 +204,17 @@ export default function AddWorkoutForm() {
             type="number"
           />
         </Box>
-        {/* Duration */}
+        {/* Time */}
         <Box mb={2} ml={2}>
-          <Typography variant="h6">Duration (minutes)</Typography>
+          <Typography variant="h6">Time (mins)</Typography>
           <TextField
-            id="duration"
-            label="Duration (minute)"
-            value={additionalInfo.duration}
+            id="time"
+            label="Time (mins)"
+            value={additionalInfo.time}
             onChange={(e) => {
               setAdditionalInfo((prevState) => ({
                 ...prevState,
-                duration: e.target.value
+                time: e.target.value
               }));
             }}
           />
@@ -234,47 +229,18 @@ export default function AddWorkoutForm() {
           {showAdditionalInfo ? 'Hide' : 'Add'} Additional Information
         </Button>
       </Box>
-      <Collapse in={showAdditionalInfo}>
-      <Typography variant="h6" ml={2}>Interval</Typography>
-      <Box display="flex" alignItems="center" ml={2}>
-      <TextField
-        id="intervalCount"
-        label="Interval count"
-        value={additionalInfo.intervalCount}
-        onChange={(e) =>
-          setAdditionalInfo((prevState) => ({
-            ...prevState,
-            intervalCount: e.target.value,
-          }))
-        }
-        type="number"
-        sx={{ mr: 2 }}
-      />
-      <TextField
-        id="intervalDistance"
-        label="Interval distance (mi)"
-        value={additionalInfo.intervalDistance}
-        onChange={(e) =>
-          setAdditionalInfo((prevState) => ({
-            ...prevState,
-            intervalDistance: e.target.value,
-          }))
-        }
-        type="number"
-      />
-    </Box>    
+      <Collapse in={showAdditionalInfo}>   
         <Box mb={2} ml={2}>
         {/* Date */}
         <Typography variant="h6">Date</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DemoContainer components={['DateTimePicker', 'DateTimePicker']}>
-        <DateTimePicker
-          defaultValue={dayjs().startOf('day')}
-          inputFormat="YYYY-MM-DD hh:mm A"
+        <DemoContainer components={['DatePicker']}>
+        <DatePicker
+          inputFormat="YYYY-MM-DD"
           onChange={(value) =>
               setAdditionalInfo((prevState) => ({
                 ...prevState,
-                datetime: value.toISOString(),
+                start_date_local: value.toISOString(),
               }))
             }
         />        

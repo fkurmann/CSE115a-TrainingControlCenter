@@ -2,7 +2,15 @@ const dbActivities = require('../db/dbActivities');
 
 // Maual entry activities
 exports.addActivity = async (req, res) => {
-  let {username, name, type, sport, date, description, distance, time} = req.body;
+  let {username, name, type, sport, description} = req.body;
+  let {distance, time, start_date_local} = req.body.json;
+
+  // Convert a date string to a Date object
+  let date = start_date_local ? new Date(start_date_local) : null;
+
+  // Convert the date object to a YYYY/MM/DD format
+  let formattedDate = date ? date.toISOString().substring(0, 10) : null;
+  let formattedDateWithSlashes = formattedDate ? formattedDate.replace(/-/g, '/') : null;
 
   // Checks that values are not defaults (for swagger UI, differs for frontend hookup)
   if (username === 'string') {
@@ -39,7 +47,7 @@ exports.addActivity = async (req, res) => {
   const activityJson = {
     distance: distance || undefined,
     time: time || undefined,
-    start_date_local: date || undefined
+    start_date_local: formattedDateWithSlashes || undefined
   }
 
   const returnValue = await dbActivities.createActivity(username, name, type, sport, description, activityJson);
