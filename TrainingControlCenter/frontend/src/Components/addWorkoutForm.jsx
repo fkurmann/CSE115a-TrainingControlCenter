@@ -77,6 +77,7 @@ export default function AddWorkoutForm() {
         setAdditionalInfo({ distance: '', duration: '', 
                             date: null, time: null, description: '',
                             intervalCount: '', intervalDistance: ''});
+        setShowAdditionalInfo(false);
         setTimeout(() => {
           setShowSuccessMessage(false);
         }, 10000);       
