@@ -9,13 +9,13 @@ exports.addActivity = async (req, res) => {
     res.status(401).send('Error, need a username');
     return;
   }
-
-  if (type === 'undefined' || type === '') {
-    type = null;
+  if (name === 'string') {
+    res.status(401).send('Error, need an activity name');
+    return;
   }
-
-  if (sport === 'undefined' || sport === '') {
-    sport = null;
+  if (type === 'string') {
+    res.status(401).send('Error, need an activity type');
+    return;
   }
   if (sport === 'string') {
     res.status(401).send('Error, need a sport type');
@@ -31,10 +31,8 @@ exports.addActivity = async (req, res) => {
   }
 
   // If user enters no description
-  
-  let descriptionEntered = description
-  if (description === undefined || description === 'string') {
-    descriptionEntered = 'No description'
+  if (description === undefined || description === '') {
+    description = 'No description'
   }
 
   // Add activity metadata to JSON in format similar to strava activity jsons
@@ -67,10 +65,6 @@ exports.addActivityStrava = async (req, res) => {
     // On success return 200
     res.status(200).send(`Activity "${name}" added successfully for user "${username}".`);
   }
-  if (!req.body.hasOwnProperty('datetime')) {
-    console.log('Warning: datetime is missing from request body.');
-  }
-  
 };
 // Delete activity from user's activities, either one if name is given or all
 exports.deleteActivity = async (req, res) => {
@@ -99,7 +93,6 @@ exports.getActivities = async (req, res) => {
   const username = req.query.username;
   let name = req.query.name;
   let sport = req.query.sport;
-  let distance = req.query.distance;
   let type = req.query.type;
   let minDuration = req.query.minDuration;
   let maxDuration = req.query.maxDuration;
@@ -120,14 +113,13 @@ exports.getActivities = async (req, res) => {
   }
 
   
-  for (item of [distance, duration, datetime, intervalDistance, intervalCount]) {
-    if (item === undefined || item === '') {
+  for (item of [name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
+    if (item == undefined) {
       item = null;
     }
-  }  
-
-  const returnValue = await dbActivities.findActivity(username, name, sport);
-
+  }
+  
+  const returnValue = await dbActivities.findActivity(username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate);
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error getting activities, user may not exist');
