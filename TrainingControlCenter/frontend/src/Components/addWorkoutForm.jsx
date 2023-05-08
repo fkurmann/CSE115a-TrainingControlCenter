@@ -75,7 +75,7 @@ export default function AddWorkoutForm() {
         setShowSuccessMessage(true);
         setState({ name: '', type: '', sport: '' });
         setAdditionalInfo({ distance: '', duration: '', 
-                            date: null, time: null, description: '',
+                            date: '', time: '', description: '',
                             intervalCount: '', intervalDistance: ''});
         setShowAdditionalInfo(false);
         setTimeout(() => {
@@ -268,10 +268,16 @@ export default function AddWorkoutForm() {
         <Typography variant="h6">Date</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={['DateTimePicker', 'DateTimePicker']}>
-          <DateTimePicker
-            defaultValue={dayjs().startOf('day')}
-            inputFormat="YYYY-MM-DD hh:mm A"
-          />
+        <DateTimePicker
+          defaultValue={dayjs().startOf('day')}
+          inputFormat="YYYY-MM-DD hh:mm A"
+          onChange={(value) =>
+              setAdditionalInfo((prevState) => ({
+                ...prevState,
+                datetime: value.toISOString(),
+              }))
+            }
+        />        
         </DemoContainer>
         </LocalizationProvider>
         </Box>
