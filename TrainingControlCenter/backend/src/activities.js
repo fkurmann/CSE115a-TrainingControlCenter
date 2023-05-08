@@ -1,11 +1,10 @@
 const dbActivities = require('../db/dbActivities');
 
 // Maual entry activities
-// Add manual entry activity
 exports.addActivity = async (req, res) => {
-  let {username, name, type, sport, distance, time} = req.body;
+  let {username, name, type, sport, date, description, distance, time} = req.body;
 
-  // Checks that values are not defaults, if they are, replace with null
+  // Checks that values are not defaults (for swagger UI, differs for frontend hookup)
   if (username === 'string') {
     res.status(401).send('Error, need a username');
     return;
@@ -18,6 +17,10 @@ exports.addActivity = async (req, res) => {
     res.status(401).send('Error, need an activity type');
     return;
   }
+  if (sport === 'string') {
+    res.status(401).send('Error, need a sport type');
+    return;
+  }
   if (typeof distance !== 'undefined' && distance < 0) {
     res.status(401).send('Error, distance cannot be negative');
     return;
@@ -27,13 +30,20 @@ exports.addActivity = async (req, res) => {
     return;
   }
 
+  // If user enters no description
+  let descriptionEntered = description
+  if (description === undefined || description === 'string') {
+    descriptionEntered = 'No description'
+  }
+
   // Add activity metadata to JSON in format similar to strava activity jsons
   const activityJson = {
     distance: distance || undefined,
-    time: time || undefined
+    time: time || undefined,
+    start_date_local: date || undefined
   }
 
-  const returnValue = await dbActivities.createActivity(username, name, type, sport, activityJson);
+  const returnValue = await dbActivities.createActivity(username, name, type, sport, description, activityJson);
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error adding activity');
@@ -45,10 +55,10 @@ exports.addActivity = async (req, res) => {
 
 // Strava upload activities
 exports.addActivityStrava = async (req, res) => {
-  let {username, name, type, sport, json} = req.body;
+  let {username, name, type, sport, description, json} = req.body;
 
   // No checking for parameters since this is not a direct interaction with user
-  const returnValue = await dbActivities.createActivity(username, name, type, sport, json);
+  const returnValue = await dbActivities.createActivity(username, name, type, sport, description, json);
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error adding activity');
@@ -91,6 +101,18 @@ exports.getActivities = async (req, res) => {
   let maxDistance = req.query.maxDistance;
   let minDate = req.query.minDate;
   let maxDate = req.query.maxDate;
+
+  // Convert duration and distance units to database format from frontend format
+  if (minDuration) {
+    minDuration = minDuration/60
+  } if (maxDuration) {
+    maxDuration = maxDuration/60
+  } if (minDistance) {
+    minDistance = minDistance*1609.34
+  } if (maxDistance) {
+    maxDistance = maxDistance*1609.34
+  }
+
   
   for (item of [name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
     if (item == undefined) {

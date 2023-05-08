@@ -14,13 +14,14 @@ const client = new MongoClient(uri, {
 // Activitiy collection functions
 
 // Response to manual entry of activity create activity
-exports.createActivity = async (username, name, type, sport, json) => {
+exports.createActivity = async (username, name, type, sport, description, json) => {
   // Credentials into object
   const activitySkeleton = {
     username: username,
     name: name,
     type: type,
     sport: sport,
+    description: description,
     json: json
   }
 
@@ -78,11 +79,11 @@ exports.findActivity = async (username, name, sport, type, minDuration, maxDurat
   }
 
   if ((minDate != null) && (maxDate != null)) {
-    parameters["json.start_date"] = {$gte: new Date(minDate).toISOString(), $lte: new Date(maxDate).toISOString()};
+    parameters["json.start_date_local"] = {$gte: new Date(minDate).toISOString(), $lte: new Date(maxDate).toISOString()};
   } else if ((minDate == null) && (maxDate != null)) {
-    parameters["json.start_date"] = {$lte: new Date(maxDate).toISOString()};
+    parameters["json.start_date_local"] = {$lte: new Date(maxDate).toISOString()};
   } else if ((minDate != null) && (maxDate == null)) {
-    parameters["json.start_date"] = {$gte: new Date(minDate).toISOString()};
+    parameters["json.start_date_local"] = {$gte: new Date(minDate).toISOString()};
   }
 
   // Access database

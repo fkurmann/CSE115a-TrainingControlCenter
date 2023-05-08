@@ -336,41 +336,41 @@ paths:
           type: string
       - name: minDuration
         in: query
-        description: minDuration of activity, seconds
+        description: minDuration of activity, minutes
         required: false
         schema:
           type: integer
           format: int32
       - name: maxDuration
         in: query
-        description: maxDuration of activity, seconds
+        description: maxDuration of activity, minutes
         required: false
         schema:
           type: integer
           format: int32
       - name: minDistance
         in: query
-        description: minDistance of activity (activity dependent units)
+        description: minDistance of activity, miles
         required: false
         schema:
           type: integer
           format: int32
       - name: maxDistance
         in: query
-        description: maxDistance of activity (activity dependent units)
+        description: maxDistance of activity, miles
         required: false
         schema:
           type: integer
           format: int32
       - name: minDate
         in: query
-        description: minDate of activity, 2017-07-21T17:32:28Z format
+        description: minDate of activity, (yyyy-mm-dd)
         required: false
         schema:
           type: string
       - name: maxDate
         in: query
-        description: maxDate of activity, 2017-07-21T17:32:28Z format
+        description: maxDate of activity, (yyyy-mm-dd)
         required: false
         schema:
           type: string
@@ -551,10 +551,16 @@ components:
           type: string
         name:
           type: string
+        type:
+          type: string
+          nullable: true
         sport:
           type: string
           nullable: true
-        type:
+        date:
+          type: string
+          nullable: true
+        description:
           type: string
           nullable: true
         json:
