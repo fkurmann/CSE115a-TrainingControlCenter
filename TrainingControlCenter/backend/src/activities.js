@@ -4,29 +4,22 @@ const dbActivities = require('../db/dbActivities');
 // Add manual entry activity
 exports.addActivity = async (req, res) => {
   let {username, name, type, sport, distance,
-       datetime, altitude, description} = req.body;
+       altitude, duration, datetime, description, feelingLevel} = req.body;
 
   // Checks that values are not defaults, if they are, replace with null
   if (username === 'string') {
     res.status(401).send('Error, need a username');
     return;
   }
-  if (name === 'string') {
-    res.status(401).send('Error, need an activity name');
-    return;
-  }
-  if (typeof distance !== 'undefined' && distance < 0) {
-    res.status(401).send('Error, distance cannot be negative');
-    return;
-  }
 
   // Add activity metadata to JSON in format similar to strava activity jsons
   const activityJson = {
     distance: distance || undefined,
-    datetime: datetime || undefined,
-    duration: req.body.duration || undefined, // Add this line
     altitude: altitude || undefined,
+    duration: duration || undefined,
+    datetime: datetime || undefined,
     description: description || undefined,
+    feelingLevel: feelingLevel || undefined
   };  
   
   const returnValue = await dbActivities.createActivity(username, name, type, sport, activityJson);
@@ -84,21 +77,22 @@ exports.getActivities = async (req, res) => {
   const username = req.query.username;
   let name = req.query.name;
   let sport = req.query.sport;
+  let distance = req.query.distance;
   let type = req.query.type;
   let duration = req.query.duration;
   let altitude = req.query.altitude;
   let datetime = req.query.datetime;
   let description = req.query.description;
+  let feelingLevel = req.query.feelingLevel;
   
-  for (item of [name, sport, type, duration,
-    altitude, datetime, description]) {
+  for (item of [name, sport, type, distance, altitude, 
+    duration, datetime, description, feelingLevel]) {
     if (item == undefined) {
       item = null;
     }
   }
   
-  
-  const returnValue = await dbActivities.findActivity(username, name, sport, type, altitude, datetime, description); // Update this line
+  const returnValue = await dbActivities.findActivity(username, name, sport);
 
   // Error case
   if (returnValue === -1) {

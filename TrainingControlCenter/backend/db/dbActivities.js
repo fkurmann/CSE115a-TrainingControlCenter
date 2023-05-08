@@ -38,16 +38,17 @@ exports.createActivity = async (username, name, type, sport, json) => {
 }
 
 // Find activity
-exports.findActivity = async (username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate) => {
+exports.findActivity = async (username, name, sport) => {
   let parameters = {
+    username: username
   }
-  let variablesIndex = 0;
-  const variables = ['username', 'name', 'sport', 'type', 'minDuration', 'maxDuration', 'minDistance', 'maxDistance', 'minDate', 'maxDate']
-  for (item of [username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
-    if (item != null) {
-      parameters[variables[variablesIndex]] = item;
-    }
-    variablesIndex+=1;
+  // Find by name
+  if (name != null) {
+    parameters.name = name;
+  }
+  // Find by sport
+  if (sport != null) {
+    parameters.type = sport;
   }
 
   // Access database
