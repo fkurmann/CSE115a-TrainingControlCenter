@@ -13,6 +13,14 @@ exports.addActivity = async (req, res) => {
     return;
   }
 
+  if (type === 'undefined' || type === '') {
+    type = null;
+  }
+
+  if (sport === 'undefined' || sport === '') {
+    sport = null;
+  }
+
   if (description === 'undefined' || description === '') {
     description = 'No Description';
   }
@@ -89,12 +97,11 @@ exports.getActivities = async (req, res) => {
   let intervalDistance = req.query.intervalDistance;
   let intervalCount = req.query.intervalCount;
   
-  for (item of [name, sport, type, distance, 
-    duration, datetime, intervalDistance, intervalCount]) {
-      if (item == undefined) {
+  for (item of [distance, duration, datetime, intervalDistance, intervalCount]) {
+    if (item === undefined || item === '') {
       item = null;
     }
-  }
+  }  
 
   const returnValue = await dbActivities.findActivity(username, name, sport);
 
