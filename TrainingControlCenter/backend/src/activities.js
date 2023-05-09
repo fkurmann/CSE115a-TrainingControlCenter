@@ -11,8 +11,8 @@ exports.addActivity = async (req, res) => {
   // Convert the date object to a YYYY/MM/DD format
   let formattedDate = date ? date.toISOString().substring(0, 10) : null;
   let formattedDateWithSlashes = formattedDate ? formattedDate.replace(/-/g, '/') : null;
-
-  // Checks that values are not defaults (for swagger UI, differs for frontend hookup)
+ 
+  // Checks that values are not defaults, if they are, replace with null
   if (username === 'string') {
     res.status(401).send('Error, need a username');
     return;
@@ -29,6 +29,10 @@ exports.addActivity = async (req, res) => {
     res.status(401).send('Error, need a sport type');
     return;
   }
+  if (sport === 'string') {
+    res.status(401).send('Error, need a sport type');
+    return;
+  }
   if (typeof distance !== 'undefined' && distance < 0) {
     res.status(401).send('Error, distance cannot be negative');
     return;
@@ -38,19 +42,17 @@ exports.addActivity = async (req, res) => {
     return;
   }
 
-  // If user enters no description
-  if (description === undefined || description === '') {
-    description = 'No description'
-  }
+  let descriptionText = description ? String(description) : 'No description';
+
 
   // Add activity metadata to JSON in format similar to strava activity jsons
   const activityJson = {
     distance: distance || undefined,
     time: time || undefined,
-    start_date_local: formattedDateWithSlashes || undefined
-  }
-
-  const returnValue = await dbActivities.createActivity(username, name, type, sport, description, activityJson);
+    start_date_local: formattedDateWithSlashes || undefined,
+  };
+  
+  const returnValue = await dbActivities.createActivity(username, name, type, sport, descriptionText, activityJson);
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error adding activity');
@@ -73,6 +75,10 @@ exports.addActivityStrava = async (req, res) => {
     // On success return 200
     res.status(200).send(`Activity "${name}" added successfully for user "${username}".`);
   }
+  if (!req.body.hasOwnProperty('datetime')) {
+    console.log('Warning: datetime is missing from request body.');
+  }
+  
 };
 // Delete activity from user's activities, either one if name is given or all
 exports.deleteActivity = async (req, res) => {
@@ -101,7 +107,11 @@ exports.getActivities = async (req, res) => {
   const username = req.query.username;
   let name = req.query.name;
   let sport = req.query.sport;
+  // let distance = req.query.distance;
   let type = req.query.type;
+  // let time = req.query.time;
+  // let start_date_local = req.query.start_date_local;
+  
   let minDuration = req.query.minDuration;
   let maxDuration = req.query.maxDuration;
   let minDistance = req.query.minDistance;
@@ -126,8 +136,20 @@ exports.getActivities = async (req, res) => {
       item = null;
     }
   }
-  
-  const returnValue = await dbActivities.findActivity(username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate);
+
+  // Convert duration and distance units to database format from frontend format
+  if (minDuration) {
+    minDuration = minDuration/60
+  } if (maxDuration) {
+    maxDuration = maxDuration/60
+  } if (minDistance) {
+    minDistance = minDistance*1609.34
+  } if (maxDistance) {
+    maxDistance = maxDistance*1609.34
+  }
+
+  const returnValue = await dbActivities.findActivity(username, name, sport);
+
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error getting activities, user may not exist');
