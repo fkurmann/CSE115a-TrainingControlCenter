@@ -22,7 +22,8 @@ export default function AddWorkoutForm() {
   const [{ name, type, sport }, setState] = useState({
     name: '',
     type: null,
-    sport: null,
+    sport: null
+    
   });
 
   // successMessage
@@ -35,7 +36,7 @@ export default function AddWorkoutForm() {
     time: null,
     
     start_date_local: null,
-    description: '',
+    description: ''
   });
 
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
@@ -43,6 +44,7 @@ export default function AddWorkoutForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const descriptions = additionalInfo.description.trim() === '' ? null : additionalInfo.description;
       const formattedDate = additionalInfo.start_date_local ? new Date(additionalInfo.start_date_local) : null;
       const response = await fetch('http://localhost:3010/v0/activities?' , {
         method: "POST",
@@ -51,7 +53,7 @@ export default function AddWorkoutForm() {
           name: name,
           type: type, 
           sport: sport,
-          description: additionalInfo.description,
+          description: descriptions,
           json: {
             distance: additionalInfo.distance,
             time: additionalInfo.time,
@@ -137,12 +139,10 @@ export default function AddWorkoutForm() {
       <h2>Log a Workout</h2>
       <form onSubmit={handleSubmit}>
         {/* Name */}
-        <Typography variant="h6" ml={2}>Name of Activity</Typography>
+        <Typography variant="h6" ml={2}>Name of Activity*</Typography>
         <Box mb={2} ml={2}>
           <TextField
             id="name"
-            label="Name"
-            helperText="Name of activity"
             value={name}
             onChange={(e) =>
               setState((prevState) => ({ ...prevState, name: e.target.value }))
@@ -190,10 +190,9 @@ export default function AddWorkoutForm() {
           </Box>
         {/* Distance */}
         <Box mb={2} ml={2}>
-          <Typography variant="h6">Distance (mile)</Typography>
+          <Typography variant="h6">Distance (miles)</Typography>
           <TextField
             id="distance"
-            label="Distance (mile)"
             value={additionalInfo.distance}
             onChange={(e) =>
               setAdditionalInfo((prevState) => ({
@@ -206,10 +205,9 @@ export default function AddWorkoutForm() {
         </Box>
         {/* Time */}
         <Box mb={2} ml={2}>
-          <Typography variant="h6">Time (mins)</Typography>
+          <Typography variant="h6">Time (minutes)</Typography>
           <TextField
             id="time"
-            label="Time (mins)"
             value={additionalInfo.time}
             onChange={(e) => {
               setAdditionalInfo((prevState) => ({
@@ -217,6 +215,7 @@ export default function AddWorkoutForm() {
                 time: e.target.value
               }));
             }}
+            type="number"
           />
         </Box>
         {/* Additional Information */}
