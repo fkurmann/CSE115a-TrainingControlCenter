@@ -41,7 +41,6 @@ exports.createActivity = async (username, name, type, sport, description, json) 
 // Find activity
 exports.findActivity = async (username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate) => {
   let parameters = {
-    username: username
   }
 
   const variables = ['username', 'name', 'sport', 'type'];
