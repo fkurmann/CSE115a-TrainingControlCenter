@@ -31,7 +31,7 @@ export default function Favorites() {
       return;
     }
     else if(myShownFavorites.includes(sport)){
-      handleReadd(sport);
+      handleRead(sport);
       return;
     }
     const myFavs = [ ...myFavorites, sport];
@@ -87,7 +87,7 @@ export default function Favorites() {
       });
   }
 
-  const handleReadd = (sport) => {
+  const handleRead = (sport) => {
     if(myFavorites.includes(sport) || !myShownFavorites.includes(sport)){
       return;
     }
@@ -120,7 +120,7 @@ export default function Favorites() {
       {myShownFavorites.map((sport) => (
         <div key={sport}>
         <ListItem disablePadding>
-          <ListItemButton onClick={() => myFavorites.includes(sport) ? handleDelete(sport) : handleReadd(sport) }>
+          <ListItemButton onClick={() => myFavorites.includes(sport) ? handleDelete(sport) : handleRead(sport) }>
             <ListItemIcon>
               {myFavorites.includes(sport) ? <StarRoundedIcon /> : <StarBorderRoundedIcon />}
             </ListItemIcon>

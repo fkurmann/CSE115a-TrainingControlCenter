@@ -11,10 +11,12 @@ import {
 const username = localStorage.getItem('user');
 
 export default function AddWorkoutForm() {
-  const [{ name, type, sport, distance, time}, setState] = useState({
+  const [{ name, type, sport, date, description, distance, time}, setState] = useState({
     name: '',
     type: '',
     sport: '',
+    date: '',
+    description: '',
     distance: '',
     time: ''
   });
@@ -31,6 +33,8 @@ export default function AddWorkoutForm() {
           username: username,
           name: name,
           sport: sport,
+          date: date,
+          description, description,
           distance: distance,
           time: time,
         }),
@@ -45,7 +49,7 @@ export default function AddWorkoutForm() {
   
       if (response.status === 200) {
         setShowSuccessMessage(true);
-        setState({ name: "", type: "", sport: "", distance: "", time: "" });
+        setState({ name: "", type: "", sport: "", date: "", description:"", distance: "", time: "" });
         setTimeout(() => {
           setShowSuccessMessage(false);
         }, 10000);        
@@ -106,8 +110,28 @@ export default function AddWorkoutForm() {
         </Box>
         <Box mb={2}>
           <TextField
+            id="date"
+            label="Date (yyyy-mm-dd)"
+            value={date}
+            onChange={(e) =>
+              setState((prevState) => ({ ...prevState, date: e.target.value }))
+            }
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            id="description"
+            label="Description"
+            value={description}
+            onChange={(e) =>
+              setState((prevState) => ({ ...prevState, description: e.target.value }))
+            }
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
             id="distance"
-            label="Distance (mile)"
+            label="Distance (miles)"
             value={distance}
             onChange={(e) =>
               setState((prevState) => ({
