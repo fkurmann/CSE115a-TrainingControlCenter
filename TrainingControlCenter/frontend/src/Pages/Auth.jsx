@@ -29,6 +29,7 @@ export default function Login() {
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('stravaAccessToken');
+    localStorage.removeItem('goals');
   }, []);
 
   const handleInputChange = (event) => {
