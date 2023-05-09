@@ -16,8 +16,11 @@ export default function Favorites() {
   const [addFav, setAddFav] = React.useState({username: user, sport: ''});
   const [myFavorites, setMyFavorites] = React.useState(localStorage.getItem('favorites') === null ? [] : JSON.parse(localStorage.getItem('favorites')));
   const [myShownFavorites, setMyShownFavorites] = React.useState(myFavorites);
- 
-  
+
+  // Updates localStorage whenever myFavorites is updated
+  React.useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(myFavorites));
+  }, [myFavorites]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,7 +40,6 @@ export default function Favorites() {
     const myFavs = [ ...myFavorites, sport];
     setMyFavorites(myFavs);
     setMyShownFavorites([ ...myShownFavorites, sport]);
-    localStorage.setItem('favorites', JSON.stringify(myFavs));
     fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: sport}), {
       method: 'POST',
       headers: {
@@ -52,11 +54,6 @@ export default function Favorites() {
       })
       .catch((err) => {
         alert(`Error adding favorite: ${sport}`);
-        const myFavs = myFavorites.filter((favSport) => favSport !== sport);
-        const myShownFavs = myShownFavorites.filter((favSport) => favSport !== sport);
-        setMyFavorites(myFavs);
-        setMyShownFavorites(myShownFavs);
-        localStorage.setItem('favorites', JSON.stringify(myFavs));
       });
   }
 
@@ -66,7 +63,6 @@ export default function Favorites() {
     }
     const myFavs = myFavorites.filter((favSport) => favSport !== sport);
     setMyFavorites(myFavs);
-    localStorage.setItem('favorites', JSON.stringify(myFavs));
     fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: sport}), {
       method: 'DELETE',
       headers: {
@@ -81,9 +77,6 @@ export default function Favorites() {
       })
       .catch((err) => {
         alert(`Error deleting favorite: ${sport}`);
-        const myFavs = [ ...myFavorites, sport];
-        setMyFavorites(myFavs);
-        localStorage.setItem('favorites', JSON.stringify(myFavs));
       });
   }
 
@@ -93,7 +86,6 @@ export default function Favorites() {
     }
     const myFavs = [ ...myFavorites, sport];
     setMyFavorites(myFavs);
-    localStorage.setItem('favorites', JSON.stringify(myFavs));
     fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: sport}), {
       method: 'POST',
       headers: {
@@ -108,9 +100,6 @@ export default function Favorites() {
       })
       .catch((err) => {
         alert(`Error re-adding favorite: ${sport}`);
-        const myFavs = myFavorites.filter((favSport) => favSport !== sport);
-        setMyFavorites(myFavs);
-        localStorage.setItem('favorites', JSON.stringify(myFavs));
       });
   }
 
