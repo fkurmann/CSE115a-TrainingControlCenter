@@ -224,26 +224,6 @@ export default function AddWorkoutForm() {
       <Box mb={2} ml={2}>
           <Typography variant="h6">Distance (miles)</Typography>
           <TextField
-            id="date"
-            label="Date (yyyy-mm-dd)"
-            value={date}
-            onChange={(e) =>
-              setState((prevState) => ({ ...prevState, date: e.target.value }))
-            }
-          />
-        </Box>
-        <Box mb={2}>
-          <TextField
-            id="description"
-            label="Description"
-            value={description}
-            onChange={(e) =>
-              setState((prevState) => ({ ...prevState, description: e.target.value }))
-            }
-          />
-        </Box>
-        <Box mb={2}>
-          <TextField
             id="distance"
             label="Distance"
             value={additionalInfo.distance}
@@ -319,4 +299,3 @@ export default function AddWorkoutForm() {
     </>
   );
 }
-

@@ -74,9 +74,9 @@ exports.addActivityStrava = async (req, res) => {
     // On success return 200
     res.status(200).send(`Activity "${name}" added successfully for user "${username}".`);
   }
-  if (!req.body.hasOwnProperty('datetime')) {
-    console.log('Warning: datetime is missing from request body.');
-  }
+  // if (!req.body.hasOwnProperty('datetime')) {
+  //   console.log('Warning: datetime is missing from request body.');
+  // } 
   
 };
 // Delete activity from user's activities, either one if name is given or all
