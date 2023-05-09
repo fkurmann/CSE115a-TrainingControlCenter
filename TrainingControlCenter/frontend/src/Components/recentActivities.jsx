@@ -15,7 +15,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 
 // TODO: Update icons, make all list items collapsable, home screen will feature latest activities from 3 categories
 
-export default function NestedList() {
+export default function RecentActivitiesList() {
   const [open1, setOpen1] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [open3, setOpen3] = React.useState(false);

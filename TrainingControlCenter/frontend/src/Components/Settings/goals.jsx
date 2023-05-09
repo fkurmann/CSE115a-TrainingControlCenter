@@ -26,7 +26,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 
 export default function Goals() {
   const user = localStorage.getItem('user');
-  const misc = 'misc';
+  const misc = 'Misc';
   const modalStyle = {
     position: 'absolute',
     top: '50%',
