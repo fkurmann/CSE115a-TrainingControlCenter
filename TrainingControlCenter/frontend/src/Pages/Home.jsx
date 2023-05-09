@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 
 import { getFiveActivities } from '../Components/stravaData';
 import ResponsiveAppBar from '../Components/appBar';
-import Workouts from '../Components/workouts';
+import RecentActivitiesList from '../Components/recentActivities';
 import AddWorkoutForm from '../Components/addWorkoutForm';
 import HomeCalendar from '../Components/weeklyHomeCalendar';
 
@@ -28,7 +28,7 @@ export default function Home() {
         <Box>
           <div className='parent'>
             <div style={{float: 'left'}}>
-              <Workouts></Workouts>
+              <RecentActivitiesList></RecentActivitiesList>
               <AddWorkoutForm />
               <Button
                 onClick={() => getFiveActivities()}

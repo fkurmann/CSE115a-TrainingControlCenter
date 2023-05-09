@@ -6,6 +6,7 @@ import Login from './Pages/Auth';
 import StravaAuth from './Pages/stravaAuth';
 import DataCenter from './Pages/DataCenter';
 import PlanTraining from './Pages/PlanTraining';
+import WorkoutList from './Pages/WorkoutList';
 
 
 const AuthenticatedRoute = ({children}) => {
@@ -44,6 +45,13 @@ export default function App() {
         element={
           <AuthenticatedRoute>
             <PlanTraining />
+          </AuthenticatedRoute>
+        }
+      />
+      <Route path='/workoutList'
+        element={
+          <AuthenticatedRoute>
+            <WorkoutList />
           </AuthenticatedRoute>
         }
       />

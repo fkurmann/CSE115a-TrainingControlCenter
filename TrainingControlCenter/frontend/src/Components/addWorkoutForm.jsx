@@ -16,14 +16,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const username = localStorage.getItem('user');
+const localStorageUser = localStorage.getItem('user');
+
 
 export default function AddWorkoutForm() {
-  const [{ name, type, sport }, setState] = useState({
+  const [{ name, type = '', sport }, setState] = useState({
     name: '',
-    type: null,
-    sport: null
-    
+    type: '',
+    sport: ''
   });
 
   // successMessage
@@ -49,7 +49,7 @@ export default function AddWorkoutForm() {
       const response = await fetch('http://localhost:3010/v0/activities?' , {
         method: "POST",
         body: JSON.stringify({
-          username: username,
+          username: localStorageUser,
           name: name,
           type: type, 
           sport: sport,
@@ -113,7 +113,7 @@ export default function AddWorkoutForm() {
   const fetchFavorites = async () => {
     try {
       const response = await fetch('http://localhost:3010/v0/favorites?' 
-                        + new URLSearchParams({username: username}));
+                        + new URLSearchParams({username: localStorageUser}));
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -141,96 +141,58 @@ export default function AddWorkoutForm() {
         {/* Name */}
         <Typography variant="h6" ml={2}>Name of Activity*</Typography>
         <Box mb={2} ml={2}>
-          <TextField
-            id="name"
-            value={name}
-            onChange={(e) =>
-              setState((prevState) => ({ ...prevState, name: e.target.value }))
-            }
-            required
-          />
+        <TextField
+          id="name"
+          label="Name of Activity"
+          value={name}
+          onChange={(e) =>
+            setState((prevState) => ({ ...prevState, name: e.target.value }))
+          }
+          required
+        />
         </Box>
         {/* Activity Type */}
         <Typography variant="h6" ml={2}>Activity Type</Typography>
         <Box mb={2} ml={2}>
+        <Select
+          labelId="activity-type-select"
+          id="type"
+          label="Activity Type"
+          value={type}
+          onChange={(e) =>
+            setState((prevState) => ({ ...prevState, type: e.target.value }))
+          }
+          autoWidth
+        >
+          {getActivityTypes().map((activityType) => (
+            <MenuItem key={activityType} value={activityType}>
+              {activityType}
+            </MenuItem>
+          ))}
+        </Select>
+        </Box>
+        {/* Sport */}
+        <Box mb={2} ml={2}>
+          <Typography variant="h6">Sport Type</Typography>
           <Select
-            labelId="activity-type"
-            id="type"
-            value={type}
+            labelId={`sport-type-select-2`}
+            id={`sport-2`}
+            value={sport}
             onChange={(e) =>
-              setState((prevState) => ({ ...prevState, type: e.target.value }))
+              setState((prevState) => ({ ...prevState, sport: e.target.value }))
             }
-            halfWidth
+            autoWidth
+            label="Sport Type"
           >
-            {getActivityTypes().map((activityType) => (
-              <MenuItem key={activityType} value={activityType}>
-                {activityType}
+            {favoriteSports.map((sportType, index) => (
+              <MenuItem key={sportType} value={sportType} id={`menu-item-${sportType}-${index}`}>
+                {sportType}
               </MenuItem>
             ))}
           </Select>
         </Box>
-        {/* Sport */}
-          <Box mb={2} ml={2}>
-            <Typography variant="h6">Sport Type</Typography>
-            <Select
-              labelId="sport-type"
-              id="sport"
-              value={sport}
-              onChange={(e) =>
-                setState((prevState) => ({ ...prevState, sport: e.target.value }))
-              }
-              halfWidth
-            >
-              {favoriteSports.map((sportType) => (
-                <MenuItem key={sportType} value={sportType}>
-                  {sportType}
-                </MenuItem>
-              ))}
-            </Select>
-          </Box>
-        {/* Distance */}
-        <Box mb={2} ml={2}>
-          <Typography variant="h6">Distance (miles)</Typography>
-          <TextField
-            id="distance"
-            value={additionalInfo.distance}
-            onChange={(e) =>
-              setAdditionalInfo((prevState) => ({
-                ...prevState,
-                distance: e.target.value,
-              }))
-            }
-            type="number"
-          />
-        </Box>
-        {/* Time */}
-        <Box mb={2} ml={2}>
-          <Typography variant="h6">Time (minutes)</Typography>
-          <TextField
-            id="time"
-            value={additionalInfo.time}
-            onChange={(e) => {
-              setAdditionalInfo((prevState) => ({
-                ...prevState,
-                time: e.target.value
-              }));
-            }}
-            type="number"
-          />
-        </Box>
-        {/* Additional Information */}
-        <Box mb={2} ml={2}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => setShowAdditionalInfo(!showAdditionalInfo)}
-        >
-          {showAdditionalInfo ? 'Hide' : 'Add'} Additional Information
-        </Button>
-      </Box>
-      <Collapse in={showAdditionalInfo}>   
-        <Box mb={2} ml={2}>
         {/* Date */}
+        <Box mb={2} ml={2}>
         <Typography variant="h6">Date</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={['DatePicker']}>
@@ -246,9 +208,54 @@ export default function AddWorkoutForm() {
         </DemoContainer>
         </LocalizationProvider>
         </Box>
-        <Box mb={2}>
+        
+        {/* Additional Information */}
+        <Box mb={2} ml={2}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => setShowAdditionalInfo(!showAdditionalInfo)}
+        >
+          {showAdditionalInfo ? 'Hide' : 'Add'} Additional Information
+        </Button>
+      </Box>
+    <Collapse in={showAdditionalInfo}> 
+      {/* Distance */}
+      <Box mb={2} ml={2}>
+          <Typography variant="h6">Distance (miles)</Typography>
+          <TextField
+            id="distance"
+            label="Distance"
+            value={additionalInfo.distance}
+            onChange={(e) =>
+              setAdditionalInfo((prevState) => ({
+                ...prevState,
+                distance: e.target.value,
+              }))
+            }
+            type="number"
+          />
+        </Box>
+        {/* Time */}
+        <Box mb={2} ml={2}>
+          <Typography variant="h6">Time (minutes)</Typography>
+          <TextField
+            id="time"
+            label="Time"
+            value={additionalInfo.time || ''}
+            onChange={(e) => {
+              setAdditionalInfo((prevState) => ({
+                ...prevState,
+                time: e.target.value
+              }));
+            }}
+            type="number"
+            placeholder="Enter time in minutes"
+          />
+        </Box>  
         {/* Description */}
-          <Typography variant="h6" ml={2} align="top">Description</Typography>
+        <Box mb={2}>
+          <Typography variant="h6" ml={2}>Description</Typography>
           <TextField
             id="outlined-multiline-static"
             value={additionalInfo.description}
@@ -265,9 +272,9 @@ export default function AddWorkoutForm() {
           />
         </Box>
       </Collapse>
-        <Button variant="contained" color="primary" type="submit" ml={2}>
-          Add Workout
-        </Button>
+      <Button variant="contained" color="primary" type="submit" ml={2}>
+        Add Workout
+      </Button>
         <Snackbar
           open={showSuccessMessage}
           autoHideDuration={10000}
@@ -292,4 +299,3 @@ export default function AddWorkoutForm() {
     </>
   );
 }
-
