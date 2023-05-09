@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2';
 import Modal from '@mui/material/Modal';
@@ -16,6 +16,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import SportIcon from '../SportIcon';
 
+const localStorageUser = localStorage.getItem('user');
+
 export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleCloseAddGoal, handleSubmit, formErrors, setFormErrors, isEdit, isLoading }) {
   const modalStyle = {
     position: 'absolute',
@@ -28,24 +30,38 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
     boxShadow: 24,
     p: 4,
   };
-  const sports = [
-    {
-      value: 'running',
-      label: 'Run'
-    },
-    {
-      value: 'cycling',
-      label: 'Cycling'
-    },
-    {
-      value: 'swimming',
-      label: 'Swim'
-    },
-    {
-      value: 'hiking',
-      label: 'Hike'
+
+  // Get user favorite sport types
+  const [favoriteSports, setFavoriteSports] = useState([]);
+
+  // Success and error message
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const fetchFavorites = async () => {
+    try {
+      const response = await fetch('http://localhost:3010/v0/favorites?' 
+                        + new URLSearchParams({username: localStorageUser}));
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const favoriteSports = await response.json();
+      setFavoriteSports(favoriteSports);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage('An error occurred. Please try again.');
+
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 10000);
     }
-  ]
+  };
+  useEffect(() => {
+    fetchFavorites();
+  }, []);
+
   const types = [
     {
       value: 'race',
@@ -91,9 +107,9 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                       setFormErrors(formErrors.filter(e => e !== 'sport'));
                       setAddGoal({ ...addGoal, sport: e.target.value });
                     }}>
-                      {sports.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
+                      {favoriteSports.map((sportType, index) => (
+                        <MenuItem key={sportType} value={sportType} id={`menu-item-${sportType}-${index}`}>
+                          {sportType}
                         </MenuItem>
                       ))}
                   </Select>

@@ -4,6 +4,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { Typography, Select, MenuItem } from '@mui/material';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -18,6 +19,21 @@ export default function Favorites() {
   const [myFavorites, setMyFavorites] = React.useState(localStorage.getItem('favorites') === null ? [] : JSON.parse(localStorage.getItem('favorites')));
   const [myShownFavorites, setMyShownFavorites] = React.useState(myFavorites);
   const [isLoading, setIsLoading] = React.useState([]);
+
+  const getFavoriteTypes = () => {
+    const favoriteTypes = [
+        "Ride",
+        "Run",
+        "Swim",
+        "Walk",
+        "Weight Training",
+        "Row",
+        "Ski",
+        "Virtual Ride",
+        "Virtual Run",
+      ];
+    return favoriteTypes;
+  };
 
   // Updates localStorage whenever myFavorites is updated
   React.useEffect(() => {
@@ -129,7 +145,21 @@ export default function Favorites() {
       ))}
     </List>
     <Box component='form' noValidate onSubmit={handleSubmit}>
-      <TextField name='sport' label='Sport' value={addFav.sport} required onChange={(e) => setAddFav({ ...addFav, sport: e.target.value })} />
+
+      <Typography variant="h6">New Favorite</Typography>
+      <Select
+        name='sport' 
+        label='Sport' 
+        value={addFav.sport} 
+        required 
+        onChange={(e) => setAddFav({ ...addFav, sport: e.target.value })}
+      >
+        {getFavoriteTypes().map((favoriteType, index) => (
+          <MenuItem key={favoriteType} value={favoriteType} id={`menu-item-${favoriteType}-${index}`}>
+            {favoriteType}
+          </MenuItem>
+        ))}
+      </Select>
       <Button type='submit'>Add Favorite</Button>
     </Box>
     </>

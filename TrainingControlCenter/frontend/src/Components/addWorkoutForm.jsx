@@ -26,7 +26,7 @@ export default function AddWorkoutForm() {
     sport: ''
   });
 
-  // successMessage
+  // Success and error message
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
