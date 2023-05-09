@@ -16,34 +16,8 @@ import {
   Pool,
   SelfImprovement,
 } from '@mui/icons-material';
-import SportsIcon from '@mui/icons-material/Sports';
 
 const username = localStorage.getItem('user');
-
-function Item(props: BoxProps) {
-  const { sx, ...other } = props;
-  return (
-    <Box
-      sx={{
-        display: 'inline-flex',
-        flexDirection: 'column',
-        flexWrap: 'nowrap',
-        p: 1,
-        m: 1,
-        bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : 'grey.100'),
-        color: (theme) => (theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800'),
-        border: '1px solid',
-        borderColor: (theme) =>
-          theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-        borderRadius: 2,
-        fontSize: '0.875rem',
-        fontWeight: '700',
-        ...sx,
-      }}
-      {...other}
-    />
-  );
-}
 
 export default function HomeCalendar() {
   return (
@@ -86,4 +60,43 @@ export default function HomeCalendar() {
     </div>
     </>
   );
+}
+
+function Item(props: BoxProps) {
+  const { sx, ...other } = props;
+  return (
+    <Box
+      sx={{
+        display: 'inline-flex',
+        flexDirection: 'column',
+        flexWrap: 'nowrap',
+        p: 1,
+        m: 1,
+        bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : 'grey.100'),
+        color: (theme) => (theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800'),
+        border: '1px solid',
+        borderColor: (theme) =>
+          theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
+        borderRadius: 2,
+        fontSize: '0.875rem',
+        fontWeight: '700',
+        ...sx,
+      }}
+      {...other}
+    />
+  );
+}
+
+function getFirstDayOfWeek(d) {
+    const date = new Date(d);
+    date.setHours(0, 0, 0, 0);
+    const day = date.getDay();
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(date.setDate(diff));
+}
+
+function getLastDayOfWeek(d) {
+    const date = getFirstDayOfWeek(d);
+    date.setDate(date.getDate() + 6);
+    return date;
 }
