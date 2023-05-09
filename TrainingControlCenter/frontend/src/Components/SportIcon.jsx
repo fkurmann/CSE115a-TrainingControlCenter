@@ -10,8 +10,13 @@ import SurfingIcon from '@mui/icons-material/Surfing';
 import DownhillSkiingIcon from '@mui/icons-material/DownhillSkiing';
 import SnowboardingIcon from '@mui/icons-material/Snowboarding';
 import IceSkatingIcon from '@mui/icons-material/IceSkating';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
-// Example usage: <SportIcon sport='running' />
+// Example usage:
+// 1. Import it
+//      import SportIcon from '../SportIcon';
+// 2. Use it with sport name
+//      <SportIcon sport='running' />
 export default function SportIcon({sport}) {
   sport = sport.toLowerCase()
   if(sport.includes('run')) return <DirectionsRunIcon />
@@ -25,6 +30,7 @@ export default function SportIcon({sport}) {
   if(sport.includes('ski')) return <DownhillSkiingIcon />
   if(sport.includes('snowboard')) return <SnowboardingIcon />
   if(sport.includes('skate')) return <IceSkatingIcon />
+  if(sport.includes('weight')) return <FitnessCenterIcon />
 
   return <SportsIcon />
 }

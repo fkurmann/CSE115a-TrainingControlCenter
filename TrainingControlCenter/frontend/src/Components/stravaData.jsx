@@ -6,12 +6,15 @@ async function uploadActivities(activities) {
   const user = localStorage.getItem('user');
   for (let i = 0; i < activities.length; i++) {
     try {
-      const res = await axios.post('http://localhost:3010/v0/activitiesStrava',
+      // If activity has a description in Strava
+      if (activities[i]['description']) {
+        const res = await axios.post('http://localhost:3010/v0/activitiesStrava',
         {
           username: user,
-          name: JSON.stringify(activities[i]['id']),
-          sport: activities[i]['sport_type'],
-          type: JSON.stringify(activities[i]['type']),
+          name: (activities[i]['name']),
+          type: (activities[i]['type']),
+          sport: (activities[i]['sport_type']),
+          description: JSON.stringify(activities[i]['description']),
           json: JSON.parse(JSON.stringify(activities[i])),
         },
         {
@@ -19,8 +22,28 @@ async function uploadActivities(activities) {
             'Content-Type': 'application/json'
           },
         });
-      if (res.status === 200) {
-        continue;
+        if (res.status === 200) {
+          continue;
+        }
+      } else {
+        // If activity has no description in Strava
+        const res = await axios.post('http://localhost:3010/v0/activitiesStrava',
+        {
+          username: user,
+          name: (activities[i]['name']),
+          type: (activities[i]['type']),
+          sport: (activities[i]['sport_type']),
+          description: 'No description',
+          json: JSON.parse(JSON.stringify(activities[i])),
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+        if (res.status === 200) {
+          continue;
+        }
       }
     } catch (error) {
       console.error('Error posting activity', activities[i], error);

@@ -21,6 +21,7 @@
     "express-session": "^1.17.3",
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
     "mongodb": "^5.3.0",
     "nodemon": "^2.0.22",
     "pg": "^8.10.0",

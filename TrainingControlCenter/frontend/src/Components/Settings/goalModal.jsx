@@ -81,8 +81,8 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
               <Grid xs={1} sx={{mt: 2.2, ml: -3.5, mr: 0.5}}>
                 <SportIcon sport={addGoal.sport} />
               </Grid>
-              <Grid xs={5}>
-                <FormControl variant='standard' error={formErrors.includes('sport')} sx={{ width: '16ch', pb: 1, mr: 2 }}>
+              <Grid xs={6}>
+                <FormControl variant='standard' error={formErrors.includes('sport')} sx={{ width: '15ch', pb: 1 }}>
                   <InputLabel>Sport</InputLabel>
                   <Select
                     variant='standard'
@@ -99,7 +99,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid xs={5}>
+              <Grid xs={2}>
                 <FormControl variant='standard' error={formErrors.includes('distance')} sx={{ width: '12ch', pb: 1 }}>
                   <InputLabel>Distance</InputLabel>
                   <Input
@@ -147,7 +147,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                   <Input
                     startAdornment={<InputAdornment position='start'>Every</InputAdornment> }
                     endAdornment={<InputAdornment position='end'>days</InputAdornment> }
-                    placeholder='365'
+                    placeholder='31'
                     value={addGoal.time}
                     onChange={(e) => {
                       setFormErrors(formErrors.filter(e => e !== 'time'));

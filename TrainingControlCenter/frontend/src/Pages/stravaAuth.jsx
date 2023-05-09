@@ -24,18 +24,18 @@ export default function StravaAuth() {
         .then((data) => {
             storeAccessTokenInDB(data);
         })
-    window.location.href = 'http://localhost:3000';
     return (
-        <div>Strava Token Stored</div>
+        <div>Storing Strava Token...
+        Redirecting... Please wait 5-10 seconds...</div>
     );
 }
 
-function storeAccessTokenInDB(data) {
+async function storeAccessTokenInDB(data) {
     const user = localStorage.getItem('user');
     const token = data['access_token']
     console.log(token);
     localStorage.setItem('stravaAccessToken', token);
-    fetch('http://localhost:3010/v0/token?' + new URLSearchParams({username: user, token: token}), {
+    await fetch('http://localhost:3010/v0/token?' + new URLSearchParams({username: user, token: token}), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -45,6 +45,7 @@ function storeAccessTokenInDB(data) {
           if (!res.ok) {
               throw res;
           }
+          window.location.href = 'http://localhost:3000';
           return res
       })
       .catch((err) => {

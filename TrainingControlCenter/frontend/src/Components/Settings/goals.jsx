@@ -25,11 +25,9 @@ import { Typography } from '@mui/material';
 
 export default function Goals() {
   const user = localStorage.getItem('user');
-
   const emptyGoal = {username: user, name: '', type: '', sport: '', distance: '', time: ''};
   const [openSport, setOpenSport] = React.useState([]);
   // const [myGoals, setMyGoals] = React.useState(localStorage.getItem('goals') === null ? null : JSON.parse(localStorage.getItem('goals')));
-  // const [myGoals, setMyGoals] = React.useState([goal1, goal2, goal3, goal4, goal5]);
   const [myGoals, setMyGoals] = React.useState(null);
   const [goalsByCategory, setGoalsByCategory] = React.useState({});
   const [goalCategories, setGoalCategories] = React.useState([]);
@@ -295,7 +293,7 @@ export default function Goals() {
         </ListItemButton>
         <Divider variant="inset" component="li" />
         <Collapse in={openSport.includes(sport)} timeout="auto" unmountOnExit>
-          <Grid container xsOffset={0}>
+          <Grid container>
             {goalsByCategory[sport].map((goal) => (
               <Accordion key={goal.name} sx={{ minWidth: 350, backgroundColor: '#fcfcfc' }}>
                 <AccordionSummary expandIcon={<ExpandMore />} >

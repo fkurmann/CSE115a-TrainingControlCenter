@@ -14,16 +14,17 @@ const client = new MongoClient(uri, {
 // Activitiy collection functions
 
 // Response to manual entry of activity create activity
-exports.createActivity = async (username, name, type, sport, json) => {
+exports.createActivity = async (username, name, type, sport, description, json) => {
   // Credentials into object
   const activitySkeleton = {
     username: username,
     name: name,
     type: type,
     sport: sport,
+    description: description,
     json: json
   }
- 
+
   // Access database
   try {
     await client.connect();
@@ -41,13 +42,48 @@ exports.createActivity = async (username, name, type, sport, json) => {
 exports.findActivity = async (username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate) => {
   let parameters = {
   }
-  let variablesIndex = 0;
-  const variables = ['username', 'name', 'sport', 'type', 'minDuration', 'maxDuration', 'minDistance', 'maxDistance', 'minDate', 'maxDate']
-  for (item of [username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
+
+  const variables = ['username', 'name', 'sport', 'type'];
+  for (const[idx, item] of [username, name, sport, type].entries()) {
     if (item != null) {
-      parameters[variables[variablesIndex]] = item;
+      parameters[variables[idx]] = item;
     }
-    variablesIndex+=1;
+  }
+  if ((minDuration != null) && (maxDuration != null)) {
+    parameters["json.moving_time"] = {$gte: minDuration, $lte: maxDuration};
+  } else if ((minDuration == null) && (maxDuration != null)) {
+    parameters["json.moving_time"] = {$lte: maxDuration};
+  } else if ((minDuration != null) && (maxDuration == null)) {
+    parameters["json.moving_time"] = {$gte: minDuration};
+  }
+
+  if ((minDistance != null) && (maxDistance != null)) {
+    parameters["json.distance"] = {$gte: minDistance, $lte: maxDistance};
+  } else if ((minDistance == null) && (maxDistance != null)) {
+    parameters["json.distance"] = {$lte: maxDistance};
+  } else if ((minDistance != null) && (maxDistance == null)) {
+    parameters["json.distance"] = {$gte: minDistance};
+  }
+
+  if (minDate != null) {
+    if (isNaN(Date.parse(minDate))) {
+      console.error(`Invalid date format '${minDate}'`);
+      return -1;
+    }
+  }
+  if (maxDate != null) {
+    if (isNaN(Date.parse(maxDate))) {
+      console.error(`Invalid date format '${maxDate}'`);
+      return -1;
+    }
+  }
+
+  if ((minDate != null) && (maxDate != null)) {
+    parameters["json.start_date_local"] = {$gte: new Date(minDate).toISOString(), $lte: new Date(maxDate).toISOString()};
+  } else if ((minDate == null) && (maxDate != null)) {
+    parameters["json.start_date_local"] = {$lte: new Date(maxDate).toISOString()};
+  } else if ((minDate != null) && (maxDate == null)) {
+    parameters["json.start_date_local"] = {$gte: new Date(minDate).toISOString()};
   }
 
   // Access database
