@@ -191,8 +191,37 @@ export default function AddWorkoutForm() {
             ))}
           </Select>
         </Box>
-        {/* Distance */}
+        {/* Date */}
         <Box mb={2} ml={2}>
+        <Typography variant="h6">Date</Typography>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DemoContainer components={['DatePicker']}>
+        <DatePicker
+          inputFormat="YYYY-MM-DD"
+          onChange={(value) =>
+              setAdditionalInfo((prevState) => ({
+                ...prevState,
+                start_date_local: value.toISOString(),
+              }))
+            }
+        />        
+        </DemoContainer>
+        </LocalizationProvider>
+        </Box>
+        
+        {/* Additional Information */}
+        <Box mb={2} ml={2}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => setShowAdditionalInfo(!showAdditionalInfo)}
+        >
+          {showAdditionalInfo ? 'Hide' : 'Add'} Additional Information
+        </Button>
+      </Box>
+    <Collapse in={showAdditionalInfo}> 
+      {/* Distance */}
+      <Box mb={2} ml={2}>
           <Typography variant="h6">Distance (miles)</Typography>
           <TextField
             id="distance"
@@ -223,37 +252,9 @@ export default function AddWorkoutForm() {
             type="number"
             placeholder="Enter time in minutes"
           />
-        </Box>
-        {/* Additional Information */}
-        <Box mb={2} ml={2}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => setShowAdditionalInfo(!showAdditionalInfo)}
-        >
-          {showAdditionalInfo ? 'Hide' : 'Add'} Additional Information
-        </Button>
-      </Box>
-      <Collapse in={showAdditionalInfo}>   
-        <Box mb={2} ml={2}>
-        {/* Date */}
-        <Typography variant="h6">Date</Typography>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DemoContainer components={['DatePicker']}>
-        <DatePicker
-          inputFormat="YYYY-MM-DD"
-          onChange={(value) =>
-              setAdditionalInfo((prevState) => ({
-                ...prevState,
-                start_date_local: value.toISOString(),
-              }))
-            }
-        />        
-        </DemoContainer>
-        </LocalizationProvider>
-        </Box>
-        <Box mb={2}>
+        </Box>  
         {/* Description */}
+        <Box mb={2}>
           <Typography variant="h6" ml={2}>Description</Typography>
           <TextField
             id="outlined-multiline-static"
