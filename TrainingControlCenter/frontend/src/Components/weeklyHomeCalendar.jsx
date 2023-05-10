@@ -1,29 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TextField,
   Button,
   Box,
+  CircularProgress,
   IconButton,
   Stack,
 } from '@mui/material';
 import {
   DirectionsBike,
   DirectionsRun,
+  DirectionsWalk,
   DownhillSkiing,
   FitnessCenter,
   GraphicEq,
   Hiking,
   Pool,
-  SelfImprovement,
+  Rowing,
 } from '@mui/icons-material';
 
-const username = localStorage.getItem('user');
-
 export default function HomeCalendar() {
+  const user = localStorage.getItem('user');
+  const [weeklyActivities, setWeeklyActivities] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    if (weeklyActivities.length == 0) {
+      console.log(weeklyActivities)
+      console.log("Loading weekly activities");
+        setIsLoading(true);
+        const d = new Date();
+        fetch("http://localhost:3010/v0/activities?" +
+            new URLSearchParams({
+              username: user,
+              minDate: getFirstDayOfWeek(d),
+              maxDate: getLastDayOfWeek(d),
+            }),
+          {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((res) => {
+            if (!res.ok) {
+              throw res;
+            }
+            return res.json();
+          })
+          .then((res) => {
+            if (res) {
+              console.log("Loaded weekly activities", res);
+              setWeeklyActivities(res);
+              setIsLoading(false);
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+            alert(`Error retrieving activities for user ${user}`);
+          })
+    } else {
+      setIsLoading(false);
+    }
+  }, [user, weeklyActivities, isLoading]);
+
   return (
     <>
+    {
+    isLoading ?
+    <CircularProgress /> :
+    <>
     <h2 align="right">Calendar/Week</h2>
-
     <div style={{ width: '100%' }}>
       <Box
         sx={{
@@ -59,6 +106,8 @@ export default function HomeCalendar() {
       </Box>
     </div>
     </>
+    }
+    </>
   );
 }
 
@@ -92,11 +141,12 @@ function getFirstDayOfWeek(d) {
     date.setHours(0, 0, 0, 0);
     const day = date.getDay();
     const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-    return new Date(date.setDate(diff));
+    const newDate = new Date(date.setDate(diff))
+    return newDate.toISOString();
 }
 
 function getLastDayOfWeek(d) {
-    const date = getFirstDayOfWeek(d);
+    const date = new Date(getFirstDayOfWeek(d));
     date.setDate(date.getDate() + 6);
-    return date;
+    return date.toISOString();
 }

@@ -11,7 +11,7 @@ exports.addActivity = async (req, res) => {
   // Convert the date object to a YYYY/MM/DD format
   let formattedDate = date ? date.toISOString().substring(0, 10) : null;
   let formattedDateWithSlashes = formattedDate ? formattedDate.replace(/-/g, '/') : null;
- 
+
   // Checks that values are not defaults, if they are, replace with null
   if (username === 'string') {
     res.status(401).send('Error, need a username');
@@ -50,7 +50,7 @@ exports.addActivity = async (req, res) => {
     time: time || undefined,
     start_date_local: formattedDateWithSlashes || undefined,
   };
-  
+
   const returnValue = await dbActivities.createActivity(username, name, type, sport, descriptionText, activityJson);
   // Error case
   if (returnValue === -1) {
@@ -76,8 +76,8 @@ exports.addActivityStrava = async (req, res) => {
   }
   // if (!req.body.hasOwnProperty('datetime')) {
   //   console.log('Warning: datetime is missing from request body.');
-  // } 
-  
+  // }
+
 };
 // Delete activity from user's activities, either one if name is given or all
 exports.deleteActivity = async (req, res) => {
@@ -89,7 +89,7 @@ exports.deleteActivity = async (req, res) => {
   else {
     returnValue = await dbActivities.clearActivities(username);
   }
-    
+
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error deleting activity');
@@ -110,7 +110,7 @@ exports.getActivities = async (req, res) => {
   let type = req.query.type;
   // let time = req.query.time;
   // let start_date_local = req.query.start_date_local;
-  
+
   let minDuration = req.query.minDuration;
   let maxDuration = req.query.maxDuration;
   let minDistance = req.query.minDistance;
@@ -129,7 +129,6 @@ exports.getActivities = async (req, res) => {
     maxDistance = maxDistance*1609.34
   }
 
-  
   for (item of [name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
     if (item == undefined) {
       item = null;
@@ -147,7 +146,7 @@ exports.getActivities = async (req, res) => {
     maxDistance = maxDistance*1609.34
   }
 
-  const returnValue = await dbActivities.findActivity(username, name, sport);
+  const returnValue = await dbActivities.findActivity(username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate);
 
   // Error case
   if (returnValue === -1) {

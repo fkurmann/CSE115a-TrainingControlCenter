@@ -28,7 +28,7 @@ export default function Home() {
         <Box>
           <div className='parent'>
             <div style={{float: 'left'}}>
-              <RecentActivitiesList></RecentActivitiesList>
+              <RecentActivitiesList />
               <AddWorkoutForm />
               <Button
                 onClick={() => getFiveActivities()}
@@ -36,8 +36,8 @@ export default function Home() {
                 variant='contained'
                 sx={{mt: 3, mb: 2}}
               >
-            Upload Activities From Strava
-          </Button>
+              Upload Activities From Strava
+              </Button>
             </div>
 
             <div style={{float: 'right'}}>
