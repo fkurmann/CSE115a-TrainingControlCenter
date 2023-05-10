@@ -17,20 +17,22 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 //      import SportIcon from '../SportIcon';
 // 2. Use it with sport name
 //      <SportIcon sport='running' />
-export default function SportIcon({sport}) {
+export default function SportIcon({sport, fontSize='medium'}) {
   sport = sport.toLowerCase()
-  if(sport.includes('run')) return <DirectionsRunIcon />
-  if(sport.includes('cycl') || sport.includes('bike') || sport.includes('ride')) return <DirectionsBikeIcon />
-  if(sport.includes('swim')) return <PoolIcon />
-  if(sport.includes('walk')) return <DirectionsWalkIcon />
-  if(sport.includes('hike') || sport.includes('hiking')) return <HikingIcon />
-  if(sport.includes('kayak') || sport.includes('canoe')) return <KayakingIcon />
-  if(sport.includes('row')) return <RowingIcon />
-  if(sport.includes('surf')) return <SurfingIcon />
-  if(sport.includes('ski')) return <DownhillSkiingIcon />
-  if(sport.includes('snowboard')) return <SnowboardingIcon />
-  if(sport.includes('skate')) return <IceSkatingIcon />
-  if(sport.includes('weight')) return <FitnessCenterIcon />
+  fontSize = fontSize.toLowerCase()
+  if(sport.includes('run') || sport.includes('virtual run')) return <DirectionsRunIcon sx={{fontSize:fontSize}}/>
+  if(sport.includes('cycle') || sport.includes('bike') || sport.includes('ride') || sport.includes('virtual ride'))
+    return <DirectionsBikeIcon sx={{fontSize:fontSize}}/>
+  if(sport.includes('swim')) return <PoolIcon sx={{fontSize:fontSize}}/>
+  if(sport.includes('walk')) return <DirectionsWalkIcon sx={{fontSize:fontSize}}/>
+  if(sport.includes('hike') || sport.includes('hiking')) return <HikingIcon sx={{fontSize:fontSize}}/>
+  if(sport.includes('kayak') || sport.includes('canoe')) return <KayakingIcon sx={{fontSize:fontSize}}/>
+  if(sport.includes('row')) return <RowingIcon sx={{fontSize:fontSize}}/>
+  if(sport.includes('surf')) return <SurfingIcon sx={{fontSize:fontSize}}/>
+  if(sport.includes('ski')) return <DownhillSkiingIcon sx={{fontSize:fontSize}}/>
+  if(sport.includes('snowboard')) return <SnowboardingIcon sx={{fontSize:fontSize}}/>
+  if(sport.includes('skate')) return <IceSkatingIcon sx={{fontSize:fontSize}}/>
+  if(sport.includes('weight')) return <FitnessCenterIcon sx={{fontSize:fontSize}}/>
 
   return <SportsIcon />
 }

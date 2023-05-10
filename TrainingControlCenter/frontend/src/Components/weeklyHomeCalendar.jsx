@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   TextField,
   Button,
@@ -7,17 +7,8 @@ import {
   IconButton,
   Stack,
 } from '@mui/material';
-import {
-  DirectionsBike,
-  DirectionsRun,
-  DirectionsWalk,
-  DownhillSkiing,
-  FitnessCenter,
-  GraphicEq,
-  Hiking,
-  Pool,
-  Rowing,
-} from '@mui/icons-material';
+
+import SportIcon from './SportIcon';
 
 export default function HomeCalendar() {
   const user = localStorage.getItem('user');
@@ -25,8 +16,7 @@ export default function HomeCalendar() {
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (weeklyActivities.length == 0) {
-      console.log(weeklyActivities)
+    if (weeklyActivities.length === 0) {
       console.log("Loading weekly activities");
         setIsLoading(true);
         const d = new Date();
@@ -52,6 +42,7 @@ export default function HomeCalendar() {
             if (res) {
               console.log("Loaded weekly activities", res);
               setWeeklyActivities(res);
+              // display icons before rendering loading false
               setIsLoading(false);
             }
           })
@@ -86,22 +77,39 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>M</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         <IconButton size="large">
-          <DirectionsBike fontSize="large" color="primary" />
+          <SportIcon sport="bike" fontSize="125%"/>
         </IconButton>
         </Stack>
+        </Item>
 
-        </Item>
         <Item sx={{ width: 75, fontSize: 20 }}><u>Tu</u>
+        <Stack alignItems="left" direction="column" spacing={2}>
+        </Stack>
         </Item>
+
         <Item sx={{ width: 75, fontSize: 20 }}><u>W</u>
+        <Stack alignItems="left" direction="column" spacing={2}>
+        </Stack>
         </Item>
+
         <Item sx={{ width: 75, fontSize: 20 }}><u>Th</u>
+        <Stack alignItems="left" direction="column" spacing={2}>
+        </Stack>
         </Item>
+
         <Item sx={{ width: 75, fontSize: 20 }}><u>F</u>
+        <Stack alignItems="left" direction="column" spacing={2}>
+        </Stack>
         </Item>
+
         <Item sx={{ width: 75, fontSize: 20 }}><u>Sa</u>
+        <Stack alignItems="left" direction="column" spacing={2}>
+        </Stack>
         </Item>
+
         <Item sx={{ width: 75, fontSize: 20 }}><u>Su</u>
+        <Stack alignItems="left" direction="column" spacing={2}>
+        </Stack>
         </Item>
       </Box>
     </div>
@@ -150,3 +158,4 @@ function getLastDayOfWeek(d) {
     date.setDate(date.getDate() + 6);
     return date.toISOString();
 }
+
