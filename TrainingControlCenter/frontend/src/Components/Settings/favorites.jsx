@@ -29,8 +29,8 @@ export default function Favorites() {
         "Weight Training",
         "Row",
         "Ski",
-        "Virtual Ride",
-        "Virtual Run",
+        "VirtualRide",
+        "VirtualRun",
       ];
     return favoriteTypes;
   };

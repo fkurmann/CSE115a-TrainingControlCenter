@@ -14,7 +14,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import SportIcon from '../SportIcon';
+import SportIcon from '../sportIcon';
 
 const localStorageUser = localStorage.getItem('user');
 

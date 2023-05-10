@@ -14,23 +14,23 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
 // Example usage:
 // 1. Import it
-//      import SportIcon from '../SportIcon';
+//      import SportIcon from '../sportIcon';
 // 2. Use it with sport name
 //      <SportIcon sport='running' />
 export default function SportIcon({sport}) {
   sport = sport.toLowerCase()
-  if(sport.includes('run')) return <DirectionsRunIcon />
-  if(sport.includes('cycl') || sport.includes('bike') || sport.includes('ride')) return <DirectionsBikeIcon />
-  if(sport.includes('swim')) return <PoolIcon />
-  if(sport.includes('walk')) return <DirectionsWalkIcon />
-  if(sport.includes('hike') || sport.includes('hiking')) return <HikingIcon />
-  if(sport.includes('kayak') || sport.includes('canoe')) return <KayakingIcon />
-  if(sport.includes('row')) return <RowingIcon />
-  if(sport.includes('surf')) return <SurfingIcon />
-  if(sport.includes('ski')) return <DownhillSkiingIcon />
-  if(sport.includes('snowboard')) return <SnowboardingIcon />
-  if(sport.includes('skate')) return <IceSkatingIcon />
-  if(sport.includes('weight')) return <FitnessCenterIcon />
+  if(sport.includes('Run')) return <DirectionsRunIcon />
+  if(sport.includes('cycl') || sport.includes('bike') || sport.includes('Ride')) return <DirectionsBikeIcon />
+  if(sport.includes('Swim')) return <PoolIcon />
+  if(sport.includes('Walk')) return <DirectionsWalkIcon />
+  if(sport.includes('Hike') || sport.includes('hiking')) return <HikingIcon />
+  if(sport.includes('Kayak') || sport.includes('canoe')) return <KayakingIcon />
+  if(sport.includes('Row')) return <RowingIcon />
+  if(sport.includes('Surf')) return <SurfingIcon />
+  if(sport.includes('Ski')) return <DownhillSkiingIcon />
+  if(sport.includes('Snowboard')) return <SnowboardingIcon />
+  if(sport.includes('Skate')) return <IceSkatingIcon />
+  if(sport.includes('Weight')) return <FitnessCenterIcon />
 
   return <SportsIcon />
 }

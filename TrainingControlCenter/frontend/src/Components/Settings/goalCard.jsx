@@ -5,7 +5,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
-import SportIcon from '../SportIcon';
+import SportIcon from '../sportIcon';
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
