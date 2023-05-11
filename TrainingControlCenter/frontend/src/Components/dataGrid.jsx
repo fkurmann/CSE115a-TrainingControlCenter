@@ -11,12 +11,12 @@ export default function WorkoutGrid() {
   const [isLoading, setIsLoading] = React.useState(true);
 
   const columns = [
-    { field: 'name', headerName: 'Name' },
-    { field: 'sport', headerName: 'Sport' },
-    { field: 'type', headerName: 'Type' },
-    { field: 'start_date_local', headerName: 'Date' },
-    { field: 'distance', headerName: 'Distance' },
-    { field: 'moving_time', headerName: 'Moving Time' },
+    { field: 'name', headerName: 'Name', width: 250 },
+    { field: 'sport', headerName: 'Sport', width: 150 },
+    { field: 'type', headerName: 'Type', width: 150 },
+    { field: 'start_date_local', headerName: 'Date', valueFormatter: params => (params.value), width: 150 },
+    { field: 'distance', headerName: 'Distance', valueFormatter: params => parseFloat((params.value)/1609).toFixed(2), width: 75 },
+    { field: 'moving_time', headerName: 'Time', valueFormatter: params => (parseFloat(params.value)/60).toFixed(2), width: 75 },
   ]
   
   // Initializes myActivities
