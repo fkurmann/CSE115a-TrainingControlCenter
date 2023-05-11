@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, getGridNumericOperators } from '@mui/x-data-grid';
 import CircularProgress from '@mui/material/CircularProgress';
-
-
 
 export default function WorkoutGrid() {
   const user = localStorage.getItem('user');
@@ -15,8 +13,12 @@ export default function WorkoutGrid() {
     { field: 'sport', headerName: 'Sport', width: 150 },
     { field: 'type', headerName: 'Type', width: 150 },
     { field: 'start_date_local', headerName: 'Date', valueFormatter: params => (params.value), width: 150 },
-    { field: 'distance', headerName: 'Distance', valueFormatter: params => parseFloat((params.value)/1609).toFixed(2), width: 75 },
-    { field: 'moving_time', headerName: 'Time', valueFormatter: params => (parseFloat(params.value)/60).toFixed(2), width: 75 },
+    { field: 'distance', headerName: 'Distance', width: 75, 
+      valueGetter: params => Number(parseFloat((params.value)/1609).toFixed(2)),
+      filterOperators: getGridNumericOperators() },
+    { field: 'moving_time', headerName: 'Time', width: 75,
+      valueGetter: params => Number(parseFloat((params.value)/60).toFixed(2)),
+      filterOperators: getGridNumericOperators() },
   ]
   
   // Initializes myActivities

@@ -34,7 +34,6 @@ export default function AddWorkoutForm() {
   const [additionalInfo, setAdditionalInfo] = useState({
     distance: '',
     time: null,
-
     start_date_local: '',
     description: ''
   });
