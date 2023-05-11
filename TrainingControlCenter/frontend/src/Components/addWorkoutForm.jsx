@@ -7,7 +7,7 @@ import {
   Alert,
   Box,
   Collapse,
-  MenuItem, 
+  MenuItem,
   Select,
   Typography
 } from '@mui/material';
@@ -34,7 +34,7 @@ export default function AddWorkoutForm() {
   const [additionalInfo, setAdditionalInfo] = useState({
     distance: '',
     time: null,
-    
+
     start_date_local: '',
     description: ''
   });
@@ -51,7 +51,7 @@ export default function AddWorkoutForm() {
         body: JSON.stringify({
           username: localStorageUser,
           name: name,
-          type: type, 
+          type: type,
           sport: sport,
           description: descriptions,
           json: {
@@ -59,25 +59,25 @@ export default function AddWorkoutForm() {
             time: additionalInfo.time,
             start_date_local: formattedDate
           }
-        }),        
+        }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
         }
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       if (response.status === 200) {
         setShowSuccessMessage(true);
         setState({ name: '', type: '', sport: '' });
-        setAdditionalInfo({ distance: '', time: '', 
+        setAdditionalInfo({ distance: '', time: '',
                             date: '', start_date_local: '', description: ''});
         setShowAdditionalInfo(false);
         setTimeout(() => {
           setShowSuccessMessage(false);
-        }, 10000);       
+        }, 10000);
       } else {
         const data = await response.json();
         setErrorMessage(data.message);
@@ -88,13 +88,13 @@ export default function AddWorkoutForm() {
     } catch (error) {
       console.error(error);
       setErrorMessage('An error occurred. Please try again.');
-  
+
       setTimeout(() => {
         setErrorMessage('');
       }, 10000);
     }
   };
-  
+
   // get activity types
   const getActivityTypes = () => {
     const activityTypes = [
@@ -112,7 +112,7 @@ export default function AddWorkoutForm() {
 
   const fetchFavorites = async () => {
     try {
-      const response = await fetch('http://localhost:3010/v0/favorites?' 
+      const response = await fetch('http://localhost:3010/v0/favorites?'
                         + new URLSearchParams({username: localStorageUser}));
 
       if (!response.ok) {
@@ -210,7 +210,7 @@ export default function AddWorkoutForm() {
           </DemoContainer>
         </LocalizationProvider>
         </Box>
-        
+
         {/* Additional Information */}
         <Box mb={2} ml={2}>
         <Button
@@ -221,7 +221,7 @@ export default function AddWorkoutForm() {
           {showAdditionalInfo ? 'Hide' : 'Add'} Additional Information
         </Button>
       </Box>
-    <Collapse in={showAdditionalInfo}> 
+    <Collapse in={showAdditionalInfo}>
       {/* Distance */}
       <Box mb={2} ml={2}>
           <Typography variant="h6">Distance (miles)</Typography>
@@ -232,7 +232,7 @@ export default function AddWorkoutForm() {
             onChange={(e) =>
               setAdditionalInfo((prevState) => ({
                 ...prevState,
-                distance: e.target.value,
+                distance: Number(e.target.value),
               }))
             }
             type="number"
@@ -248,13 +248,13 @@ export default function AddWorkoutForm() {
             onChange={(e) => {
               setAdditionalInfo((prevState) => ({
                 ...prevState,
-                time: e.target.value
+                time: Number(e.target.value)
               }));
             }}
             type="number"
             placeholder="Enter time in minutes"
           />
-        </Box>  
+        </Box>
         {/* Description */}
         <Box mb={2}>
           <Typography variant="h6" ml={2}>Description</Typography>
