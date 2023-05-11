@@ -8,17 +8,21 @@ import {
   Stack,
 } from '@mui/material';
 
-import SportIcon from './SportIcon';
+import SportIcon from './sportIcon';
 
 export default function HomeCalendar() {
   const user = localStorage.getItem('user');
   const [weeklyActivities, setWeeklyActivities] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isGetActivities, setIsGetActivities] = React.useState(true)
+  const [dayActivities, setDayActivities] = React.useState({})
+  // var dayActivities = {};
 
   React.useEffect(() => {
     if (weeklyActivities.length === 0) {
       console.log("Loading weekly activities");
         setIsLoading(true);
+        setIsGetActivities(true);
         const d = new Date();
         fetch("http://localhost:3010/v0/activities?" +
             new URLSearchParams({
@@ -39,11 +43,10 @@ export default function HomeCalendar() {
             return res.json();
           })
           .then((res) => {
-            if (res) {
+            if (res.length > 0) {
               console.log("Loaded weekly activities", res);
               setWeeklyActivities(res);
-              // display icons before rendering loading false
-              setIsLoading(false);
+              setIsGetActivities(false);
             }
           })
           .catch((err) => {
@@ -53,13 +56,28 @@ export default function HomeCalendar() {
     } else {
       setIsLoading(false);
     }
-  }, [user, weeklyActivities, isLoading]);
+  }, [user, weeklyActivities, isLoading, isGetActivities]);
+
+  React.useEffect(() => {
+    if (isGetActivities === false && isLoading === true) {
+      for (let i = 0; i < 7; i++) {
+        setDayActivities[i] = getActivitiesForDay(weeklyActivities, i.toString());
+        console.log(getActivitiesForDay(weeklyActivities, i.toString()))
+      }
+      console.log(dayActivities);
+      setIsLoading(false);
+    }
+  }, [isGetActivities, weeklyActivities, isLoading, dayActivities]);
+
+  React.useEffect(() => {
+    if (isLoading === false) {
+      console.log(dayActivities);
+    }
+  }, [dayActivities, isLoading])
 
   return (
     <>
     {
-    isLoading ?
-    <CircularProgress /> :
     <>
     <h2 align="right">Calendar/Week</h2>
     <div style={{ width: '100%' }}>
@@ -84,6 +102,10 @@ export default function HomeCalendar() {
 
         <Item sx={{ width: 75, fontSize: 20 }}><u>Tu</u>
         <Stack alignItems="left" direction="column" spacing={2}>
+        /*idea make separate file and export it
+        call function to get list of activities for tuesday (each day)
+        pass list into new function jsx imported file to get returned icon list using*/
+
         </Stack>
         </Item>
 
@@ -145,17 +167,26 @@ function Item(props: BoxProps) {
 }
 
 function getFirstDayOfWeek(d) {
-    const date = new Date(d);
-    date.setHours(0, 0, 0, 0);
-    const day = date.getDay();
-    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-    const newDate = new Date(date.setDate(diff))
-    return newDate.toISOString();
+  const date = new Date(d);
+  date.setHours(0, 0, 0, 0);
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+  const newDate = new Date(date.setDate(diff))
+  return newDate.toISOString();
 }
 
 function getLastDayOfWeek(d) {
-    const date = new Date(getFirstDayOfWeek(d));
-    date.setDate(date.getDate() + 6);
-    return date.toISOString();
+  const date = new Date(getFirstDayOfWeek(d));
+  date.setDate(date.getDate() + 6);
+  return date.toISOString();
 }
 
+function getActivitiesForDay(activities, day) {
+  var day_activities = []
+  for (let i = 0; i < activities.length; i++) {
+    if (new Date(activities[i]["json"]["start_date_local"]).getDay().toString() === day) {
+      day_activities.push(activities[i]);
+    }
+  }
+  return day_activities;
+}
