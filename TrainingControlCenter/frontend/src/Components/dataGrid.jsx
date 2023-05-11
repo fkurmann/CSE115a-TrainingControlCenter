@@ -41,7 +41,6 @@ export default function WorkoutGrid() {
             console.log('Loaded activities');
             localStorage.setItem('activities', JSON.stringify(res));
             setMyActivities(res);
-            console.log(res);
             setIsLoading(false);
           }
         })
@@ -71,7 +70,7 @@ export default function WorkoutGrid() {
         rows={myActivities}
         getRowId={(row) => row._id}
         columns={columns}
-        pageSize={50}
+        pageSize={100}
       />
     </div>
     }

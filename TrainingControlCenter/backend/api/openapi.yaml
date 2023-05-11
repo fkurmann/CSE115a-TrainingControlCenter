@@ -561,10 +561,12 @@ components:
           type: string
           nullable: true
         distance:
-          type: string
+          type: number
+          format: double
           nullable: true
         moving_time:
-          type: string
+          type: integer
+          format: int32
           nullable: true
         description:
           type: string
