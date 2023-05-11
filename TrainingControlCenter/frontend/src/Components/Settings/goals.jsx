@@ -18,7 +18,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
-import SportIcon from '../SportIcon';
+import SportIcon from '../sportIcon';
 import GoalCard from './goalCard';
 import GoalModal from './goalModal';
 import { Typography } from '@mui/material';

@@ -47,7 +47,7 @@ exports.addActivity = async (req, res) => {
   // Add activity metadata to JSON in format similar to strava activity jsons
   const activityJson = {
     distance: distance || undefined,
-    time: time || undefined,
+    moving_time: time*60 || undefined,
     start_date_local: formattedDateWithSlashes || undefined,
   };
 

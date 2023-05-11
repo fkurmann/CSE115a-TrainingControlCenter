@@ -92,6 +92,7 @@ function ResponsiveAppBar() {
               }}
             >
               <MenuItem component='a' onClick={handleCloseNavMenu} href='/'>Home</MenuItem>
+              <MenuItem component='a' onClick={handleCloseNavMenu} href='/workoutList'>Workout List</MenuItem>
               <MenuItem component='a' onClick={handleCloseNavMenu} href='/dataCenter'>Data Center</MenuItem>
               <MenuItem component='a' onClick={handleCloseNavMenu} href='/planTraining'>Plan Training</MenuItem>
             </Menu>
@@ -122,6 +123,13 @@ function ResponsiveAppBar() {
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               Home
+            </Button>
+            <Button
+              onClick={handleCloseNavMenu}
+              href='/workoutList'
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Workout List
             </Button>
             <Button
               onClick={handleCloseNavMenu}

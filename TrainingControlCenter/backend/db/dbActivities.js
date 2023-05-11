@@ -13,7 +13,7 @@ const client = new MongoClient(uri, {
 
 // Activitiy collection functions
 
-// Response to manual entry of activity create activity
+// Add activity to database
 exports.createActivity = async (username, name, type, sport, description, json) => {
   // Credentials into object
   const activitySkeleton = {
@@ -22,6 +22,9 @@ exports.createActivity = async (username, name, type, sport, description, json) 
     type: type,
     sport: sport,
     description: description,
+    start_date_local: json.start_date_local,
+    distance: json.distance,
+    moving_time: json.moving_time,
     json: json
   }
 

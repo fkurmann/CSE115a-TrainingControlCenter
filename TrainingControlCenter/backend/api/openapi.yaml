@@ -557,8 +557,16 @@ components:
         sport:
           type: string
           nullable: true
-        date:
+        start_date_local:
           type: string
+          nullable: true
+        distance:
+          type: number
+          format: double
+          nullable: true
+        moving_time:
+          type: integer
+          format: int32
           nullable: true
         description:
           type: string
