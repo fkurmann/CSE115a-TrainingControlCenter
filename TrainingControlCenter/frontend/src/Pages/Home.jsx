@@ -9,6 +9,7 @@ import { getFiveActivities } from '../Components/stravaData';
 import ResponsiveAppBar from '../Components/appBar';
 import RecentActivitiesList from '../Components/recentActivities';
 import AddWorkoutForm from '../Components/addWorkoutForm';
+import HomeCalendar from '../Components/weeklyHomeCalendar';
 
 /**
  * Create the theme to be used
@@ -25,20 +26,28 @@ export default function Home() {
         <ResponsiveAppBar />
         <h1>Training Control Center, {localStorage.getItem('user')}</h1>
         <Box>
-          <RecentActivitiesList></RecentActivitiesList>
-          <AddWorkoutForm />
-          <Button
-            onClick={() => getFiveActivities()}
-            type='upload'
-            variant='contained'
-            sx={{mt: 3, mb: 2}}
-          >
-            Upload Activities From Strava
-          </Button>
+          <div className='parent'>
+            <div style={{float: 'left'}}>
+              <RecentActivitiesList />
+              <AddWorkoutForm />
+              <Button
+                onClick={() => getFiveActivities()}
+                type='upload'
+                variant='contained'
+                sx={{mt: 3, mb: 2}}
+              >
+              Upload Activities From Strava
+              </Button>
+            </div>
+
+            <div style={{float: 'right'}}>
+              <HomeCalendar></HomeCalendar>
+            </div>
+          </div>
         </Box>
-        
+
       </Container>
-      
+
     </ThemeProvider>
   );
 }
