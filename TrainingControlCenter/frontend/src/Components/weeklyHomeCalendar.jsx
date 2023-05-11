@@ -1,7 +1,5 @@
 import React from 'react';
 import {
-  TextField,
-  Button,
   Box,
   CircularProgress,
   IconButton,
@@ -16,7 +14,6 @@ export default function HomeCalendar() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [isGetActivities, setIsGetActivities] = React.useState(true)
   const [dayActivities, setDayActivities] = React.useState({})
-  // var dayActivities = {};
 
   React.useEffect(() => {
     if (weeklyActivities.length === 0) {
@@ -46,6 +43,11 @@ export default function HomeCalendar() {
             if (res.length > 0) {
               console.log("Loaded weekly activities", res);
               setWeeklyActivities(res);
+              var temp = {}
+              for (let i = 0; i < 7; i++) {
+                temp[i] = getActivitiesForDay(res, i.toString())
+              }
+              setDayActivities(temp);
               setIsGetActivities(false);
             }
           })
@@ -56,28 +58,13 @@ export default function HomeCalendar() {
     } else {
       setIsLoading(false);
     }
-  }, [user, weeklyActivities, isLoading, isGetActivities]);
-
-  React.useEffect(() => {
-    if (isGetActivities === false && isLoading === true) {
-      for (let i = 0; i < 7; i++) {
-        setDayActivities[i] = getActivitiesForDay(weeklyActivities, i.toString());
-        console.log(getActivitiesForDay(weeklyActivities, i.toString()))
-      }
-      console.log(dayActivities);
-      setIsLoading(false);
-    }
-  }, [isGetActivities, weeklyActivities, isLoading, dayActivities]);
-
-  React.useEffect(() => {
-    if (isLoading === false) {
-      console.log(dayActivities);
-    }
-  }, [dayActivities, isLoading])
+  }, [user, weeklyActivities, isLoading, isGetActivities, dayActivities]);
 
   return (
     <>
     {
+    isLoading ?
+    <CircularProgress /> :
     <>
     <h2 align="right">Calendar/Week</h2>
     <div style={{ width: '100%' }}>
@@ -94,43 +81,71 @@ export default function HomeCalendar() {
       >
         <Item sx={{ width: 75, fontSize: 20 }}><u>M</u>
         <Stack alignItems="left" direction="column" spacing={2}>
-        <IconButton size="large">
-          <SportIcon sport="bike" fontSize="125%"/>
-        </IconButton>
+        {dayActivities[1].map((activity) => (
+          <IconButton key={activity["sport"]} size="large">
+            <SportIcon sport={activity["sport"]} fontSize="125%"/>
+          </IconButton>
+        ))}
         </Stack>
         </Item>
 
         <Item sx={{ width: 75, fontSize: 20 }}><u>Tu</u>
         <Stack alignItems="left" direction="column" spacing={2}>
-        /*idea make separate file and export it
-        call function to get list of activities for tuesday (each day)
-        pass list into new function jsx imported file to get returned icon list using*/
-
+        {dayActivities[2].map((activity) => (
+          <IconButton key={activity["sport"]} size="large">
+            <SportIcon sport={activity["sport"]} fontSize="125%"/>
+          </IconButton>
+        ))}
         </Stack>
         </Item>
 
         <Item sx={{ width: 75, fontSize: 20 }}><u>W</u>
         <Stack alignItems="left" direction="column" spacing={2}>
+        {dayActivities[3].map((activity) => (
+          <IconButton key={activity["sport"]} size="large">
+            <SportIcon sport={activity["sport"]} fontSize="125%"/>
+          </IconButton>
+        ))}
         </Stack>
         </Item>
 
         <Item sx={{ width: 75, fontSize: 20 }}><u>Th</u>
         <Stack alignItems="left" direction="column" spacing={2}>
+        {dayActivities[4].map((activity) => (
+          <IconButton key={activity["sport"]} size="large">
+            <SportIcon sport={activity["sport"]} fontSize="125%"/>
+          </IconButton>
+        ))}
         </Stack>
         </Item>
 
         <Item sx={{ width: 75, fontSize: 20 }}><u>F</u>
         <Stack alignItems="left" direction="column" spacing={2}>
+        {dayActivities[5].map((activity) => (
+          <IconButton key={activity["sport"]} size="large">
+            <SportIcon sport={activity["sport"]} fontSize="125%"/>
+          </IconButton>
+        ))}
         </Stack>
         </Item>
 
         <Item sx={{ width: 75, fontSize: 20 }}><u>Sa</u>
         <Stack alignItems="left" direction="column" spacing={2}>
+        {dayActivities[6].map((activity) => (
+          <IconButton key={activity["sport"]} size="large">
+            <SportIcon sport={activity["sport"]} fontSize="125%"/>
+          </IconButton>
+        ))}
         </Stack>
         </Item>
 
         <Item sx={{ width: 75, fontSize: 20 }}><u>Su</u>
         <Stack alignItems="left" direction="column" spacing={2}>
+        {dayActivities[0].map((activity) => (
+          <IconButton key={activity["sport"]} size="large">
+            <SportIcon sport={activity["sport"]} fontSize="125%"/>
+          </IconButton>
+        ))}
         </Stack>
         </Item>
       </Box>
