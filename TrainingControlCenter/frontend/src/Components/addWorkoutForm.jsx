@@ -14,7 +14,7 @@ import {
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 const localStorageUser = localStorage.getItem('user');
 
@@ -35,7 +35,7 @@ export default function AddWorkoutForm() {
     distance: '',
     time: null,
     
-    start_date_local: null,
+    start_date_local: '',
     description: ''
   });
 
@@ -195,17 +195,19 @@ export default function AddWorkoutForm() {
         <Box mb={2} ml={2}>
         <Typography variant="h6">Date</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DemoContainer components={['DatePicker']}>
-        <DatePicker
-          inputFormat="YYYY-MM-DD"
-          onChange={(value) =>
-              setAdditionalInfo((prevState) => ({
-                ...prevState,
-                start_date_local: value.toISOString(),
-              }))
-            }
-        />        
-        </DemoContainer>
+          <DemoContainer components={['MobileDatePicker']}>
+            <MobileDatePicker
+              inputFormat="YYYY-MM-DD"
+              disableFuture
+              onChange={(value) =>
+                setAdditionalInfo((prevState) => ({
+                  ...prevState,
+                  start_date_local: value ? value.toISOString() : null,
+                }))
+              }
+              renderInput={(params) => <TextField {...params} readOnly />}
+            />
+          </DemoContainer>
         </LocalizationProvider>
         </Box>
         
