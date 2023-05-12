@@ -13,12 +13,13 @@ const getRefreshToken = async () => {
   if (!response) {
     alert(`Error retrieving strava refresh token from database for user ${user}`);
   }
-  return response.json().stravaToken;
+  return response.json();
 }
 
 const getAccessToken = async () => {
   const user = localStorage.getItem('user');
-  const refresh_token = await getRefreshToken();
+  const refresh_token = (await getRefreshToken()).stravaToken;
+  console.log("here", refresh_token);
   const response = await fetch("https://www.strava.com/oauth/token", {
     method: "POST",
     headers: {
@@ -132,7 +133,7 @@ export async function getAllActivities() {
 }
 
 export async function getFiveActivities() {
-  const stravaAccessToken = await getAccessToken();
+  const stravaAccessToken = (await getAccessToken()).access_token;
   var activities = [];
   try {
     const res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
