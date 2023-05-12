@@ -32,9 +32,9 @@ export default function StravaAuth() {
 
 async function storeAccessTokenInDB(data) {
     const user = localStorage.getItem('user');
-    const token = data['access_token']
+    const token = data["refresh_token"]
+    console.log(data["access_token"])
     console.log(token);
-    localStorage.setItem('stravaAccessToken', token);
     await fetch('http://localhost:3010/v0/token?' + new URLSearchParams({username: user, token: token}), {
         method: 'POST',
         headers: {
