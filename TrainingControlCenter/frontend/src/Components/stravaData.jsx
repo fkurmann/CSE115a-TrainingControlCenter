@@ -87,6 +87,7 @@ async function uploadActivities(activities) {
       return null;
     }
   }
+  alert("Successfully stored strava activities!");
   console.log("Stored activities for: ", user);
 }
 
