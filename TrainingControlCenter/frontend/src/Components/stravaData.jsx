@@ -87,7 +87,7 @@ async function uploadActivities(activities) {
       return null;
     }
   }
-  alert("Successfully stored strava activities!");
+  alert("Successfully stored strava activities!"); // react mui box here instead
   console.log("Stored activities for: ", user);
 }
 

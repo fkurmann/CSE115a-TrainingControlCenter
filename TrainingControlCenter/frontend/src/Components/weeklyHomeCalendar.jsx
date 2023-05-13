@@ -12,14 +12,12 @@ export default function HomeCalendar() {
   const user = localStorage.getItem('user');
   const [weeklyActivities, setWeeklyActivities] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [isGetActivities, setIsGetActivities] = React.useState(true)
   const [dayActivities, setDayActivities] = React.useState({})
 
   React.useEffect(() => {
     if (weeklyActivities.length === 0) {
       console.log("Loading weekly activities");
         setIsLoading(true);
-        setIsGetActivities(true);
         const d = new Date();
         fetch("http://localhost:3010/v0/activities?" +
             new URLSearchParams({
@@ -43,12 +41,16 @@ export default function HomeCalendar() {
             if (res.length > 0) {
               console.log("Loaded weekly activities", res);
               setWeeklyActivities(res);
-              var temp = {}
+              let temp = {}
               for (let i = 0; i < 7; i++) {
                 temp[i] = getActivitiesForDay(res, i.toString())
               }
               setDayActivities(temp);
-              setIsGetActivities(false);
+            } else if (res.length === 0) {
+              console.log("Loaded weekly activities", res);
+              setWeeklyActivities(["no activities"])
+              let temp = {0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: []};
+              setDayActivities(temp);
             }
           })
           .catch((err) => {
@@ -58,7 +60,7 @@ export default function HomeCalendar() {
     } else {
       setIsLoading(false);
     }
-  }, [user, weeklyActivities, isLoading, isGetActivities, dayActivities]);
+  }, [user, weeklyActivities, isLoading, dayActivities]);
 
   return (
     <>
@@ -82,7 +84,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>M</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[1].map((activity) => (
-          <IconButton key={activity["sport"]} size="large">
+          <IconButton key={activity["_id"]} size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -92,7 +94,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>Tu</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[2].map((activity) => (
-          <IconButton key={activity["sport"]} size="large">
+          <IconButton key={activity["_id"]} size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -102,7 +104,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>W</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[3].map((activity) => (
-          <IconButton key={activity["sport"]} size="large">
+          <IconButton key={activity["_id"]} size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -112,7 +114,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>Th</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[4].map((activity) => (
-          <IconButton key={activity["sport"]} size="large">
+          <IconButton key={activity["_id"]} size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -122,7 +124,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>F</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[5].map((activity) => (
-          <IconButton key={activity["sport"]} size="large">
+          <IconButton key={activity["_id"]} size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -132,7 +134,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>Sa</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[6].map((activity) => (
-          <IconButton key={activity["sport"]} size="large">
+          <IconButton key={activity["_id"]} size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -142,7 +144,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>Su</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[0].map((activity) => (
-          <IconButton key={activity["sport"]} size="large">
+          <IconButton key={activity["_id"]} size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
