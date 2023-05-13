@@ -99,11 +99,6 @@ exports.findActivity = async (username, name, sport, type, minDuration, maxDurat
       let returnList = await result.toArray();
       console.log(`Found activities with the parameters '${parameters}':`);
       await client.close();
-      // The frontend throws 500 error unless distance & moving_time are strings.
-      returnList.forEach((a) => {
-        a.distance = '' + a.distance;
-        a.moving_time = '' + a.moving_time;
-      });
       return returnList;
     } else {
       console.log(`No activity found with parameters '${parameters}'`);
