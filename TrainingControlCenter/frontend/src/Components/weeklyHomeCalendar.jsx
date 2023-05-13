@@ -7,15 +7,16 @@ import {
 } from '@mui/material';
 
 import SportIcon from './sportIcon';
+import ActivityCard from './activityCard';
 
 export default function HomeCalendar() {
   const user = localStorage.getItem('user');
-  const [weeklyActivities, setWeeklyActivities] = React.useState([]);
+  const [weeklyActivities, setWeeklyActivities] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [dayActivities, setDayActivities] = React.useState({})
 
   React.useEffect(() => {
-    if (weeklyActivities.length === 0) {
+    if (!weeklyActivities) {
       console.log("Loading weekly activities");
         setIsLoading(true);
         const d = new Date();
@@ -152,6 +153,7 @@ export default function HomeCalendar() {
         </Item>
       </Box>
     </div>
+    <ActivityCard activity={weeklyActivities[0].json} />
     </>
     }
     </>

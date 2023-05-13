@@ -33,7 +33,9 @@ export default function WorkoutGrid() {
         },
       })
         .then((res) => {
+          console.log(JSON.stringify(res));
           if (!res.ok) {
+            console.log(`res is not ok`);
             throw res;
           }
           return res.json();
@@ -42,6 +44,10 @@ export default function WorkoutGrid() {
           if(res){
             console.log('Loaded activities');
             localStorage.setItem('activities', JSON.stringify(res));
+            res.forEach((a) => {
+              a.distance = parseFloat(a.distance);
+              a.moving_time = parseFloat(a.moving_time);
+            });
             setMyActivities(res);
             setIsLoading(false);
           }
