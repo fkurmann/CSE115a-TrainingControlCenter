@@ -9,6 +9,7 @@ const OpenApiValidator = require('express-openapi-validator');
 const auth = require('./auth');
 const settings = require('./settings');
 const activities = require('./activities');
+const graphs = require('./graphs')
 
 const app = express();
 app.use(cors());
@@ -36,11 +37,9 @@ app.post('/v0/register', auth.register);
 // Login
 app.post('/v0/login', auth.login);
 
-// Get and post strava token to user collection in db
+// Strava token
 app.post('/v0/token', auth.updateToken);//auth.check,
 app.get('/v0/token', auth.getToken);//auth.check,
-
-
 
 // Get, add, delete favorite sports
 app.get('/v0/favorites', settings.getFavorites);//auth.check,
@@ -54,14 +53,14 @@ app.delete('/v0/goals', settings.deleteGoal);//auth.check,
 
 // Get, add, delete activities
 app.get('/v0/activities', activities.getActivities);//auth.check,
-
 // Manual Entry
 app.post('/v0/activities', activities.addActivity);// auth.check,
-
 // Strava Entry
 app.post('/v0/activitiesStrava', activities.addActivityStrava);//auth.check,
-
 app.delete('/v0/activities', activities.deleteActivity);//auth.check,
+
+// Graphing, spawn python function
+app.post('/v0/graphs', graphs.drawGraph);
 
 
 app.use((err, req, res, next) => {
@@ -74,24 +73,5 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
-
-
-// // Examples for future routes
-
-// app.get('/v0/mailbox', auth.check, mailboxes.getAllMB);
-// // To make/delete mailboxes
-// app.post('/v0/mailbox', auth.check, mailboxes.post);
-
-// // To view emails for a specific (user AND mailbox) OR (user AND subject query)
-// app.get('/v0/mail', auth.check, mails.getAll);
-
-// // To make new emails, does not make new MAILBOXES
-// app.post('/v0/mail', auth.check, mails.post);
-
-// // To move emails around, does not make new MAILBOXES
-// app.put('/v0/mail/:id', auth.check, mails.put);
-
-// // To toggle stars
-// app.get('/v0/mail/:id', auth.check, mails.getID);
 
 

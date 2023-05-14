@@ -581,16 +581,27 @@ components:
     Graph:
       type: object
       properties:
-        fullname:
-          type: string
         username:
           type: string
-        accessToken:
+        duration:
           type: string
+        graphType:
+          type: string
+        sport:
+          type: string
+          nullable: true
+        goal:
+          type: string
+        startDate:
+          type: string
+          nullable: true
+        outFile:
+          type: string
+          nullable: true
       required:
-        - fullname
         - username
-        - accessToken
+        - duration
+        - graphType
   
   securitySchemes:
     bearerAuth:

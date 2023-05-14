@@ -1,17 +1,30 @@
+const {spawn} = require('child_process');
+
 // General graphing function
-
-/* To be implemented in sprint 3, can use matplotlib or other graphing 
-library, save image files in a folder in the frontend directory, then
-call those files via the JSX files. */
-
-
 exports.drawGraph = async (req, res) => {
-  let returnValue = 0;
-  if (returnValue !== -1) {
-    res.status(401).send('Error');
-  } else {
-    res.status(200).json({
-      success: 'Blank'
-    });    
-  }
+  // Parameters
+  let {username, duration, graphType, sport, goal, startDate, outFile} = req.body;
+  
+  
+  // Spawn python graphing child processs
+  let responseData;
+  const python = await spawn('python3', ['./src/graphing/generalGraphs.py', username, duration, graphType, sport, goal, startDate, outFile]);
+  
+  // Stdout data
+  python.stdout.on('data', (data) => {
+    responseData = data.toString();
+    console.log('stdout: ' + data);
+  });
+  
+  // Error data
+  python.stderr.on('data', (data) => {
+    console.log('Error: ' + data);
+  });
+
+  // Close process
+  python.on('close', (code) => {
+    console.log('Closing: ' + code);
+    console.log(responseData)
+    res.send(responseData)
+  });
 };

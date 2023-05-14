@@ -6,10 +6,11 @@ import {
   Snackbar,
   Alert,
   Box,
-  Collapse,
   MenuItem,
   Select,
-  Typography
+  Typography,
+  FormControlLabel,
+  Switch
 } from '@mui/material';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -29,13 +30,18 @@ export default function AddGraphForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // const formattedDate = additionalInfo.start_date_local ? new Date(additionalInfo.start_date_local) : null;
-
-      // Fetch the correct activities based on the state parameters set by the form, TODO, get request for activities
-      const response = await fetch('http://localhost:3010/v0/activities?' , {
-        method: "GET",
+      const formattedDate = startDate ? new Date(startDate) : null;
+      console.log('Trying to call python function');
+      const response = await fetch('http://localhost:3010/v0/graphs?' , {
+        method: "POST",
         body: JSON.stringify({
           username: localStorageUser,
+          duration: duration, 
+          graphType: graphType,
+          sport: sport,
+          goal: goal,
+          startDate: formattedDate,
+          outfile: outfile
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -47,14 +53,8 @@ export default function AddGraphForm() {
       }
 
       if (response.status === 200) {
-        // TODO, send activities to the graphing function along with graphing parameters
-
-
-
+        setShowSuccessMessage(true);
         
-        setTimeout(() => {
-          setShowSuccessMessage(false);
-        }, 10000);
       } else {
         const data = await response.json();
         setErrorMessage(data.message);
@@ -64,7 +64,7 @@ export default function AddGraphForm() {
       }
     } catch (error) {
       console.error(error);
-      setErrorMessage('An error occurred. Please try again.');
+      setErrorMessage('An graphing error occured.');
 
       setTimeout(() => {
         setErrorMessage('');
@@ -72,7 +72,7 @@ export default function AddGraphForm() {
     }
   };
 
-  // get activity types
+  // Duration and graph types to choose from
   const getDurationTypes = () => {
     const durationTypes = [
         "Day",
@@ -101,7 +101,7 @@ export default function AddGraphForm() {
       }
 
       const favoriteSports = await response.json();
-      setFavoriteSports(favoriteSports); // Add all sports option TODO
+      setFavoriteSports(favoriteSports);
     } catch (error) {
       console.error(error);
       setErrorMessage('An error occurred. Please try again.');
@@ -119,10 +119,8 @@ export default function AddGraphForm() {
     <>
       <h2>Generate a Graph</h2>
       <form onSubmit={handleSubmit}>
-        {/* Name */}
-        <Typography variant="h6" ml={2}>Name of Activity*</Typography>
         {/* Graph Type */}
-        <Typography variant="h6" ml={2}>Activity Type</Typography>
+        <Typography variant="h6" ml={2}>Graph Type*</Typography>
         <Box mb={2} ml={2}>
         <Select
           labelId="graph-type-select"
@@ -143,7 +141,7 @@ export default function AddGraphForm() {
         </Select>
         </Box>
         {/* Duration */}
-        <Typography variant="h6" ml={2}>Duration</Typography>
+        <Typography variant="h6" ml={2}>Duration*</Typography>
         <Box mb={2} ml={2}>
         <Select
           labelId="duration-select"
@@ -185,7 +183,7 @@ export default function AddGraphForm() {
         </Box>
         {/* Date */}
         <Box mb={2} ml={2}>
-        <Typography variant="h6">Start Date</Typography>
+        <Typography variant="h6">Start Date*</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={['MobileDatePicker']}>
             <MobileDatePicker
@@ -195,11 +193,17 @@ export default function AddGraphForm() {
                 setState((prevState) => ({ ...prevState, startDate: e.target.value }))
               }
               renderInput={(params) => <TextField {...params} readOnly />}
+              // required
             />
           </DemoContainer>
         </LocalizationProvider>
         </Box>
 
+        {/* Goals Toggle */}
+        <Box mb={2} ml={2}>
+          <FormControlLabel control={<Switch />} label="Compare with Goals" />
+        </Box>
+        
       <Button variant="contained" color="primary" type="submit" ml={2}>
         Generate Graph
       </Button>
