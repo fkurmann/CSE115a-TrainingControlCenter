@@ -1,29 +1,45 @@
 import React, { useEffect, useState } from 'react';
+import { Button, ButtonGroup, Select, MenuItem } from '@mui/material';
+import { format, getISOWeek, startOfWeek, endOfWeek, getMonth, getYear } from 'date-fns';
+import { enUS } from 'date-fns/locale'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 const localStorageUser = localStorage.getItem('user');
 
 const ActivityChart = () => {
-  const [activity, setActivity] = useState('');
   const [activities, setActivities] = useState([]);
-  const [days, setDays] = useState(14); // default to last 14 days
-  
-  /* For test: Display selected duration */
-  const [selectedDuration, setSelectedDuration] = useState('14D');
+  const [selectedPeriod, setSelectedPeriod] = useState('week');
+  const [selectedWeek, setSelectedWeek] = useState(getCurrentWeek());
+  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
+  const [selectedYear, setSelectedYear] = useState(getCurrentYear());
+  const [chartData, setChartData] = useState([]);
+  const [weekRange, setWeekRange] = useState('');
 
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await fetch('http://localhost:3010/v0/activities?' 
-        + new URLSearchParams({ username: localStorageUser }));
+        const response = await fetch(`http://localhost:3010/v0/activities?username=${localStorageUser}`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const fetchedActivities = await response.json();
-        setActivities(fetchedActivities);
+        const activitiesWithDistance = fetchedActivities.filter(activity => activity.distance > 0);
 
+        const activitySum = activitiesWithDistance.reduce((prev, curr) => {
+          if (!prev[curr.type]) {
+            prev[curr.type] = { ...curr };
+          } else {
+            prev[curr.type].distance += curr.distance;
+            prev[curr.type].moving_time += Number(curr.moving_time);
+          }
+          return prev;
+        }, {});
+
+        const activitySumArray = Object.values(activitySum);
+
+        setActivities(activitySumArray);
       } catch (error) {
         console.error('An error occurred. Please try again.');
       }
@@ -32,198 +48,233 @@ const ActivityChart = () => {
     fetchActivities();
   }, []);
 
-  const handleActivityChange = (e) => {
-    setActivity(e.target.value);
-  };
-
-  const handleDaysChange = (e) => {
-    const value = e.target.value.slice(0, -1);
-    const period = e.target.value.slice(-1);
+  useEffect(() => {
+    const generateChartData = () => {
+      let selectedActivities = [];
+      let chartData = [];
+      let rangeStart;
+      let rangeDays;
   
-    let days;
-    switch(period) {
-      case 'D':
-        days = parseInt(value);
-        break;
-      case 'W':
-        days = parseInt(value) * 7;
-        break;
-      case 'M':
-        days = parseInt(value) * 30;
-        break;
-      default:
-        days = 14; // default to last 14 days
-    }
-    setDays(days);
-    setSelectedDuration(e.target.value);
-  };  
-  
-  // temp for filter certain type
-  const getActivityTypes = () => {
-    const activityTypes = ["Ride", "Run"];
-    return activityTypes;
-  };
-  
-  // get dates from days ago to the current date
-  const getDatesBetween = (days) => {
-    const dates = [];
-    let currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() - days);
-
-    while (currentDate < new Date()) {
-      dates.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return dates;
-  };
-
-  const daysOptions = ['14D', '12W', '12M']; // options for number of days
-
-  const filteredData = activities
-  .filter(sport => sport.sport === activity)
-  .map(sport => ({
-    date: sport.start_date_local.split('T')[0],
-    distance: sport.distance,
-  }))
-  .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // get all dates for the selected range
-  const allDates = getDatesBetween(days);
-
-  // Monday as first day of week
-  const getWeeklyDistanceSum = (data) => {
-    const distanceByWeek = {};
-    
-    // create an array of dates for the past 12 weeks
-    const dates = getDatesBetween(84);
-    
-    dates.forEach(date => {
-      const weekStart = new Date(date);
-      weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Set to the start of the week
-  
-      const weekStartString = weekStart.toISOString().split('T')[0];
-      if (!distanceByWeek[weekStartString]) {
-        distanceByWeek[weekStartString] = 0;  // initialize to 0 for weeks without data
+      if (selectedPeriod === 'week') {
+        selectedActivities = activities.filter(activity => {
+          const weekStart = startOfWeek(new Date(activity.start_date_local), { weekStartsOn: 1 });
+          const weekNumber = getISOWeek(weekStart);
+          return weekNumber === selectedWeek;
+        });
+        rangeStart = getDateRange(selectedWeek);
+        rangeDays = 7;
+      } else if (selectedPeriod === 'month') {
+        selectedActivities = activities.filter(activity => {
+          const activityMonth = getMonth(new Date(activity.start_date_local)) + 1;
+          return activityMonth === selectedMonth;
+        });
+        rangeStart = new Date(selectedYear, selectedMonth - 1, 1);
+        rangeDays = new Date(selectedYear, selectedMonth, 0).getDate(); // Get number of days in the month
       }
-    });
   
-    data.forEach(item => {
-      const weekStart = new Date(item.date);
-      weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // set to the start of the week
-  
-      const weekStartString = weekStart.toISOString().split('T')[0];
-      distanceByWeek[weekStartString] += item.distance;
-    });
-  
-    // convert the object to an array of data points
-    const weeklyData = Object.entries(distanceByWeek).map(([date, distance]) => ({
-      date,
-      distance,
-    }));
-  
-    return weeklyData;
-  };  
-
-  // calculate the sum of the distances for each month
-  const getMonthlyDistanceSum = (data) => {
-    const distanceByMonth = data.reduce((acc, curr) => {
-      const month = curr.date.slice(0, 7); // extract the year-month part
-      if (!acc[month]) {
-        acc[month] = 0;
+      if (selectedPeriod === 'year') {
+        selectedActivities = activities.filter(activity => {
+          const activityYear = getYear(new Date(activity.start_date_local));
+          return activityYear === selectedYear;
+        });
+        rangeStart = new Date(selectedYear, 0, 1);
+        rangeDays = 12; // Months in the year
       }
-      acc[month] += curr.distance;
-      return acc;
-    }, {});
-
-    // convert the object to an array of data points
-    const monthlyData = Object.entries(distanceByMonth).map(([date, distance]) => ({
-      date,
-      distance,
-    }));
-
-    return monthlyData;
-  };
-
-  // fill in missing dates
-  const filledData = allDates.map(date => {
-    const dateString = date.toISOString().split('T')[0];
-    const foundItem = filteredData.find(item => item.date === dateString);
-
-    return {
-      date: dateString,
-      distance: foundItem ? foundItem.distance : 0,
+  
+      for (let i = 0; i < rangeDays; i++) {
+        if (selectedPeriod === 'year') {
+          const currentMonth = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + i, 1);
+          const formattedMonth = format(currentMonth, 'MMM', { locale: enUS });
+        
+          const matchingActivities = selectedActivities.filter(activity => {
+            const activityDate = new Date(activity.start_date_local);
+            return format(activityDate, 'MMM', { locale: enUS }) === formattedMonth;
+          });
+        
+          const time = matchingActivities.reduce((total, activity) => total + activity.moving_time, 0);
+        
+          chartData.push({ name: formattedMonth, time: time });
+        } else {
+          const currentDay = new Date(rangeStart.getTime() + i * 24 * 60 * 60 * 1000);
+          const formattedDay = format(currentDay, 'MM/dd');
+  
+          const matchingActivity = selectedActivities.find(activity => {
+            const activityDate = new Date(activity.start_date_local);
+            return format(activityDate, 'MM/dd') === formattedDay;
+          });
+  
+          const time = matchingActivity ? matchingActivity.moving_time : 0;
+  
+          chartData.push({ name: formattedDay, time: time });
+        }
+      }
+  
+      setChartData(chartData);
     };
-  });
+    generateChartData();
+  }, [activities, selectedWeek, selectedMonth, selectedPeriod, selectedYear]);
+  
+  const handlePeriodChange = (period) => {
+    setSelectedPeriod(period);
+  
+    if (period === 'month') {
+      setSelectedMonth(getCurrentMonth());
+    } else if (period === 'week') {
+      setSelectedWeek(getCurrentWeek());
+    } else if (period === 'year') {
+      setSelectedYear(getCurrentYear());
+    }
+  };
+  
 
-  // calculate the data for the chart
-  let chartData;
-  if (days === 360) {
-    chartData = getMonthlyDistanceSum(filledData);
-  } else if (days === 84) {
-    chartData = getWeeklyDistanceSum(filledData);
-  } else {
-    chartData = filledData.slice(-days);
+  const handleWeekChange = (event) => {
+    const selectedWeek = event.target.value;
+    setSelectedWeek(selectedWeek);
+  };
+  
+  const handleMonthChange = (event) => {
+    const value = event.target.value;
+    setSelectedMonth(value);
+  };
+
+  const handleYearChange = (event) => {
+    const value = event.target.value;
+    setSelectedYear(value);
+  };
+
+  function getCurrentWeek() {
+    const currentDate = new Date();
+    const currentWeek = getISOWeek(currentDate);
+    return currentWeek;
   }
 
+  function getCurrentMonth() {
+    const currentDate = new Date();
+    const currentMonth = getMonth(currentDate) + 1;
+    return currentMonth;
+  }  
+  
+  function getCurrentYear() {
+    const currentYear = new Date().getFullYear();
+    return currentYear;
+  }
+  
+  function getDateRange(weekNumber) {
+    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+    const millisecondsPerDay = 1000 * 60 * 60 * 24;
+    const daysPerWeek = 7;
+
+    // Subtract 1 because weekNumber is 1-based
+    const weekStart = new Date(startOfYear.getTime() + ((weekNumber - 1) * daysPerWeek * millisecondsPerDay));
+
+    return weekStart;  
+  }
+
+  function getEndDate(weekNumber) {
+    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+    const millisecondsPerDay = 1000 * 60 * 60 * 24;
+    const daysPerWeek = 7;
+  
+    // Subtract 1 because weekNumber is 1-based
+    const weekEnd = new Date(startOfYear.getTime() + (weekNumber * daysPerWeek * millisecondsPerDay) - millisecondsPerDay);
+  
+    return weekEnd;  
+  }
+  
+
   return (
-    <div>
-      <h2>Activity</h2>
-      {/* Choose activity to filter */}
-      <select value={activity} onChange={handleActivityChange}>
-        <option value="">Choose</option>
-        {getActivityTypes().map((activityType) => (
-              <option key={activityType} value={activityType}>
-                {activityType}
-              </option>
-            ))}
-      </select>
-          
-      {/* Choose how many days */}
-      <select value={days} onChange={handleDaysChange}>
-        <option value="">Choose</option>
-        {daysOptions.map((dayOption) => (
-          <option key={dayOption} value={dayOption}>
-            {dayOption[dayOption.length - 1] === 'D' ? `${dayOption.slice(0, -1)} days` : 
-            dayOption[dayOption.length - 1] === 'W' ? `${dayOption.slice(0, -1)} weeks` : 
-            `${dayOption.slice(0, -1)} months`}
-          </option>
-        ))}
-      </select>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'left' }}>
+      <ButtonGroup color="primary" aria-label="period">
+        <Button
+          variant={selectedPeriod === 'week' ? 'contained' : 'outlined'}
+          onClick={() => handlePeriodChange('week')}
+        >
+          Week
+        </Button>
+        <Button
+          variant={selectedPeriod === 'month' ? 'contained' : 'outlined'}
+          onClick={() => handlePeriodChange('month')}
+        >
+          Month
+        </Button>
+        <Button
+          variant={selectedPeriod === 'year' ? 'contained' : 'outlined'}
+          onClick={() => handlePeriodChange('year')}
+        >
+          Year
+        </Button>
+      </ButtonGroup>
 
-      {/* Display graph */}
-      {filteredData.length > 0 && (
-        <div>
-          <h2>Graph</h2>
-            <LineChart width={600} height={400} data={chartData}>
-            <XAxis
-              dataKey="date"
-              tickFormatter={(value) => {
-                if (days === 14 || days === 84) {
-                  const [year, month, day] = value.split('-'); // split the date into month and day
-                  return `${month}/${day}`; // format the date as "month/day"
-                } else if (days === 360) {
-                  const [year, month, day] = value.split('-');
-                  return `${year}/${month}`;
-                  // return value.slice(0, 7); // only show month and year
-                } else {
-                  return value;
-                }
-              }}                
-            />
-            <YAxis/>
-            <CartesianGrid strokeDasharray="3 3" />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="distance" stroke="rgb(75, 192, 192)" />
-            </LineChart>
-
-            {/* For test: Display selected duration */}
-            <div>Selected duration: {selectedDuration}</div>
-        
+      {/* Week, Month, Year Button: dropdown list */}
+      {(selectedPeriod === 'week' || selectedPeriod === 'month' || selectedPeriod === 'year') && (
+        <div style={{ width: 200, margin: '20px auto' }}>
+          <Select
+            value={
+              selectedPeriod === 'week'
+                ? selectedWeek
+                : selectedPeriod === 'month'
+                ? selectedMonth
+                : selectedYear
+            }
+            onChange={(event) => {
+              if (selectedPeriod === 'week') {
+                setSelectedWeek(event.target.value);
+              } else if (selectedPeriod === 'month') {
+                setSelectedMonth(event.target.value);
+              } else if (selectedPeriod === 'year') {
+                setSelectedYear(event.target.value);
+              }
+            }}
+            label={
+              selectedPeriod === 'week'
+                ? 'Week'
+                : selectedPeriod === 'month'
+                ? 'Month'
+                : 'Year'
+            }
+          >
+            {selectedPeriod === 'week' &&
+              [...Array(52).keys()].map((week) => (
+                <MenuItem key={week + 1} value={week + 1}>
+                  {`Week ${week + 1} (${format(getDateRange(week + 1), 'M/d')}-${format(getEndDate(week + 1), 'M/d')})`}
+                </MenuItem>
+              ))}
+            {selectedPeriod === 'month' &&
+              [...Array(12).keys()].map((month) => (
+                <MenuItem key={month + 1} value={month + 1}>
+                  {`${format(new Date(2000, month), 'MMMM')}`}
+                </MenuItem>
+              ))}
+            {selectedPeriod === 'year' &&
+              [...Array(6).keys()].map((index) => {
+                const year = getCurrentYear() - index;
+                return (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
+                );
+              })}
+          </Select>
         </div>
-        
       )}
+
+      {/* Place chart code here */}
+      <div style={{ marginTop: '20px' }}>
+      <div style={{ marginTop: '10px', fontSize: '14px' }}>{weekRange}</div>
+
+        <LineChart width={500} height={400} data={chartData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          {chartData.length > 0 ? (
+            <Line type="monotone" dataKey="time" stroke="#8884d8" />
+          ) : (
+            <Line type="monotone" dataKey="time" stroke="#8884d8" connectNulls={true} />
+          )}
+        </LineChart>
+      </div>
     </div>
   );
 };
