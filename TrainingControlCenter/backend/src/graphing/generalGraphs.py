@@ -8,7 +8,7 @@ import sys
 
 def generalHistoryGraph (username, duration, graphType, sport, goal, startDate, outFile):
 
-  print ('Params:' + username, duration, graphType, sport, goal, startDate, outFile)
+  print ('Params: ' + username, duration, graphType, sport, goal, startDate, outFile)
   # Figure creation
   figureWidth=5
   figureHeight=5
@@ -25,7 +25,7 @@ def generalHistoryGraph (username, duration, graphType, sport, goal, startDate, 
   maxY = 10 # maxY is the largest y value, can be goal value
   maxY = math.ceil(maxY * 1.1)
 
-  # Data Graphing
+  # Data Graphing TODO
 
 
 
@@ -52,8 +52,6 @@ def generalHistoryGraph (username, duration, graphType, sport, goal, startDate, 
 
   panel1.set_xlim(0, maxX)
   panel1.set_ylim(0, maxY) 
-
-
 
   # Ticks and labels 
   panel1.set_xticks(np.arange(0, maxX))
