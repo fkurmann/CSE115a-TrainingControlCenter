@@ -59,7 +59,7 @@ export default function Favorites() {
     setMyFavorites(myFavs);
     setMyShownFavorites([ ...myShownFavorites, sport]);
     setIsLoading([ ...isLoading, sport]);
-    fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: sport}), {
+    fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: encodeURIComponent(sport.trim())}), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ export default function Favorites() {
     const myFavs = myFavorites.filter((favSport) => favSport !== sport);
     setMyFavorites(myFavs);
     setIsLoading([ ...isLoading, sport]);
-    fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: sport}), {
+    fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: encodeURIComponent(sport.trim())}), {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ export default function Favorites() {
     const myFavs = [ ...myFavorites, sport];
     setMyFavorites(myFavs);
     setIsLoading([ ...isLoading, sport]);
-    fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: sport}), {
+    fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams({username: user, sport: encodeURIComponent(sport.trim())}), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

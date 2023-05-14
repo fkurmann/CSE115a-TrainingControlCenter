@@ -170,8 +170,7 @@ export default function Goals() {
     if(!('name' in goalToDelete)){
       return;
     }
-    let goal = goalToDelete;
-    goal.name = encodeURIComponent(goal.name.trim());
+    const goal = goalToDelete;
     setGoalToDelete({});
     if(!myGoals.find(g => g.name === goal.name)){
       console.log(`Not deleting goal ${goal.name}, not found`);
@@ -180,7 +179,7 @@ export default function Goals() {
     if(anchorElGoal !== null) setAnchorElGoal(null);
     setMyGoals(myGoals.filter((g) => g.name !== goal.name));
 
-    fetch('http://localhost:3010/v0/goals?' + new URLSearchParams({username: user, name: goal.name}), {
+    fetch('http://localhost:3010/v0/goals?' + new URLSearchParams({username: user, name: encodeURIComponent(goal.name.trim())}), {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
