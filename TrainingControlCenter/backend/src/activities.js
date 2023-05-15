@@ -10,7 +10,6 @@ exports.addActivity = async (req, res) => {
 
   // Convert the date object to a YYYY/MM/DD format
   let formattedDate = date ? date.toISOString().substring(0, 10) : null;
-  let formattedDateWithSlashes = formattedDate ? formattedDate.replace(/-/g, '/') : null;
 
   // Checks that values are not defaults, if they are, replace with null
   if (username === 'string') {
@@ -48,7 +47,7 @@ exports.addActivity = async (req, res) => {
   const activityJson = {
     distance: distance || undefined,
     moving_time: time*60 || undefined,
-    start_date_local: formattedDateWithSlashes || undefined,
+    start_date_local: formattedDate || undefined,
   };
 
   const returnValue = await dbActivities.createActivity(username, name, type, sport, descriptionText, activityJson);
