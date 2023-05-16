@@ -161,4 +161,17 @@ export async function getFiveActivities() {
   return activities;
 }
 
-
+export async function getActivityDetails(id) {
+  const stravaAccessToken = (await getAccessToken()).access_token;
+  const res = await axios.get(`${stravaBaseURL}/activities/${id}`, {
+    headers: {
+      'Authorization': `Bearer ${stravaAccessToken}`
+    }
+  }).then((res) => {
+    return res.data;
+  }).catch(function (error) {
+    console.error(`Error getting activity ${id}`, error);
+    return {};
+  });
+  return res;
+}

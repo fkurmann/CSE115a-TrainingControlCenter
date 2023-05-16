@@ -4,8 +4,7 @@ import {
   CircularProgress,
   IconButton,
   Stack,
-  Menu,
-  MenuItem,
+  Popover,
 } from '@mui/material';
 
 import SportIcon from './sportIcon';
@@ -164,25 +163,21 @@ export default function HomeCalendar() {
         </Item>
       </Box>
     </div>
-    <Menu
-      sx={{ mt: '45px' }}
+    <Popover
       anchorEl={anchorElActivityCard}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
-      }}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
-      }}
       open={Boolean(anchorElActivityCard)}
       onClose={handleCloseActivityCard}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'left'
+      }}
+      transformOrigin={{
+        vertical: 'center',
+        horizontal: 'right'
+      }}
     >
-      <MenuItem disableGutters sx={{backgroundColor: '#f9f9f9'}}>
-        <ActivityCard activity={selectedActivity} />
-      </MenuItem>
-    </Menu>
+      <ActivityCard activity={selectedActivity} />
+    </Popover>
     </>
     }
     </>
