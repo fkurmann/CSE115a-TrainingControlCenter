@@ -92,7 +92,7 @@ async function uploadActivities(activities) {
 }
 
 export async function getAllActivities() {
-  const stravaAccessToken = await getAccessToken();
+  const stravaAccessToken = (await getAccessToken()).access_token;
 
   var all_activities = [];
   try {
