@@ -7,9 +7,7 @@ exports.drawGraph = async (req, res) => {
   let {username, duration, graphType, sport, goal, startDate, outFile} = req.body;
   
   // Format date
-  console.log(startDate)
   startDate = new Date(startDate);
-  console.log(startDate)
 
   // Set end date for DB searching
   let endDate = new Date(startDate);
@@ -28,8 +26,8 @@ exports.drawGraph = async (req, res) => {
   let formattedStartDate = startDate ? startDate.toISOString().substring(0, 10) : null;  
   let formattedEndDate = endDate ? endDate.toISOString().substring(0, 10) : null;
 
-  console.log(formattedStartDate)
-  console.log(formattedEndDate)
+  // console.log(formattedStartDate)
+  // console.log(formattedEndDate)
 
   // Database call
   const returnValue = await dbActivities.findActivity(username, null, sport, null, null, null, null, null, formattedStartDate, formattedEndDate);
