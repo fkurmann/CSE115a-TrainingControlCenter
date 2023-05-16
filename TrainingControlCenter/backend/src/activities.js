@@ -5,6 +5,8 @@ exports.addActivity = async (req, res) => {
   let {username, name, type, sport, description} = req.body;
   let {distance, time, start_date_local} = req.body.json;
 
+  console.log(start_date_local)
+
   // Convert a date string to a Date object
   let date = start_date_local ? new Date(start_date_local) : null;
 
@@ -106,10 +108,7 @@ exports.getActivities = async (req, res) => {
   const username = req.query.username;
   let name = req.query.name;
   let sport = req.query.sport;
-  // let distance = req.query.distance;
   let type = req.query.type;
-  // let time = req.query.time;
-  // let start_date_local = req.query.start_date_local;
 
   let minDuration = req.query.minDuration;
   let maxDuration = req.query.maxDuration;
