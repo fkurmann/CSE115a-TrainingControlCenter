@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { PureComponent, useEffect, useState } from 'react';
 import { Grid, Typography, Paper, Button, ButtonGroup, Select, MenuItem } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-//import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } from 'recharts';
-import { format, getISOWeek, startOfWeek, endOfWeek, getMonth, getYear, startOfMonth, endOfMonth, startOfYear, endOfYear, addDays, eachMonthOfInterval } from 'date-fns';
-import { eachDayOfInterval } from 'date-fns';
+import { eachDayOfInterval, format, getISOWeek, startOfWeek, endOfWeek, getMonth, getYear, startOfMonth, endOfMonth, startOfYear, endOfYear, addDays, eachMonthOfInterval } from 'date-fns';
 import SportIcon from './sportIcon';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { enUS } from 'date-fns/locale';
 
 const localStorageUser = localStorage.getItem('user');
 
 const ActivityChart = () => {
-  //const [activities, setActivities] = useState([]);
+  // const [activities, setActivities] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState('week');
   const [selectedWeek, setSelectedWeek] = useState(getCurrentWeek());
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
@@ -17,10 +17,12 @@ const ActivityChart = () => {
   const [selectedCompare, setSelectedCompare] = useState(getCurrentWeek());
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [compareActivities, setCompareActivities] = useState([]);
-  const [rankingLoading, setRankingLoading] = useState(false);
+  const [firstRankingLoading, setFirstRankingLoading] = useState(false);
+  const [secondRankingLoading, setSecondRankingLoading] = useState(false);
   const [noRecords, setNoRecords] = useState(false);
-  const [weekRange, setWeekRange] = useState('');
-
+  const [firstChartData, setFirstChartData] = useState([]);
+  const [secondChartData, setSecondChartData] = useState([]);
+  
   function getCurrentWeek() {
     const currentDate = new Date();
     const currentWeek = getISOWeek(currentDate);
@@ -62,117 +64,125 @@ const ActivityChart = () => {
 
   const fetchDataForFirstRanking = async () => {
     try {
-      setRankingLoading(true);
+      setFirstRankingLoading(true);
       const response = await fetch(`http://localhost:3010/v0/activities?username=${localStorageUser}`);
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
+  
       const fetchedActivities = await response.json();
-      const activitiesWithDistance = fetchedActivities.filter(activity => activity.distance > 0);
-
-      const activitySum = activitiesWithDistance.reduce((prev, curr) => {
-        if (!prev[curr.type]) {
-          prev[curr.type] = { ...curr };
+      const activitiesWithTime = fetchedActivities.filter(activity => activity.moving_time > 0);
+  
+      // First, filter and sort activities by selectedPeriod
+      const filteredAndSorted = activitiesWithTime
+        .filter((activity) => {
+          const activityDate = new Date(activity.start_date_local);
+  
+          if (selectedPeriod === 'week') {
+            const weekStart = getDateRange(selectedWeek);
+            const weekEnd = getEndDate(selectedWeek);
+            return activityDate >= weekStart && activityDate <= weekEnd;
+          } else if (selectedPeriod === 'month') {
+            return getMonth(activityDate) + 1 === selectedMonth && getYear(activityDate) === getCurrentYear();
+          } else if (selectedPeriod === 'year') {
+            return getYear(activityDate) === selectedYear;
+          }
+          return true;
+        })
+        // Sort activities by start date
+        .sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
+      
+      // Then, sum up the moving_time and distance for the same type of activities
+      const activitySum = filteredAndSorted.reduce((prev, curr) => {
+        if (!prev[curr.sport]) {
+          prev[curr.sport] = { ...curr };
         } else {
-          prev[curr.type].distance += curr.distance;
-          prev[curr.type].moving_time += Number(curr.moving_time);
+          prev[curr.sport].distance += curr.distance;
+          prev[curr.sport].moving_time += Number(curr.moving_time);
         }
         return prev;
       }, {});
-
+  
       const activitySumArray = Object.values(activitySum);
-
+  
       if (activitySumArray.length === 0) {
         setNoRecords(true);
       } else {
         setNoRecords(false);
       }
-
-      const filtered = activitySumArray
-      .filter((activity) => {
-        const activityDate = new Date(activity.start_date_local);
-
-        if (selectedPeriod === 'week') {
-          const weekStart = getDateRange(selectedWeek);
-          const weekEnd = getEndDate(selectedWeek);
-          return activityDate >= weekStart && activityDate <= weekEnd;
-        } else if (selectedPeriod === 'month') {
-          return getMonth(activityDate) + 1 === selectedMonth && getYear(activityDate) === getCurrentYear();
-        } else if (selectedPeriod === 'year') {
-          return getYear(activityDate) === selectedYear;
-        }
-        return true;
-      })
-      // Sort activities by start date
-      .sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
-  
-      setFilteredActivities(filtered);  
-      setRankingLoading(false);  
+    
+      setFilteredActivities(activitySumArray);
+      getFirstChartData(activitySumArray, selectedPeriod);
+      setFirstRankingLoading(false);
     } catch (error) {
-      setRankingLoading(false);
+      setFirstRankingLoading(false);
       console.error('An error occurred. Please try again.');
     }
-  };
-
-  const fetchDataForSecondRanking = async () => {
-    try {
-      setRankingLoading(true);
-      const response = await fetch(`http://localhost:3010/v0/activities?username=${localStorageUser}`);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const fetchedActivities = await response.json();
-      const activitiesWithDistance = fetchedActivities.filter(activity => activity.distance > 0);
-
-      const activitySum = activitiesWithDistance.reduce((prev, curr) => {
-        if (!prev[curr.type]) {
-          prev[curr.type] = { ...curr };
-        } else {
-          prev[curr.type].distance += curr.distance;
-          prev[curr.type].moving_time += Number(curr.moving_time);
-        }
-        return prev;
-      }, {});
-
-      const activitySumArray = Object.values(activitySum);
-
-      const compareFiltered = activitySumArray
-      .filter((activity) => {
-        const activityDate = new Date(activity.start_date_local);
-        if (selectedPeriod === 'week') {
-          const weekStart = getDateRange(selectedCompare);
-          const weekEnd = getEndDate(selectedCompare);
-          return activityDate >= weekStart && activityDate <= weekEnd;
-        } else if (selectedPeriod === 'month') {
-          return getMonth(activityDate) + 1 === selectedCompare && getYear(activityDate) === getCurrentYear();
-        } else if (selectedPeriod === 'year') {
-          return getYear(activityDate) === selectedCompare;
-        }
-        return true;
-      })
-      .sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
-      
-      setCompareActivities(compareFiltered); 
-      setRankingLoading(false);      
-    } catch (error) {
-      setRankingLoading(false);
-      console.error('An error occurred. Please try again.');
-    }
-  };
+  };  
 
   useEffect(() => {
     fetchDataForFirstRanking();
   }, [selectedPeriod, selectedWeek, selectedMonth, selectedYear]);
+
+  const fetchDataForSecondRanking = async () => {
+    try {
+      setSecondRankingLoading(true);
+      const response = await fetch(`http://localhost:3010/v0/activities?username=${localStorageUser}`);
   
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const fetchedActivities = await response.json();
+      const activitiesWithTime = fetchedActivities.filter(activity => activity.moving_time > 0);
+  
+      // First, filter and sort activities by selectedCompare
+      const filteredAndSorted = activitiesWithTime
+        .filter((activity) => {
+          const activityDate = new Date(activity.start_date_local);
+  
+          if (selectedPeriod === 'week') {
+            const weekStart = getDateRange(selectedCompare);
+            const weekEnd = getEndDate(selectedCompare);
+            return activityDate >= weekStart && activityDate <= weekEnd;
+          } else if (selectedPeriod === 'month') {
+            return getMonth(activityDate) + 1 === selectedCompare && getYear(activityDate) === getCurrentYear();
+          } else if (selectedPeriod === 'year') {
+            return getYear(activityDate) === selectedCompare;
+          }
+          return true;
+        })
+        .sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
+      
+      // Then, sum up the moving_time and distance for the same type of activities
+      const activitySum = filteredAndSorted.reduce((prev, curr) => {
+        if (!prev[curr.sport]) {
+          prev[curr.sport] = { ...curr };
+        } else {
+          prev[curr.sport].distance += curr.distance;
+          prev[curr.sport].moving_time += Number(curr.moving_time);
+        }
+        return prev;
+      }, {});
+  
+      const activitySumArray = Object.values(activitySum);
+      
+      setCompareActivities(activitySumArray);
+      getSecondChartData(activitySumArray, selectedPeriod);
+      setSecondRankingLoading(false);
+    } catch (error) {
+      setSecondRankingLoading(false);
+      console.error('An error occurred. Please try again.');
+    }
+  };
+  
+
   useEffect(() => {
     fetchDataForSecondRanking();
   }, [selectedPeriod, selectedCompare]);
 
-  const handlePeriodChange = (period) => {
+  const handlePeriodChange = async (period) => {
     setSelectedPeriod(period);
   
     if (period === 'month') {
@@ -212,60 +222,125 @@ const ActivityChart = () => {
     }
   };
   
-  const getChartData = (activities, period) => {
-    let range = [];
-    let formatStr = "";
-  
-    if (period === "week") {
-      // Use the start and end of the week to generate the range
-      const start = startOfWeek(new Date());
-      const end = endOfWeek(new Date());
-      range = eachDayOfInterval({ start, end });
-      formatStr = 'E';
-    } else if (period === "month") {
-      // Use the start and end of the month to generate the range
-      const start = startOfMonth(new Date());
-      const end = endOfMonth(new Date());
-      range = eachDayOfInterval({ start, end });
-      formatStr = 'd';
-    } else if (period === "year") {
-      // Use the start and end of the year to generate the range
-      const start = startOfYear(new Date());
-      const end = endOfYear(new Date());
-      range = eachMonthOfInterval({ start, end });
-      formatStr = 'MMM';
-    }
-  
-    return range.map(date => {
-      // Find activities for this date
-      const activitiesForDate = activities.filter(activity => {
-        const activityDate = new Date(activity.start_date_local);
-        return activityDate >= date && activityDate < addDays(date, 1);
+  const getFirstChartData = (activities, period) => {
+    let selectedActivities = [];
+    let firstChartData = [];
+    let rangeStart;
+    let rangeDays;
+
+    if (period === 'week') {
+      selectedActivities = activities.filter(activity => {
+        const weekStart = startOfWeek(new Date(activity.start_date_local), { weekStartsOn: 1 });
+        const weekNumber = getISOWeek(weekStart);
+        return weekNumber === selectedWeek;
       });
+      rangeStart = getDateRange(selectedWeek);
+      rangeDays = 7;
+    } else if (period === 'month') {
+      selectedActivities = activities.filter(activity => {
+        const activityMonth = getMonth(new Date(activity.start_date_local)) + 1;
+        return activityMonth === selectedMonth;
+      });
+      rangeStart = new Date(selectedYear, selectedMonth - 1, 1);
+      rangeDays = new Date(selectedYear, selectedMonth, 0).getDate(); // Get number of days in the month
+    } else if (period === 'year') {
+      selectedActivities = activities.filter(activity => {
+        const activityYear = getYear(new Date(activity.start_date_local));
+        return activityYear === selectedYear;
+      });
+      rangeStart = new Date(selectedYear, 0, 1);
+      rangeDays = 12; // Months in the year
+    }
+    for (let i = 0; i < rangeDays; i++) {
+      const currentDate = selectedPeriod === 'year' 
+        ? new Date(rangeStart.getFullYear(), rangeStart.getMonth() + i, 1)
+        : new Date(rangeStart.getTime() + i * 24 * 60 * 60 * 1000);
   
-      // Calculate total distance and time for this date
-      let totalDistance = 0;
-      let totalTime = 0;
-      for (let activity of activitiesForDate) {
-        totalDistance += activity.distance;
-        totalTime += activity.moving_time;
-      }
+      const formattedDate = selectedPeriod === 'year'
+        ? format(currentDate, 'MMM', { locale: enUS })
+        : selectedPeriod === 'week'
+          ? format(currentDate, 'EEE')
+          : format(currentDate, 'd');
   
-      // Return data for this date
-      return {
-        name: format(date, formatStr),
-        distance: totalDistance,
-        time: totalTime,
-        id: activities.id,
-      };
-    });
+      const matchingActivities = selectedActivities.filter(activity => {
+        const activityDate = new Date(activity.start_date_local);
+        const formattedActivityDate = selectedPeriod === 'year'
+          ? format(activityDate, 'MMM', { locale: enUS })
+          : selectedPeriod === 'week'
+            ? format(activityDate, 'EEE')
+            : format(activityDate, 'd');
+        return formattedActivityDate === formattedDate;
+      });
+
+      const time = matchingActivities.reduce((total, activity) => total + activity.moving_time, 0);
+      const distance = matchingActivities.reduce((total, activity) => total + activity.distance, 0);
+      firstChartData.push({ name: formattedDate, time: time, distance: distance});
+    }
+    setFirstChartData(firstChartData);
   };
+
+  const getSecondChartData = (activities, period) => {
+    let selectedActivities = [];
+    let secondChartData = [];
+    let rangeStart;
+    let rangeDays;
+
+    if (selectedPeriod === 'week') {
+      selectedActivities = activities.filter(activity => {
+        const weekStart = startOfWeek(new Date(activity.start_date_local), { weekStartsOn: 1 });
+        const weekNumber = getISOWeek(weekStart);
+        return weekNumber === selectedCompare;
+      });
+      rangeStart = getDateRange(selectedCompare);
+      rangeDays = 7;
+    } else if (period === 'month') {
+      selectedActivities = activities.filter(activity => {
+        const activityMonth = getMonth(new Date(activity.start_date_local)) + 1;
+        return activityMonth === selectedCompare;
+      });
+      rangeStart = new Date(selectedYear, selectedCompare - 1, 1);
+      rangeDays = new Date(selectedYear, selectedCompare, 0).getDate(); // Get number of days in the month
+    } else if (period === 'year') {
+      selectedActivities = activities.filter(activity => {
+        const activityYear = getYear(new Date(activity.start_date_local));
+        return activityYear === selectedCompare;
+      });
+      rangeStart = new Date(selectedCompare, 0, 1);
+      rangeDays = 12; // Months in the year
+    }
+    for (let i = 0; i < rangeDays; i++) {
+      const currentDate = period === 'year' 
+        ? new Date(rangeStart.getFullYear(), rangeStart.getMonth() + i, 1)
+        : new Date(rangeStart.getTime() + i * 24 * 60 * 60 * 1000);
   
-  const chartData = getChartData(filteredActivities, selectedPeriod);
+      const formattedDate = period === 'year'
+        ? format(currentDate, 'MMM', { locale: enUS })
+        : period === 'week'
+          ? format(currentDate, 'EEE')
+          : format(currentDate, 'd');
+  
+      const matchingActivities = selectedActivities.filter(activity => {
+        const activityDate = new Date(activity.start_date_local);
+        const formattedActivityDate = period === 'year'
+          ? format(activityDate, 'MMM', { locale: enUS })
+          : period === 'week'
+            ? format(activityDate, 'EEE')
+            : format(activityDate, 'd');
+        return formattedActivityDate === formattedDate;
+      });
+
+      const time = matchingActivities.reduce((total, activity) => total + activity.moving_time, 0);
+      const distance = matchingActivities.reduce((total, activity) => total + activity.distance, 0);
+      secondChartData.push({ name: formattedDate, time: time, distance: distance});
+      
+    }
+    setSecondChartData(secondChartData);
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'left' }}>
 
+    {/* Button */}
         <ButtonGroup color="primary" aria-label="period">
           <Button
             variant={selectedPeriod === 'week' ? 'contained' : 'outlined'}
@@ -378,59 +453,88 @@ const ActivityChart = () => {
       </Grid>
     )}
 
+    {/* Ranking */}
     <Grid container spacing={2}>
       <Grid item xs={12} sm={6}>
-        <Typography>First Ranking</Typography>
-        {rankingLoading ? (
+        <Typography variant="h6">First Ranking</Typography>
+        {firstRankingLoading ? (
           <CircularProgress />
         ) : filteredActivities.length === 0 ? (
-          <p>No records for this period</p>
+          <p>No records in this period</p>
         ) : (
           filteredActivities.map(activity => (
             <Paper key={activity._id}>
-              <SportIcon sport={activity.type} />
-              <p>{activity.type} - {activity.distance} km - {activity.moving_time} minutes</p>
+              <SportIcon sport={activity.sport} />
+              <p>{activity.sport} - {activity.distance} miles - {activity.moving_time} minutes</p>
             </Paper>
           ))
         )}
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Typography>Second Ranking</Typography>
-        {rankingLoading ? (
+        <Typography variant="h6">Second Ranking</Typography>
+        {secondRankingLoading ? (
           <CircularProgress />
         ) : compareActivities.length === 0 ? (
-          <p>No records for this period</p>
+          <Typography>No records in this period</Typography>
         ) : (
           compareActivities.map(activity => (
-            <Paper key={chartData.id}>
-              <SportIcon sport={activity.type} />
-              <p>{activity.type} - {activity.distance} km - {activity.moving_time} minutes</p>
+            <Paper key={activity._id}>
+              <SportIcon sport={activity.sport} />
+              <p>{activity.sport} - {activity.distance} miles - {activity.moving_time} minutes</p>
             </Paper>
           ))
         )}
       </Grid>
     </Grid>
 
-    {/* Place chart */}
-    {/* First chart */}
-    {/* <div style={{ marginTop: '20px' }}>
-      <Typography variant="h6">Activity Chart</Typography>
-      <LineChart
-        width={500}
-        height={300}
-        data={chartData}
-        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-      >
+    {/* Chart */}
+    <Grid container spacing={2}>
+      <Grid item xs={12} sm={6}>
+        <LineChart
+          width={500}
+          height={300}
+          data={firstChartData}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
-        <YAxis />
+        <YAxis yAxisId="left" />
+        <YAxis yAxisId="right" orientation="right" />
         <Tooltip />
         <Legend />
-        <Line key={chartData.id} type="monotone" dataKey="distance" stroke="#8884d8" activeDot={{ r: 8 }} />
-        <Line type="monotone" dataKey="time" stroke="#82ca9d" />
-      </LineChart>
-    </div> */}
-    
+        <Line yAxisId="left" type="monotone" dataKey="time" stroke="#8884d8" activeDot={{ r: 8 }} />
+        <Line yAxisId="right" type="monotone" dataKey="distance" stroke="#82ca9d" />
+        </LineChart>
+      </Grid>
+          
+      <Grid item xs={12} sm={6}>
+        <LineChart
+          width={500}
+          height={300}
+          data={secondChartData}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis yAxisId="left" />
+        <YAxis yAxisId="right" orientation="right" />
+        <Tooltip />
+        <Legend />
+        <Line yAxisId="left" type="monotone" dataKey="time" stroke="#8884d8" activeDot={{ r: 8 }} />
+        <Line yAxisId="right" type="monotone" dataKey="distance" stroke="#82ca9d" />
+        </LineChart>
+      </Grid>
+    </Grid>
     </div>
   );
 };
