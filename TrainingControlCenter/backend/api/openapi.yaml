@@ -382,7 +382,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Activities'
         401:
-          description: Error getting goal
+          description: Error getting activities
           content:
             application/json:
               schema:
@@ -450,11 +450,17 @@ paths:
               $ref: '#/components/schemas/Graph'
       responses:
         200:
-          description: New graph saved
+          description: Activities returned
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Graph'
+                $ref: '#/components/schemas/Activities'
+        # 200:
+        #   description: New graph saved
+        #   content:
+        #     application/json:
+        #       schema:
+        #         $ref: '#/components/schemas/Graph'
         401:
           description: Error saving graph
           content:
