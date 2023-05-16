@@ -111,6 +111,7 @@ export default function ActivityCard({ activity, width=300, height=450 }) {
   
   return (
     <Card sx={{backgroundColor: '#f9f9f9', width: width, height: height}}>
+      {name == null ? <></> : <>
       <CardHeader
         title={name}
         subheader={date.format('llll')}
@@ -157,6 +158,7 @@ export default function ActivityCard({ activity, width=300, height=450 }) {
           </Typography>
         </CardContent>
       </Collapse>
+      </>}
     </Card>
   );
 }

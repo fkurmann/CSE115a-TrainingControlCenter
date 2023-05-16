@@ -4,6 +4,8 @@ import {
   CircularProgress,
   IconButton,
   Stack,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 
 import SportIcon from './sportIcon';
@@ -13,7 +15,9 @@ export default function HomeCalendar() {
   const user = localStorage.getItem('user');
   const [weeklyActivities, setWeeklyActivities] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [dayActivities, setDayActivities] = React.useState({})
+  const [dayActivities, setDayActivities] = React.useState({});
+  const [anchorElActivityCard, setAnchorElActivityCard] = React.useState(null);
+  const [selectedActivity, setSelectedActivity] = React.useState({});
 
   React.useEffect(() => {
     if (!weeklyActivities) {
@@ -63,6 +67,13 @@ export default function HomeCalendar() {
     }
   }, [user, weeklyActivities, isLoading, dayActivities]);
 
+  const handleOpenActivityCard = (event, activity) => {
+    if('json' in activity) setSelectedActivity(activity.json);
+    else setSelectedActivity(activity);
+    setAnchorElActivityCard(event.currentTarget);
+  }
+  const handleCloseActivityCard = () => setAnchorElActivityCard(null);
+
   return (
     <>
     {
@@ -85,7 +96,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>M</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[1].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -95,7 +106,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>Tu</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[2].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -105,7 +116,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>W</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[3].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -115,7 +126,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>Th</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[4].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -125,7 +136,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>F</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[5].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -135,7 +146,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>Sa</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[6].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -145,7 +156,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>Su</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[0].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -153,7 +164,25 @@ export default function HomeCalendar() {
         </Item>
       </Box>
     </div>
-    <ActivityCard activity={weeklyActivities[0].json} />
+    <Menu
+      sx={{ mt: '45px' }}
+      anchorEl={anchorElActivityCard}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'left',
+      }}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'left',
+      }}
+      open={Boolean(anchorElActivityCard)}
+      onClose={handleCloseActivityCard}
+    >
+      <MenuItem disableGutters sx={{backgroundColor: '#f9f9f9'}}>
+        <ActivityCard activity={selectedActivity} />
+      </MenuItem>
+    </Menu>
     </>
     }
     </>
