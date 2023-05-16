@@ -1,12 +1,16 @@
 import React from 'react';
-import {createTheme, ThemeProvider} from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import ResponsiveAppBar from '../Components/appBar';
+
 import AddGraphForm from '../Components/addGraphForm';
+
+import ActivitiesChart from '../Components/activitiesChart'; // import starActivities
+
 
 /**
  * Create the theme to be used
@@ -23,11 +27,12 @@ export default function DataCenter() {
         <ResponsiveAppBar />
         <h1>Training Control Center, {localStorage.getItem('user')}: Data Center</h1>
         <Box>
+          <ActivitiesChart/>
           <AddGraphForm />
         </Box>
-        
+
       </Container>
-      
+
     </ThemeProvider>
   );
 }

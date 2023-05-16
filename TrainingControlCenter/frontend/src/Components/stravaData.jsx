@@ -2,6 +2,43 @@ import axios from 'axios';
 
 const stravaBaseURL = 'https://www.strava.com/api/v3';
 
+const getRefreshToken = async () => {
+  const user = localStorage.getItem('user');
+  const response = await fetch('http://localhost:3010/v0/token?' + new URLSearchParams({username: user}), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  if (!response) {
+    alert(`Error retrieving strava refresh token from database for user ${user}`);
+  }
+  return response.json();
+}
+
+const getAccessToken = async () => {
+  const user = localStorage.getItem('user');
+  const refresh_token = (await getRefreshToken()).stravaToken;
+  console.log("here", refresh_token);
+  const response = await fetch("https://www.strava.com/oauth/token", {
+    method: "POST",
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      client_id: '105448',
+      client_secret: 'af3c8b34684f5c32341a5494b4562ac4e93d5ac1',
+      refresh_token: refresh_token,
+      grant_type: "refresh_token",
+    }),
+  })
+  if (!response) {
+    alert(`Error retrieiving strava access token for user ${user}`);
+  }
+  return response.json();
+}
+
 async function uploadActivities(activities) {
   const user = localStorage.getItem('user');
   for (let i = 0; i < activities.length; i++) {
@@ -50,11 +87,12 @@ async function uploadActivities(activities) {
       return null;
     }
   }
+  alert("Successfully stored strava activities!"); // react mui box here instead
   console.log("Stored activities for: ", user);
 }
 
 export async function getAllActivities() {
-  const stravaAccessToken = localStorage.getItem('stravaAccessToken');
+  const stravaAccessToken = (await getAccessToken()).access_token;
 
   var all_activities = [];
   try {
@@ -96,7 +134,7 @@ export async function getAllActivities() {
 }
 
 export async function getFiveActivities() {
-  const stravaAccessToken = localStorage.getItem('stravaAccessToken');
+  const stravaAccessToken = (await getAccessToken()).access_token;
   var activities = [];
   try {
     const res = await axios.get(`${stravaBaseURL}/athlete/activities`, {

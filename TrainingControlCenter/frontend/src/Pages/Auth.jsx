@@ -28,7 +28,6 @@ export default function Login() {
   React.useEffect(() => {
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');
-    localStorage.removeItem('stravaAccessToken');
     localStorage.removeItem('goals');
   }, []);
 
@@ -82,7 +81,7 @@ export default function Login() {
       })
       .then((json) => {
         alert('Account saved, ready to sign in');
-        
+
       })
       .catch((err) => {
         alert('Error, please enter a unique username and password');
