@@ -8,6 +8,10 @@ import sys
 import json
 import dateutil.parser
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6391fe9da1748add831df59a84e96cd1ff43d7ea
 from datetime import date, datetime, timedelta
 
 def generalHistoryGraph (username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile):
