@@ -1,4 +1,5 @@
 import React, { PureComponent, useEffect, useState } from 'react';
+import moment from 'moment';
 import { Grid, Typography, Paper, Button, ButtonGroup, Select, MenuItem } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { eachDayOfInterval, format, getISOWeek, startOfWeek, endOfWeek, getMonth, getYear, startOfMonth, endOfMonth, startOfYear, endOfYear, addDays, eachMonthOfInterval } from 'date-fns';
@@ -465,7 +466,7 @@ const ActivityChart = () => {
           filteredActivities.map(activity => (
             <Paper key={activity._id}>
               <SportIcon sport={activity.sport} />
-              <p>{activity.sport} - {activity.distance} miles - {activity.moving_time} minutes</p>
+              <p>{activity.sport} - {(activity.distance / 1609).toFixed(2)} miles - {activity.moving_time >= 86400 ? `${Math.floor(activity.moving_time / 86400)}:` : ''}{moment.utc(activity.moving_time*1000).format('HH:mm:ss')} total time</p>
             </Paper>
           ))
         )}
@@ -480,7 +481,7 @@ const ActivityChart = () => {
           compareActivities.map(activity => (
             <Paper key={activity._id}>
               <SportIcon sport={activity.sport} />
-              <p>{activity.sport} - {activity.distance} miles - {activity.moving_time} minutes</p>
+              <p>{activity.sport} - {(activity.distance / 1609).toFixed(2)} miles - {activity.moving_time >= 86400 ? `${Math.floor(activity.moving_time / 86400)}:` : ''}{moment.utc(activity.moving_time*1000).format('HH:mm:ss')} total time</p>
             </Paper>
           ))
         )}
