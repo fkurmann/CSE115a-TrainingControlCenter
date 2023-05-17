@@ -1,12 +1,23 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react';
+import moment from 'moment';
 import { DataGrid, getGridNumericOperators } from '@mui/x-data-grid';
-import CircularProgress from '@mui/material/CircularProgress';
+import { CircularProgress, Popover } from '@mui/material';
+import ActivityCard from './activityCard';
 
 export default function WorkoutGrid() {
   const user = localStorage.getItem('user');
 
   const [myActivities, setMyActivities] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [selectedActivity, setSelectedActivity] = React.useState(null);
+  const [anchorElActivityCard, setAnchorElActivityCard] = React.useState(null);
+
+  const handleOpenActivityCard = (event, activity) => {
+    if(activity.json && activity.json.name) setSelectedActivity(activity.json);
+    else setSelectedActivity(activity);
+    setAnchorElActivityCard(event.currentTarget);
+  }
+  const handleCloseActivityCard = () => setAnchorElActivityCard(null);
 
   const columns = [
     { field: 'name', headerName: 'Name', width: 250 },
@@ -14,10 +25,10 @@ export default function WorkoutGrid() {
     { field: 'type', headerName: 'Type', width: 150 },
     { field: 'start_date_local', headerName: 'Date', valueFormatter: params => (params.value), width: 150 },
     { field: 'distance', headerName: 'Distance', width: 75, 
-      valueGetter: params => Number(parseFloat((params.value)/1609).toFixed(2)),
+      valueGetter: params => !params.value ? null : Number(parseFloat((params.value)/1609).toFixed(2)),
       filterOperators: getGridNumericOperators() },
-    { field: 'moving_time', headerName: 'Time', width: 75,
-      valueGetter: params => Number(parseFloat((params.value)/60).toFixed(2)),
+    { field: 'moving_time', headerName: 'Time', width: 100,
+      valueGetter: params => !params.value ? null : moment.utc(params.value*1000).format('HH:mm:ss'),
       filterOperators: getGridNumericOperators() },
   ]
   
@@ -43,6 +54,15 @@ export default function WorkoutGrid() {
         .then((res) => {
           if(res){
             console.log('Loaded activities');
+            // Remove any duplicated activities
+            let unique_activities = [];
+            res.forEach((a) => {
+              if(unique_activities.filter((b) => { return a.name === b.name && a.distance === b.distance && a.moving_time === b.moving_time }).length === 0) {
+                unique_activities.push(a);
+              }
+            });
+            res = unique_activities;
+
             localStorage.setItem('activities', JSON.stringify(res));
             res.forEach((a) => {
               a.distance = parseFloat(a.distance);
@@ -79,7 +99,23 @@ export default function WorkoutGrid() {
         getRowId={(row) => row._id}
         columns={columns}
         pageSize={100}
+        onRowDoubleClick={(params, e) => handleOpenActivityCard(e, params.row) }
       />
+      <Popover
+        anchorEl={anchorElActivityCard}
+        open={Boolean(anchorElActivityCard)}
+        onClose={handleCloseActivityCard}
+        anchorOrigin={{
+          vertical: 'center',
+          horizontal: 'right'
+        }}
+        transformOrigin={{
+          vertical: 'center',
+          horizontal: 'right'
+        }}
+      >
+        <ActivityCard activity={selectedActivity} />
+      </Popover>
     </div>
     }
   </>
