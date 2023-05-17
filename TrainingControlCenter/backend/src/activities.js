@@ -11,7 +11,7 @@ exports.addActivity = async (req, res) => {
   let date = start_date_local ? new Date(start_date_local) : null;
 
   // Convert the date object to a YYYY/MM/DD format
-  let formattedDate = date ? date.toISOString().substring(0, 10) : null;
+  let formattedDate = date ? date.toISOString() : null;
 
   // Checks that values are not defaults, if they are, replace with null
   if (username === 'string') {
