@@ -20,18 +20,18 @@ export default function WorkoutGrid() {
   const handleCloseActivityCard = () => setAnchorElActivityCard(null);
 
   const columns = [
-    { field: 'name', headerName: 'Name', width: 250 },
+    { field: 'name', headerName: 'Name', width: 300 },
     { field: 'sport', headerName: 'Sport', width: 150 },
     { field: 'type', headerName: 'Type', width: 150 },
-    { field: 'start_date_local', headerName: 'Date', valueFormatter: params => (params.value), width: 150 },
-    { field: 'distance', headerName: 'Distance', width: 75, 
+    { field: 'start_date_local', headerName: 'Date', valueFormatter: params => (params.value.substring(0, 10)), width: 150 },
+    { field: 'distance', headerName: 'Distance (mi)', width: 160,
       valueGetter: params => !params.value ? null : Number(parseFloat((params.value)/1609).toFixed(2)),
       filterOperators: getGridNumericOperators() },
-    { field: 'moving_time', headerName: 'Time', width: 100,
+    { field: 'moving_time', headerName: 'Time (min)', width: 100,
       valueGetter: params => !params.value ? null : moment.utc(params.value*1000).format('HH:mm:ss'),
       filterOperators: getGridNumericOperators() },
   ]
-  
+
   // Initializes myActivities
   React.useEffect(() => {
     if(!myActivities){
@@ -80,7 +80,7 @@ export default function WorkoutGrid() {
       setIsLoading(false);
     }
   }, [user, myActivities, isLoading]);
-  
+
   // Updates localStorage whenever myActivities is updated
   React.useEffect(() => {
     localStorage.setItem('activities', JSON.stringify(myActivities));
@@ -91,9 +91,7 @@ export default function WorkoutGrid() {
     {
     isLoading ?
     <CircularProgress /> :
-    
     <div style={{ height: 700, width: '100%' }}>
-      
       <DataGrid
         rows={myActivities}
         getRowId={(row) => row._id}

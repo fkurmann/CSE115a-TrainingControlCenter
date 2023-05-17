@@ -104,31 +104,44 @@ export default function AddWorkoutForm() {
     return activityTypes;
   };
 
+  const sportsList = [
+    "Cycling",
+    "Virtual Ride",
+    "Swimming",
+    "Running",
+    "Virtual Run",
+    "Walking",
+    "Hiking",
+    "Weight Training",
+    "Rowing",
+    "Skiing",
+  ];
+
   // get user favorite for sport types
-  const [favoriteSports, setFavoriteSports] = useState([]);
-  const fetchFavorites = async () => {
-    try {
-      const response = await fetch('http://localhost:3010/v0/favorites?'
-                        + new URLSearchParams({username: localStorageUser}));
+  // const [favoriteSports, setFavoriteSports] = useState([]);
+  // const fetchFavorites = async () => {
+  //   try {
+  //     const response = await fetch('http://localhost:3010/v0/favorites?'
+  //                       + new URLSearchParams({username: localStorageUser}));
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
 
-      const favoriteSports = await response.json();
-      setFavoriteSports(favoriteSports);
-    } catch (error) {
-      console.error(error);
-      setErrorMessage('An error occurred. Please try again.');
+  //     const favoriteSports = await response.json();
+  //     setFavoriteSports(favoriteSports);
+  //   } catch (error) {
+  //     console.error(error);
+  //     setErrorMessage('An error occurred. Please try again.');
 
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 10000);
-    }
-  };
-  useEffect(() => {
-    fetchFavorites();
-  }, []);
+  //     setTimeout(() => {
+  //       setErrorMessage('');
+  //     }, 10000);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchFavorites();
+  // }, []);
 
   return (
     <>
@@ -180,7 +193,7 @@ export default function AddWorkoutForm() {
             autoWidth
             label="Sport Type"
           >
-            {favoriteSports.map((sportType, index) => (
+            {sportsList.map((sportType, index) => (
               <MenuItem key={sportType} value={sportType} id={`menu-item-${sportType}-${index}`}>
                 {sportType}
               </MenuItem>
