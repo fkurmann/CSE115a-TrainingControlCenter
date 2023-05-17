@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import {
   TextField,
@@ -19,9 +18,15 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 const localStorageUser = localStorage.getItem('user');
 
-
 export default function AddGraphForm() {
-  const [{ duration, startDate, graphType, goal, sport, outfile }, setState] = useState({});
+  const [{ duration, startDate, graphType, goal, sport, outfile }, setState] = useState({
+    duration: '',
+    startDate: '',
+    graphType: '',
+    goal: '',
+    sport: '',
+    outfile: ''
+  });
 
   // Success and error message
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -128,7 +133,7 @@ export default function AddGraphForm() {
           label="Graph Type"
           value={graphType}
           onChange={(e) =>
-            setState((prevState) => ({ ...prevState, type: e.target.value }))
+            setState((prevState) => ({ ...prevState, graphType: e.target.value }))
           }
           autoWidth
           required
@@ -149,7 +154,7 @@ export default function AddGraphForm() {
           label="Duration"
           value={duration}
           onChange={(e) =>
-            setState((prevState) => ({ ...prevState, type: e.target.value }))
+            setState((prevState) => ({ ...prevState, duration: e.target.value }))
           }
           autoWidth
           required
@@ -189,17 +194,20 @@ export default function AddGraphForm() {
             <MobileDatePicker
               inputFormat="YYYY-MM-DD"
               disableFuture
-              onChange={(e) =>
-                setState((prevState) => ({ ...prevState, startDate: e.target.value }))
+              required
+              onChange={(value) =>
+                setState((prevState) => ({
+                  ...prevState,
+                  startDate: value ? value.toISOString() : null,
+                }))
               }
               renderInput={(params) => <TextField {...params} readOnly />}
-              // required
             />
           </DemoContainer>
         </LocalizationProvider>
         </Box>
 
-        {/* Goals Toggle */}
+        {/* Goals Toggle TODO */}
         <Box mb={2} ml={2}>
           <FormControlLabel control={<Switch />} label="Compare with Goals" />
         </Box>
