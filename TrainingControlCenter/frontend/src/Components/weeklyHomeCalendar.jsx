@@ -4,18 +4,22 @@ import {
   CircularProgress,
   IconButton,
   Stack,
+  Popover,
 } from '@mui/material';
 
 import SportIcon from './sportIcon';
+import ActivityCard from './activityCard';
 
 export default function HomeCalendar() {
   const user = localStorage.getItem('user');
-  const [weeklyActivities, setWeeklyActivities] = React.useState([]);
+  const [weeklyActivities, setWeeklyActivities] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [dayActivities, setDayActivities] = React.useState({})
+  const [dayActivities, setDayActivities] = React.useState({});
+  const [anchorElActivityCard, setAnchorElActivityCard] = React.useState(null);
+  const [selectedActivity, setSelectedActivity] = React.useState({});
 
   React.useEffect(() => {
-    if (weeklyActivities.length === 0) {
+    if (!weeklyActivities) {
       console.log("Loading weekly activities");
         setIsLoading(true);
         const d = new Date();
@@ -62,6 +66,13 @@ export default function HomeCalendar() {
     }
   }, [user, weeklyActivities, isLoading, dayActivities]);
 
+  const handleOpenActivityCard = (event, activity) => {
+    if('json' in activity) setSelectedActivity(activity.json);
+    else setSelectedActivity(activity);
+    setAnchorElActivityCard(event.currentTarget);
+  }
+  const handleCloseActivityCard = () => setAnchorElActivityCard(null);
+
   return (
     <>
     {
@@ -84,7 +95,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>M</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[1].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -94,7 +105,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>Tu</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[2].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -104,7 +115,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>W</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[3].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -114,7 +125,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>Th</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[4].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -124,7 +135,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>F</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[5].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -134,7 +145,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>Sa</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[6].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -144,7 +155,7 @@ export default function HomeCalendar() {
         <Item sx={{ width: 75, fontSize: 20 }}><u>Su</u>
         <Stack alignItems="left" direction="column" spacing={2}>
         {dayActivities[0].map((activity) => (
-          <IconButton key={activity["_id"]} size="large">
+          <IconButton key={activity["_id"]} onClick={ (e) => handleOpenActivityCard(e, activity) } size="large">
             <SportIcon sport={activity["sport"]} fontSize="125%"/>
           </IconButton>
         ))}
@@ -152,6 +163,21 @@ export default function HomeCalendar() {
         </Item>
       </Box>
     </div>
+    <Popover
+      anchorEl={anchorElActivityCard}
+      open={Boolean(anchorElActivityCard)}
+      onClose={handleCloseActivityCard}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'left'
+      }}
+      transformOrigin={{
+        vertical: 'center',
+        horizontal: 'right'
+      }}
+    >
+      <ActivityCard activity={selectedActivity} />
+    </Popover>
     </>
     }
     </>
@@ -202,6 +228,12 @@ function getActivitiesForDay(activities, day) {
   var day_activities = []
   for (let i = 0; i < activities.length; i++) {
     if (new Date(activities[i]["json"]["start_date_local"]).getDay().toString() === day) {
+      // Remove duplicate activities
+      if(day_activities.filter((a) => {
+          return activities[i].json.distance === a.distance && activities[i].json.moving_time === a.moving_time
+        }).length > 0) {
+        continue;
+      }
       day_activities.push(activities[i]);
     }
   }

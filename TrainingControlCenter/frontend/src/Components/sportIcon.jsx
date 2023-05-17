@@ -18,6 +18,7 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 // 2. Use it with sport name
 //      <SportIcon sport='running' />
 export default function SportIcon({sport, fontSize='medium'}) {
+  if(!sport) return <SportsIcon />
   sport = sport.toLowerCase()
   fontSize = fontSize.toLowerCase()
   if(sport.includes('run') || sport.includes('virtual run')) return <DirectionsRunIcon sx={{fontSize: fontSize}}/>

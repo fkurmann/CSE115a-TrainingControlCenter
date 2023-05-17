@@ -89,12 +89,14 @@ exports.findActivity = async (username, name, sport, type, minDuration, maxDurat
     parameters["json.start_date_local"] = {$gte: new Date(minDate).toISOString()};
   }
 
+  console.log(`Parameters: ${JSON.stringify(parameters)}`);
+
   // Access database
   try {
     await client.connect();
     const result = await client.db('TCC').collection('activities').find(parameters);
     if (result) {
-      const returnList = await result.toArray();
+      let returnList = await result.toArray();
       console.log(`Found activities with the parameters '${parameters}':`);
       await client.close();
       return returnList;
