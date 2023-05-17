@@ -12,7 +12,7 @@ from datetime import date, datetime, timedelta
 
 def generalHistoryGraph (username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile):
   # print ('Params: ' + username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile)
-  startDate = date(int(startYear), int(startMonth), int(startDay)) 
+  startDate = date(int(startYear), int(startMonth)+1, int(startDay)) 
   # Figure creation
   figureWidth=5
   figureHeight=5
@@ -37,21 +37,29 @@ def generalHistoryGraph (username, duration, graphType, sport, goal, startYear, 
   totals = []
   for i in range (1, maxX):
     totals.append([i, 0])
+  print(totals)
 
   if (graphType == 'Distance'):
-    for index, item in enumerate(activityList):
+    for item in activityList:
 
       # Lots of translation      
       activityDate = datetime.strptime(item['start_date_local'], "%Y-%m-%dT%H:%M:%SZ").date()
+      print(startDate, activityDate)
       startDateDelta = (activityDate - startDate).days
       startDateDelta = int(startDateDelta)
+      print(startDateDelta)
 
       if duration  == 'Week': 
         startDateDelta = startDateDelta//7
       if duration == 'Month': 
         startDateDelta = startDateDelta//30
+
+      if (startDateDelta != 0):
+        startDateDelta -= 1
       
-      totals[startDateDelta][1]+=item['distance']/1609.34
+      print(startDateDelta)
+      if (startDateDelta < maxX):
+        totals[startDateDelta][1]+=(item['distance']/1609.34)
       
   if (graphType == 'Time'):
     for item in activityList:
@@ -61,12 +69,18 @@ def generalHistoryGraph (username, duration, graphType, sport, goal, startYear, 
       startDateDelta = int(startDateDelta)
 
       if duration  == 'Week': 
+        print('Week division')
         startDateDelta = startDateDelta//7
       if duration == 'Month': 
         startDateDelta = startDateDelta//30
 
-      totals[startDateDelta][1]+=item['moving_time']/3600
-      startDateDelta
+      # Check logic:
+      if (startDateDelta != 0):
+        startDateDelta -= 1
+      
+      print(startDateDelta)
+      if (startDateDelta < maxX):
+        totals[startDateDelta][1]+=(item['moving_time']/3600)
 
   # print(totals)
     
@@ -112,7 +126,7 @@ def generalHistoryGraph (username, duration, graphType, sport, goal, startYear, 
                     top=False, labeltop=False)
 
   # TODO, save location in images folder
-  plt.savefig('../frontend/images/' + outFile,dpi=600)
+  plt.savefig('../frontend/src/Components/images/' + outFile,dpi=600)
   #plt.savefig(outFile,dpi=600)
   return 'Graphing Complete'
 

@@ -19,13 +19,13 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 const localStorageUser = localStorage.getItem('user');
 
 export default function AddGraphForm() {
-  const [{ duration, startDate, graphType, goal, sport, outfile }, setState] = useState({
+  const [{ duration, startDate, graphType, goal, sport, outFile }, setState] = useState({
     duration: '',
     startDate: '',
     graphType: '',
     goal: '',
     sport: '',
-    outfile: ''
+    outFile: 'generalGraph'
   });
 
   // Success and error message
@@ -46,7 +46,7 @@ export default function AddGraphForm() {
           sport: sport,
           goal: goal,
           startDate: formattedDate,
-          outfile: outfile
+          outFile: outFile
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
