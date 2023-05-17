@@ -91,9 +91,7 @@ export default function WorkoutGrid() {
     {
     isLoading ?
     <CircularProgress /> :
-
     <div style={{ height: 700, width: '100%' }}>
-
       <DataGrid
         rows={myActivities}
         getRowId={(row) => row._id}
