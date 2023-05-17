@@ -109,7 +109,7 @@ export async function getAllActivities() {
     if (res.status === 200) {
       all_activities = res.data;
     }
-    while (res.length !== 0) {}
+    while (res.data.length !== 0) {
       page += 1;
       res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
         headers: {
@@ -121,10 +121,13 @@ export async function getAllActivities() {
         },
       });
       if (res.status === 200) {
+        console.log(res.data.length);
         for (let i = 0; i < res.data.length; i++) {
           all_activities.push(res.data[i]);
         }
       }
+      await new Promise(r => setTimeout(r, 4000));
+    }
   } catch (error) {
     console.error('Error fetching all activities:', error);
     return null;
@@ -158,4 +161,17 @@ export async function getFiveActivities() {
   return activities;
 }
 
-
+export async function getActivityDetails(id) {
+  const stravaAccessToken = (await getAccessToken()).access_token;
+  const res = await axios.get(`${stravaBaseURL}/activities/${id}`, {
+    headers: {
+      'Authorization': `Bearer ${stravaAccessToken}`
+    }
+  }).then((res) => {
+    return res.data;
+  }).catch(function (error) {
+    console.error(`Error getting activity ${id}`, error);
+    return {};
+  });
+  return res;
+}
