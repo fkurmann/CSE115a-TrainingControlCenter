@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import {
   TextField,
@@ -17,7 +16,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 const localStorageUser = localStorage.getItem('user');
-
 
 export default function AddWorkoutForm() {
   const [{ name, type = '', sport }, setState] = useState({
@@ -108,7 +106,6 @@ export default function AddWorkoutForm() {
 
   // get user favorite for sport types
   const [favoriteSports, setFavoriteSports] = useState([]);
-
   const fetchFavorites = async () => {
     try {
       const response = await fetch('http://localhost:3010/v0/favorites?'

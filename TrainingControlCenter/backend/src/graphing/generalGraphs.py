@@ -8,15 +8,10 @@ import sys
 import json
 import dateutil.parser
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 6391fe9da1748add831df59a84e96cd1ff43d7ea
 from datetime import date, datetime, timedelta
 
 def generalHistoryGraph (username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile):
-
-  print ('Params: ' + username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile)
+  # print ('Params: ' + username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile)
   startDate = date(int(startYear), int(startMonth), int(startDay)) 
   # Figure creation
   figureWidth=5
@@ -31,8 +26,8 @@ def generalHistoryGraph (username, duration, graphType, sport, goal, startYear, 
 
   activityList = json.loads(jsonInput)
 
-  for item in activityList:
-    print (item['name'])
+  # for item in activityList:
+  #   print (item['name'])
 
   # Get totals for distance or time
   maxX = 13
@@ -45,44 +40,42 @@ def generalHistoryGraph (username, duration, graphType, sport, goal, startYear, 
 
   if (graphType == 'Distance'):
     for index, item in enumerate(activityList):
-      print(item['start_date_local'])
-      parsedDate = dateutil.parser.isoparse(item['start_date_local'])
-      print(parsedDate)
-      activityDate = datetime.fromisoformat(parsedDate)
-      print(activityDate)
-  
-      startDateDelta = (activityDate - startDate)
-      print(startDateDelta)
-      # if duration == 'Day':
-      #   startDateDelta =
-      # elif duration 'Week': 
-      #   startDateDelta =
-      # else: 
-      #   startDateDelta =
+
+      # Lots of translation      
+      activityDate = datetime.strptime(item['start_date_local'], "%Y-%m-%dT%H:%M:%SZ").date()
+      startDateDelta = (activityDate - startDate).days
+      startDateDelta = int(startDateDelta)
+
+      if duration  == 'Week': 
+        startDateDelta = startDateDelta//7
+      if duration == 'Month': 
+        startDateDelta = startDateDelta//30
       
-      totals[startDateDelta][1]=item['distance']/1609.34
+      totals[startDateDelta][1]+=item['distance']/1609.34
       
   if (graphType == 'Time'):
     for item in activityList:
-      totals[startDateDelta][1]=item['moving_time']/3600
+      # Lots of translation      
+      activityDate = datetime.strptime(item['start_date_local'], "%Y-%m-%dT%H:%M:%SZ").date()
+      startDateDelta = (activityDate - startDate).days
+      startDateDelta = int(startDateDelta)
+
+      if duration  == 'Week': 
+        startDateDelta = startDateDelta//7
+      if duration == 'Month': 
+        startDateDelta = startDateDelta//30
+
+      totals[startDateDelta][1]+=item['moving_time']/3600
       startDateDelta
-    # Daily total graphing
 
-    # Weekly total graphing
-
-    # Monthly total graphing
-
-
-  print(totals)
+  # print(totals)
     
-  
-    
-
   # Graphing
   # Panel ranges
   maxY = max([sublist[1] for sublist in totals]) # maxY is the largest y value, can be goal value
   maxY = math.ceil(maxY * 1.1)
-
+  if maxY < 10:
+    maxY = 10
   yTickSpace = maxY//10
 
   panel1.set_xlim(0, maxX)
@@ -91,18 +84,15 @@ def generalHistoryGraph (username, duration, graphType, sport, goal, startYear, 
   for item in totals:
     panel1.plot(item[0],item[1],
                   marker='o',
-                  markerfacecolor='red',
+                  markerfacecolor='blue',
                   markeredgewidth=0.1,
                   markersize=4,
                   color='black',
                   linewidth=0,
-                  alpha=1
-      )
-
+                  alpha=1)
 
   # Goal overlay, optional
   # If goals selected, get goal for corresponding sport of type time/distance from database TODO
-
   if goal == True:
     pass
 
@@ -115,7 +105,6 @@ def generalHistoryGraph (username, duration, graphType, sport, goal, startYear, 
 
   panel1.set_xlabel(duration + 's')
   panel1.set_ylabel(graphType)
-
 
   panel1.tick_params(bottom=True, labelbottom=True,\
                     left=True, labelleft=True, \
