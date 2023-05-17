@@ -1,16 +1,14 @@
-import React, { PureComponent, useEffect, useState } from 'react';
 import moment from 'moment';
-import { Grid, Typography, Paper, Button, ButtonGroup, Select, MenuItem } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
-import { eachDayOfInterval, format, getISOWeek, startOfWeek, endOfWeek, getMonth, getYear, startOfMonth, endOfMonth, startOfYear, endOfYear, addDays, eachMonthOfInterval } from 'date-fns';
 import SportIcon from './sportIcon';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { enUS } from 'date-fns/locale';
+import React, { useEffect, useState } from 'react';
+import { Grid, Typography, Paper, Button, ButtonGroup, Select, MenuItem, CircularProgress } from '@mui/material';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { format, getISOWeek, startOfWeek, getMonth, getYear} from 'date-fns';
+import { enUS } from 'date-fns/locale'
 
 const localStorageUser = localStorage.getItem('user');
 
 const ActivityChart = () => {
-  // const [activities, setActivities] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState('week');
   const [selectedWeek, setSelectedWeek] = useState(getCurrentWeek());
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
@@ -23,7 +21,8 @@ const ActivityChart = () => {
   const [noRecords, setNoRecords] = useState(false);
   const [firstChartData, setFirstChartData] = useState([]);
   const [secondChartData, setSecondChartData] = useState([]);
-  
+  const metersToMiles = 0.000621371;
+
   function getCurrentWeek() {
     const currentDate = new Date();
     const currentWeek = getISOWeek(currentDate);
@@ -338,6 +337,20 @@ const ActivityChart = () => {
     setSecondChartData(secondChartData);
   };
 
+
+  // Units conversion
+  const firstUnitConversion = firstChartData.map(data => ({
+    ...data,
+    distance: (data.distance * metersToMiles).toFixed(2),
+    time: (data.time / 3600).toFixed(2),
+  }));
+
+  const secondUnitConversion = secondChartData.map(data => ({
+    ...data,
+    distance: (data.distance * metersToMiles).toFixed(2),
+    time: (data.time / 3600).toFixed(2),
+  }));
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'left' }}>
 
@@ -466,7 +479,7 @@ const ActivityChart = () => {
           filteredActivities.map(activity => (
             <Paper key={activity._id}>
               <SportIcon sport={activity.sport} />
-              <p>{activity.sport} - {(activity.distance / 1609).toFixed(2)} miles - {activity.moving_time >= 86400 ? `${Math.floor(activity.moving_time / 86400)}:` : ''}{moment.utc(activity.moving_time*1000).format('HH:mm:ss')} total time</p>
+              <p>{activity.sport} - {(activity.distance * metersToMiles).toFixed(2)} miles - {activity.moving_time >= 86400 ? `${Math.floor(activity.moving_time / 86400)}:` : ''}{moment.utc(activity.moving_time*1000).format('HH:mm:ss')} total time</p>
             </Paper>
           ))
         )}
@@ -481,7 +494,7 @@ const ActivityChart = () => {
           compareActivities.map(activity => (
             <Paper key={activity._id}>
               <SportIcon sport={activity.sport} />
-              <p>{activity.sport} - {(activity.distance / 1609).toFixed(2)} miles - {activity.moving_time >= 86400 ? `${Math.floor(activity.moving_time / 86400)}:` : ''}{moment.utc(activity.moving_time*1000).format('HH:mm:ss')} total time</p>
+              <p>{activity.sport} - {(activity.distance * metersToMiles).toFixed(2)} miles - {activity.moving_time >= 86400 ? `${Math.floor(activity.moving_time / 86400)}:` : ''}{moment.utc(activity.moving_time*1000).format('HH:mm:ss')} total time</p>
             </Paper>
           ))
         )}
@@ -494,7 +507,7 @@ const ActivityChart = () => {
         <LineChart
           width={500}
           height={300}
-          data={firstChartData}
+          data={firstUnitConversion}
           margin={{
             top: 5,
             right: 30,
@@ -504,8 +517,8 @@ const ActivityChart = () => {
         >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
-        <YAxis yAxisId="left" />
-        <YAxis yAxisId="right" orientation="right" />
+        <YAxis yAxisId="left" domain={[0, 50]}/>
+        <YAxis yAxisId="right" orientation="right" domain={[0, 50]}/>
         <Tooltip />
         <Legend />
         <Line yAxisId="left" type="monotone" dataKey="time" stroke="#8884d8" activeDot={{ r: 8 }} />
@@ -517,7 +530,7 @@ const ActivityChart = () => {
         <LineChart
           width={500}
           height={300}
-          data={secondChartData}
+          data={secondUnitConversion}
           margin={{
             top: 5,
             right: 30,
@@ -527,8 +540,8 @@ const ActivityChart = () => {
         >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
-        <YAxis yAxisId="left" />
-        <YAxis yAxisId="right" orientation="right" />
+        <YAxis yAxisId="left" domain={[0, 50]}/>
+        <YAxis yAxisId="right" orientation="right" domain={[0, 50]}/>
         <Tooltip />
         <Legend />
         <Line yAxisId="left" type="monotone" dataKey="time" stroke="#8884d8" activeDot={{ r: 8 }} />
