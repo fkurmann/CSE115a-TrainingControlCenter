@@ -22,7 +22,9 @@ exports.login = async (req, res) => {
         algorithm: 'HS256',
       });
     res.status(200).json({
-      username: username, accessToken: accessToken, favorites: returnValue.favorites
+      username: username,
+      accessToken: accessToken,
+      favorites: returnValue.favorites,
     });
   }
 };
@@ -39,11 +41,11 @@ exports.register = async (req, res) => {
     // If username is availible, issue it
     returnValue = await dbUsers.createUser(username, password);
     res.status(200).json({
-      username: username, password: password
-    });    
+      username: username,
+      password: password,
+    });
   }
 };
-
 
 // Check that authentication token is issued
 exports.check = (req, res, next) => {
@@ -69,14 +71,13 @@ exports.updateToken = async (req, res) => {
   } else {
     // If username is issued, update token
     returnValue = await dbUsers.updateUser(username, token);
-    res.status(200).send(token);  
+    res.status(200).send(token);
   }
 };
 
 // Get strava token
 exports.getToken = async (req, res) => {
   const username = req.query.username;
-
   const returnValue = await dbUsers.findUser(username, null);
   // Error case
   if (returnValue === -1) {
@@ -85,7 +86,8 @@ exports.getToken = async (req, res) => {
     // On success return 200
     const token = returnValue.stravaToken;
     res.status(200).json({
-      username: username, stravaToken: returnValue.stravaToken
+      username: username,
+      stravaToken: returnValue.stravaToken,
     });
   }
 };

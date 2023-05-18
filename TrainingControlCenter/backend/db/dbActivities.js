@@ -25,7 +25,7 @@ exports.createActivity = async (username, name, type, sport, description, json) 
     start_date_local: json.start_date_local,
     distance: json.distance,
     moving_time: json.moving_time,
-    json: json
+    json: json,
   }
 
   // Access database
@@ -43,8 +43,7 @@ exports.createActivity = async (username, name, type, sport, description, json) 
 
 // Find activity
 exports.findActivity = async (username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate) => {
-  let parameters = {
-  }
+  let parameters = {};
 
   const variables = ['username', 'name', 'sport', 'type'];
   for (const[idx, item] of [username, name, sport, type].entries()) {
@@ -53,19 +52,19 @@ exports.findActivity = async (username, name, sport, type, minDuration, maxDurat
     }
   }
   if ((minDuration != null) && (maxDuration != null)) {
-    parameters["json.moving_time"] = {$gte: minDuration, $lte: maxDuration};
+    parameters['json.moving_time'] = {$gte: minDuration, $lte: maxDuration};
   } else if ((minDuration == null) && (maxDuration != null)) {
-    parameters["json.moving_time"] = {$lte: maxDuration};
+    parameters['json.moving_time'] = {$lte: maxDuration};
   } else if ((minDuration != null) && (maxDuration == null)) {
-    parameters["json.moving_time"] = {$gte: minDuration};
+    parameters['json.moving_time'] = {$gte: minDuration};
   }
 
   if ((minDistance != null) && (maxDistance != null)) {
-    parameters["json.distance"] = {$gte: minDistance, $lte: maxDistance};
+    parameters['json.distance'] = {$gte: minDistance, $lte: maxDistance};
   } else if ((minDistance == null) && (maxDistance != null)) {
-    parameters["json.distance"] = {$lte: maxDistance};
+    parameters['json.distance'] = {$lte: maxDistance};
   } else if ((minDistance != null) && (maxDistance == null)) {
-    parameters["json.distance"] = {$gte: minDistance};
+    parameters['json.distance'] = {$gte: minDistance};
   }
 
   if (minDate != null) {
@@ -82,11 +81,11 @@ exports.findActivity = async (username, name, sport, type, minDuration, maxDurat
   }
 
   if ((minDate != null) && (maxDate != null)) {
-    parameters["json.start_date_local"] = {$gte: new Date(minDate).toISOString(), $lte: new Date(maxDate).toISOString()};
+    parameters['json.start_date_local'] = {$gte: new Date(minDate).toISOString(), $lte: new Date(maxDate).toISOString()};
   } else if ((minDate == null) && (maxDate != null)) {
-    parameters["json.start_date_local"] = {$lte: new Date(maxDate).toISOString()};
+    parameters['json.start_date_local'] = {$lte: new Date(maxDate).toISOString()};
   } else if ((minDate != null) && (maxDate == null)) {
-    parameters["json.start_date_local"] = {$gte: new Date(minDate).toISOString()};
+    parameters['json.start_date_local'] = {$gte: new Date(minDate).toISOString()};
   }
 
   console.log(`Parameters: ${JSON.stringify(parameters)}`);
@@ -115,7 +114,7 @@ exports.findActivity = async (username, name, sport, type, minDuration, maxDurat
 exports.deleteActivity = async (username, name) => {
   const parameters = {
     username: username,
-    name: name
+    name: name,
   }
   // Access database
   try {

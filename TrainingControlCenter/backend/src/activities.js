@@ -5,7 +5,7 @@ exports.addActivity = async (req, res) => {
   let {username, name, type, sport, description} = req.body;
   let {distance, time, start_date_local} = req.body.json;
 
-  console.log(start_date_local)
+  console.log(start_date_local);
 
   // Convert a date string to a Date object
   let date = start_date_local ? new Date(start_date_local) : null;
@@ -48,7 +48,7 @@ exports.addActivity = async (req, res) => {
   // Add activity metadata to JSON in format similar to strava activity jsons
   const activityJson = {
     distance: distance || undefined,
-    moving_time: time*60 || undefined,
+    moving_time: time * 60 || undefined,
     start_date_local: formattedDate || undefined,
   };
 
@@ -80,6 +80,7 @@ exports.addActivityStrava = async (req, res) => {
   // }
 
 };
+
 // Delete activity from user's activities, either one if name is given or all
 exports.deleteActivity = async (req, res) => {
   const username = req.query.username;
@@ -108,7 +109,6 @@ exports.getActivities = async (req, res) => {
   let name = req.query.name;
   let sport = req.query.sport;
   let type = req.query.type;
-
   let minDuration = req.query.minDuration;
   let maxDuration = req.query.maxDuration;
   let minDistance = req.query.minDistance;
@@ -118,13 +118,13 @@ exports.getActivities = async (req, res) => {
 
   // Convert duration and distance units to database format from frontend format
   if (minDuration) {
-    minDuration = minDuration/60
+    minDuration = minDuration / 60
   } if (maxDuration) {
-    maxDuration = maxDuration/60
+    maxDuration = maxDuration / 60
   } if (minDistance) {
-    minDistance = minDistance*1609.34
+    minDistance = minDistance * 1609.34
   } if (maxDistance) {
-    maxDistance = maxDistance*1609.34
+    maxDistance = maxDistance * 1609.34
   }
 
   for (item of [name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
@@ -133,19 +133,7 @@ exports.getActivities = async (req, res) => {
     }
   }
 
-  // Convert duration and distance units to database format from frontend format
-  if (minDuration) {
-    minDuration = minDuration/60
-  } if (maxDuration) {
-    maxDuration = maxDuration/60
-  } if (minDistance) {
-    minDistance = minDistance*1609.34
-  } if (maxDistance) {
-    maxDistance = maxDistance*1609.34
-  }
-
   const returnValue = await dbActivities.findActivity(username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate);
-
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error getting activities, user may not exist');
@@ -153,4 +141,3 @@ exports.getActivities = async (req, res) => {
     res.status(200).json(returnValue);
   }
 };
-

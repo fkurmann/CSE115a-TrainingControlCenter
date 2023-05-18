@@ -21,7 +21,7 @@ exports.createUser = async (username, password) => {
     pw: password,
     favorites: [],
     stravaToken: null
-  } 
+  }
   // Access database
   try {
     await client.connect();
@@ -57,7 +57,7 @@ exports.findUser = async (username, password) => {
   let credentials = {
     user: username,
     pw: password,
-  } 
+  }
   if (password === null) {
     credentials = {
       user: username
@@ -88,7 +88,7 @@ exports.addFavorite = async (username, favorite) => {
   try {
     await client.connect();
     const result = await client.db("TCC").collection("users").updateOne({user: username}, { $push: {favorites: favorite} });
-    
+
     if (result) {
       console.log(`Updated user: ${username}'s favorites ${favorite}':`);
       await client.close();
@@ -109,7 +109,7 @@ exports.deleteFavorite = async (username, favorite) => {
   try {
     await client.connect();
     const result = await client.db("TCC").collection("users").updateOne({user: username}, { $pull: {favorites: favorite} });
-    
+
     if (result) {
       console.log(`Deleted user: ${username}'s favorites ${favorite}':`);
       await client.close();

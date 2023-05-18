@@ -5,7 +5,6 @@ const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
 const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
-
 const auth = require('./auth');
 const settings = require('./settings');
 const activities = require('./activities');
@@ -62,7 +61,6 @@ app.delete('/v0/activities', activities.deleteActivity);//auth.check,
 // Graphing, spawn python function
 app.post('/v0/graphs', graphs.drawGraph);
 
-
 app.use((err, req, res, next) => {
   // console.log(req);
   res.status(err.status).json({
@@ -73,5 +71,3 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
-
-

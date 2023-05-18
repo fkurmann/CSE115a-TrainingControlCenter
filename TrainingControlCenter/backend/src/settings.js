@@ -127,11 +127,11 @@ exports.getGoals = async (req, res) => {
   }
 };
 
-// Delete goal from user's goals TODO check for goals with same name, existence, 
+// Delete goal from user's goals TODO check for goals with same name, existence,
 exports.deleteGoal = async (req, res) => {
   const username = req.query.username;
   const name = req.query.name;
-    
+
   returnValue = await dbGoals.deleteGoal(username, name);
   // Error case
   if (returnValue === -1) {
@@ -140,5 +140,4 @@ exports.deleteGoal = async (req, res) => {
     // On success return 200
     res.status(200).send(name);
   }
-
 };
