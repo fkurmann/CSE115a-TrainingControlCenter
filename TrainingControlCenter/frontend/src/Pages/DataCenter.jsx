@@ -6,10 +6,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import ResponsiveAppBar from '../Components/appBar';
-
 import AddGraphForm from '../Components/addGraphForm';
 import ActivitiesChart from '../Components/activitiesChart'
-
 import defaultImage from '../Components/images/default.png';
 import generalGraph from '../Components/images/generalGraph.png';
 
@@ -45,15 +43,8 @@ export default function DataCenter() {
             />
           </Grid>
         </Grid>
-
-          
-          
-          
-          
         </Box>
-
       </Container>
-
     </ThemeProvider>
   );
 }

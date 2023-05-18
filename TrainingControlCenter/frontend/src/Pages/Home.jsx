@@ -4,7 +4,6 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-
 import { getFiveActivities } from '../Components/stravaData';
 import ResponsiveAppBar from '../Components/appBar';
 import RecentActivitiesList from '../Components/recentActivities';
@@ -45,9 +44,7 @@ export default function Home() {
             </div>
           </div>
         </Box>
-
       </Container>
-
     </ThemeProvider>
   );
 }

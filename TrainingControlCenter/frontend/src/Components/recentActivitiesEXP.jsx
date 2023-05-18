@@ -13,7 +13,6 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import CircularProgress from '@mui/material/CircularProgress';
-
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import PoolIcon from '@mui/icons-material/Pool';
@@ -25,7 +24,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 export default function RecentActivitiesList() {
   const user = localStorage.getItem('user');
   const misc = 'Misc';
-  
+
   const [openSport, setOpenSport] = React.useState([]);
   const [openActivity, setopenActivity] = React.useState([]);
   // const [myGoals, setMyGoals] = React.useState(localStorage.getItem('goals') === null ? [] : JSON.parse(localStorage.getItem('goals')));
@@ -35,7 +34,7 @@ export default function RecentActivitiesList() {
   const [activityCategories, setActivityCategories] = React.useState([]);
   const [anchorElActivity, setAnchorElActivity] = React.useState(null);
 
-  
+
   const [isLoading, setIsLoading] = React.useState(true);
 
   let favorites = ['Running', 'Cycling', 'Swimming'];
@@ -159,7 +158,7 @@ React.useEffect(() => {
     <List sx={{ width: '100%', maxWidth: 500}}>
       {favorites.map((sport) => (
         <Box key={sport}>
-        
+
         <ListItemButton selected={openSport.includes(sport)} onClick={() => handleClickSport(sport)}>
           <ListItemIcon>
             { sport === 'Running' ?

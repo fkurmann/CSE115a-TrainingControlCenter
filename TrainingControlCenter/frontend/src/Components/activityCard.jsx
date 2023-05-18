@@ -10,7 +10,6 @@ import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
-
 import SportIcon from './sportIcon';
 import StravaIcon from './images/strava_icon.png';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -36,7 +35,7 @@ export default function ActivityCard({ activity, width=300 }) {
   // const comment_count = activity.comment_count;
   // const photo_count = activity.total_photo_count;
   const map = activity.map;
-  const map_width = width-33;
+  const map_width = width - 33;
   const map_height = map_width * 7 / 8;
 
   const [expanded, setExpanded] = React.useState(false);
@@ -58,7 +57,7 @@ export default function ActivityCard({ activity, width=300 }) {
       });
     }
   }, [expanded, loading, detailedActivity, activity.id]);
-  
+
   return (
     <Card sx={{backgroundColor: '#f9f9f9', width: width}}>
       {name == null ? <></> : <>
@@ -79,7 +78,7 @@ export default function ActivityCard({ activity, width=300 }) {
         {
           !distance ? <></> :
           <Typography>
-            <strong>Distance:</strong> {(distance/1000).toFixed(2)} km
+            <strong>Distance:</strong> {(distance / 1000).toFixed(2)} km
           </Typography>
         }
         {

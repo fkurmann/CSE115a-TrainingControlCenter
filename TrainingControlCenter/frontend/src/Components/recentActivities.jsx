@@ -5,11 +5,9 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
-
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import PoolIcon from '@mui/icons-material/Pool';
-
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
@@ -44,12 +42,12 @@ export default function RecentActivitiesList() {
       {/* Category 1 */}
       <ListItemButton onClick={handleClick1}>
         <ListItemIcon>
-          <DirectionsRunIcon /> 
+          <DirectionsRunIcon />
         </ListItemIcon>
         <ListItemText primary="Run" />
         {open1 ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
-      
+
       <Collapse in={open1} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItemButton sx={{ pl: 4 }}>
@@ -66,7 +64,7 @@ export default function RecentActivitiesList() {
         <ListItemText primary="Swim" />
         {open2 ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
-      
+
       <Collapse in={open2} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItemButton sx={{ pl: 4 }}>

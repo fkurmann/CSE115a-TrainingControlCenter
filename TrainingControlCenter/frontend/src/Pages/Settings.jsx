@@ -3,7 +3,6 @@ import Grid from '@mui/material/Unstable_Grid2';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
-
 import ResponsiveAppBar from '../Components/appBar';
 import Favorites from '../Components/Settings/favorites';
 import Goals from '../Components/Settings/goals';
@@ -19,7 +18,7 @@ export default function Settings() {
       <CssBaseline />
       <Container component='main'>
       <CssBaseline />
-      <ResponsiveAppBar /> 
+      <ResponsiveAppBar />
       <Grid container spacing={12} sx={{mt: 1}}>
         <Grid xs={4}>
           <h1>Favorites</h1>

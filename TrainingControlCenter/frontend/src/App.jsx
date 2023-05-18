@@ -1,13 +1,11 @@
 import { BrowserRouter, Route, Routes, Navigate, Switch } from 'react-router-dom';
-
 import Home from './Pages/Home';
 import Settings from './Pages/Settings';
 import Login from './Pages/Auth';
-import StravaAuth from './Pages/stravaAuth';
+import StravaAuth from './Pages/StravaAuth';
 import DataCenter from './Pages/DataCenter';
 import PlanTraining from './Pages/PlanTraining';
 import WorkoutList from './Pages/WorkoutList';
-
 
 const AuthenticatedRoute = ({children}) => {
   if (localStorage.getItem('user')) {

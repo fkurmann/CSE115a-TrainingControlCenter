@@ -7,14 +7,14 @@ const ActivityChart = () => {
   const [activity, setActivity] = useState('');
   const [activities, setActivities] = useState([]);
   const [days, setDays] = useState(14); // default to last 14 days
-  
+
   // for test
   const [selectedDuration, setSelectedDuration] = useState('14D');
 
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await fetch('http://localhost:3010/v0/activities?' 
+        const response = await fetch('http://localhost:3010/v0/activities?'
         + new URLSearchParams({ username: localStorageUser }));
 
         if (!response.ok) {
@@ -39,7 +39,7 @@ const ActivityChart = () => {
   const handleDaysChange = (e) => {
     const value = e.target.value.slice(0, -1);
     const period = e.target.value.slice(-1);
-  
+
     let days;
     switch(period) {
       case 'D':
@@ -56,15 +56,15 @@ const ActivityChart = () => {
     }
     setDays(days);
     setSelectedDuration(e.target.value);
-  };  
-  
+  };
+
   // temp for filter certain type
   // need to confirm which sport will be chosen
   const getActivityTypes = () => {
     const activityTypes = ["Ride", "Run"];
     return activityTypes;
   };
-  
+
   // get dates from days ago to the current date
   const getDatesBetween = (days) => {
     const dates = [];
@@ -95,36 +95,36 @@ const ActivityChart = () => {
   // Monday as first day of week
   const getWeeklyDistanceSum = (data) => {
     const distanceByWeek = {};
-    
+
     // create an array of dates for the past 12 weeks
     const dates = getDatesBetween(84);
-    
+
     dates.forEach(date => {
       const weekStart = new Date(date);
       weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Set to the start of the week
-  
+
       const weekStartString = weekStart.toISOString().split('T')[0];
       if (!distanceByWeek[weekStartString]) {
         distanceByWeek[weekStartString] = 0;  // initialize to 0 for weeks without data
       }
     });
-  
+
     data.forEach(item => {
       const weekStart = new Date(item.date);
       weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // set to the start of the week
-  
+
       const weekStartString = weekStart.toISOString().split('T')[0];
       distanceByWeek[weekStartString] += item.distance;
     });
-  
+
     // Convert the object to an array of data points
     const weeklyData = Object.entries(distanceByWeek).map(([date, distance]) => ({
       date,
       distance,
     }));
-  
+
     return weeklyData;
-  };  
+  };
 
   // calculate the sum of the distances for each month
   const getMonthlyDistanceSum = (data) => {
@@ -179,14 +179,14 @@ const ActivityChart = () => {
               </option>
             ))}
       </select>
-          
+
       {/* Choose how many days */}
       <select value={days} onChange={handleDaysChange}>
         <option value="">Choose</option>
         {daysOptions.map((dayOption) => (
           <option key={dayOption} value={dayOption}>
-            {dayOption[dayOption.length - 1] === 'D' ? `${dayOption.slice(0, -1)} days` : 
-            dayOption[dayOption.length - 1] === 'W' ? `${dayOption.slice(0, -1)} weeks` : 
+            {dayOption[dayOption.length - 1] === 'D' ? `${dayOption.slice(0, -1)} days` :
+            dayOption[dayOption.length - 1] === 'W' ? `${dayOption.slice(0, -1)} weeks` :
             `${dayOption.slice(0, -1)} months`}
           </option>
         ))}
@@ -202,15 +202,15 @@ const ActivityChart = () => {
               tickFormatter={(value) => {
                 if (days === 14 || days === 84) {
                   const [year, month, day] = value.split('-'); // split the date into month and day
-                  return `${month}/${day}`; // format the date as "month/day"
+                  return `${month} / ${day}`; // format the date as "month/day"
                 } else if (days === 360) {
                   const [year, month, day] = value.split('-');
-                  return `${year}/${month}`;
+                  return `${year} / ${month}`;
                   // return value.slice(0, 7); // only show month and year
                 } else {
                   return value;
                 }
-              }}                
+              }}
             />
             <YAxis/>
             <CartesianGrid strokeDasharray="3 3" />
@@ -221,9 +221,9 @@ const ActivityChart = () => {
 
             {/* For test: Display selected duration */}
             <div>Selected duration: {selectedDuration}</div>
-        
+
         </div>
-        
+
       )}
     </div>
   );

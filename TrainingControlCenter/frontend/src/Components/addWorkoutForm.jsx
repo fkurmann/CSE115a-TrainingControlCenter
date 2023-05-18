@@ -21,7 +21,7 @@ export default function AddWorkoutForm() {
   const [{ name, type = '', sport }, setState] = useState({
     name: '',
     type: '',
-    sport: ''
+    sport: '',
   });
 
   // Success and error message
@@ -33,7 +33,7 @@ export default function AddWorkoutForm() {
     distance: '',
     time: null,
     start_date_local: '',
-    description: ''
+    description: '',
   });
 
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);

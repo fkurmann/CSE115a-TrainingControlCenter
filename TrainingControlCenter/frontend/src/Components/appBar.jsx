@@ -175,7 +175,9 @@ function ResponsiveAppBar() {
                                                                             `?client_id=105448` +
                                                                             `&response_type=code` +
                                                                             `&redirect_uri=http://localhost:3000/stravaAuth` +
-                                                                            `&approval_prompt=force&scope=read_all,activity:read_all,profile:read_all`}>Sync Strava Profile
+                                                                            `&approval_prompt=force` +
+                                                                            `&scope=read_all,activity:read_all,profile:read_all`}>
+                Sync Strava Profile
                 </MenuItem>
                 <MenuItem component='a' onClick={handleLogout} href='/login'>Logout</MenuItem>
             </Menu>

@@ -19,7 +19,6 @@ const getRefreshToken = async () => {
 const getAccessToken = async () => {
   const user = localStorage.getItem('user');
   const refresh_token = (await getRefreshToken()).stravaToken;
-  console.log("here", refresh_token);
   const response = await fetch("https://www.strava.com/oauth/token", {
     method: "POST",
     headers: {
@@ -94,10 +93,10 @@ async function uploadActivities(activities) {
 export async function getAllActivities() {
   const stravaAccessToken = (await getAccessToken()).access_token;
 
-  var all_activities = [];
+  let all_activities = [];
   try {
-    var page = 1;
-    var res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
+    let page = 1;
+    let res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
       headers: {
         'Authorization': `Bearer ${stravaAccessToken}`,
       },
@@ -138,7 +137,7 @@ export async function getAllActivities() {
 
 export async function getFiveActivities() {
   const stravaAccessToken = (await getAccessToken()).access_token;
-  var activities = [];
+  let activities = [];
   try {
     const res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
       headers: {
