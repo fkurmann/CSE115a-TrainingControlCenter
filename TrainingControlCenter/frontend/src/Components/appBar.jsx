@@ -13,6 +13,11 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
+/**
+ * Create the display for the webpage's application bar.
+ *
+ * @return {HTMLElement} - includes pages for Data Center, Workout Lists, Settings, and more.
+ */
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);

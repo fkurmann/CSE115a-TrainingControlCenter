@@ -13,6 +13,11 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 
 // TODO: Update icons, make all list items collapsable, home screen will feature latest activities from 3 categories
 
+/**
+ * Displays on Home page the latest activities from 3 specified categories.
+ *
+ * @return {HTMLElement} - returns the MUI list item of recent activities, manual or strava.
+ */
 export default function RecentActivitiesList() {
   const [open1, setOpen1] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);

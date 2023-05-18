@@ -21,6 +21,11 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
+/**
+ * Displays on Home page the latest activities from 3 specified categories.
+ *
+ * @return {HTMLElement} - returns the MUI list item of recent activities, manual or strava.
+ */
 export default function RecentActivitiesList() {
   const user = localStorage.getItem('user');
   const misc = 'Misc';

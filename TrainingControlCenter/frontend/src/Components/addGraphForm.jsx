@@ -18,6 +18,11 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 const localStorageUser = localStorage.getItem('user');
 
+/**
+ * Creates form for creating a graph with details specified by user.
+ *
+ * @return {HTMLElement} MUI form for specifying attributes for user specified graph.
+ */
 export default function AddGraphForm() {
   const [{ duration, startDate, graphType, goal, sport, outFile }, setState] = useState({
     duration: '',

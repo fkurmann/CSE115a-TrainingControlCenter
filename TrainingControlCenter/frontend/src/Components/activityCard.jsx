@@ -18,12 +18,19 @@ import ActivityMap from './activityMap';
 import { getActivityDetails } from './stravaData';
 import { CircularProgress } from '@mui/material';
 
-export default function ActivityCard({ activity, width=300 }) {
+/**
+ * Creates an MUI Card based on specified activity, whether or manual or strava.
+ *
+ * @param {Object} activity - manual or strava activity with detailed information.
+ * @param {int} [width] - optional parameter denoting width of MUI card.
+ * @return {HTMLElement} - creates and returns the activity card for specified activity.
+ */
+export default function ActivityCard({ activity, width = 300 }) {
   const name = activity.name;
   const sport = activity.sport_type ? activity.sport_type : activity.sport ? activity.sport : '';
   const distance = activity.distance;
   const moving_time = activity.moving_time;
-  const pace = moment.utc((moving_time || 0)*1000 / ((distance || 1000)/1000)).format('mm:ss');
+  const pace = moment.utc((moving_time || 0) * 1000 / ((distance || 1000) / 1000)).format('mm:ss');
   const strava_link = `http://strava.com/activities/${activity.id}`;
   // const elapsed_time = activity.elapsed_time;
   const elevation_gain = activity.total_elevation_gain;

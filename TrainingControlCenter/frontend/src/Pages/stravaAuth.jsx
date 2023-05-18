@@ -1,5 +1,8 @@
 import React from "react";
 
+/**
+ * Authenticates with user's strava account to obtain authorization token.
+ */
 export default function StravaAuth() {
   const queryParameters = new URLSearchParams(window.location.search)
   const code = queryParameters.get("code") // auth code from URL
@@ -29,6 +32,11 @@ export default function StravaAuth() {
   );
 }
 
+/**
+ * Stores strava refresh token in to the database
+ *
+ * @param {string} data - required param showing the JSON response from strava oauth
+ */
 async function storeAccessTokenInDB(data) {
   const user = localStorage.getItem('user');
   const token = data["refresh_token"]

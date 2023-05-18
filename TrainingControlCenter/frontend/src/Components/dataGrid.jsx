@@ -4,6 +4,11 @@ import { DataGrid, getGridNumericOperators } from '@mui/x-data-grid';
 import { CircularProgress, Popover } from '@mui/material';
 import ActivityCard from './activityCard';
 
+/**
+ * Creates a list of all workouts whether or manual or from strava.
+ *
+ * @return {HTMLElement} - returns MUI datagrid of all activities showing specific data points.
+ */
 export default function WorkoutGrid() {
   const user = localStorage.getItem('user');
 
@@ -57,7 +62,7 @@ export default function WorkoutGrid() {
             // Remove any duplicated activities
             let unique_activities = [];
             res.forEach((a) => {
-              if(unique_activities.filter((b) => { return a.name === b.name && a.distance === b.distance
+              if (unique_activities.filter((b) => { return a.name === b.name && a.distance === b.distance
                       && a.moving_time === b.moving_time }).length === 0) {
                 unique_activities.push(a);
               }
