@@ -3,9 +3,8 @@ import SportIcon from './sportIcon';
 import React, { useEffect, useState } from 'react';
 import { Grid, Typography, Paper, Button, ButtonGroup, Select, MenuItem, CircularProgress } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { format, getISOWeek, startOfWeek, getMonth, getYear} from 'date-fns';
+import { format, getISOWeek, getMonth, getYear, getDaysInMonth} from 'date-fns';
 import { enUS } from 'date-fns/locale'
-import { startOfYear, isSameWeek, isSameMonth, isSameYear, addDays, startOfMonth, getDaysInMonth, isSameDay } from 'date-fns';
 
 const localStorageUser = localStorage.getItem('user');
 
