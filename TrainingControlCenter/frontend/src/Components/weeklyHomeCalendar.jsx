@@ -83,7 +83,7 @@ export default function HomeCalendar() {
     isLoading ?
     <CircularProgress /> :
     <>
-    <h2 align="right">Calendar/Week</h2>
+    <h2 align="right">Current Week Overview</h2>
     <div style={{ width: '100%' }}>
       <Box
         sx={{
