@@ -15,6 +15,11 @@ import HomeCalendar from '../Components/weeklyHomeCalendar';
  */
 const theme = createTheme();
 
+/**
+ * Creates the Home page upon successful user login.
+ *
+ * @return {HTMLElement} - Creates the Home Page with MUI elements.
+ */
 export default function Home() {
   return (
     <ThemeProvider theme={theme}>

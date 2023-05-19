@@ -11,6 +11,11 @@ import ResponsiveAppBar from '../Components/appBar';
  */
 const theme = createTheme();
 
+/**
+ * Creates the Training Plan page for workout creation and planning.
+ *
+ * @return {HTMLElement} - creates the page for planning workouts and training.
+ */
 export default function PlanTraining() {
   return (
     <ThemeProvider theme={theme}>

@@ -17,7 +17,8 @@ const theme = createTheme();
 
 /**
  * MUI login page
- * @return {object} the login page
+ *
+ * @return {object} - the login page
  */
 export default function Login() {
   const history = useNavigate();

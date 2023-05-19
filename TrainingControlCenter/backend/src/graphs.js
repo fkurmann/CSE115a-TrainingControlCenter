@@ -1,7 +1,11 @@
 const dbActivities = require('../db/dbActivities');
 const { spawn } = require('child_process');
 
-// General graphing function
+/**
+ * General graphing function
+ *
+ * @async
+ */
 exports.drawGraph = async (req, res) => {
   // Parameters
   let {username, duration, graphType, sport, goal, startDate, outFile} = req.body;

@@ -9,6 +9,11 @@ import {
 import SportIcon from './sportIcon';
 import ActivityCard from './activityCard';
 
+/**
+ * Generates calendar of current week's activities, whether manual or from strava.
+ *
+ * @return {HTMLElement} - Calendar display with clickable icons of weekly activities.
+ */
 export default function HomeCalendar() {
   const user = localStorage.getItem('user');
   const [weeklyActivities, setWeeklyActivities] = React.useState(null);
@@ -183,6 +188,12 @@ export default function HomeCalendar() {
   );
 }
 
+/**
+ * Creates the layout for individual days/items of the weekly calendar.
+ *
+ * @param {HTMLElement} [props] - defines passed in attributes for item, like width and font size.
+ * @return {HTMLElement} - returns a MUI box with for displaying each day.
+ */
 function Item(props: BoxProps) {
   const { sx, ...other } = props;
   return (
@@ -208,6 +219,12 @@ function Item(props: BoxProps) {
   );
 }
 
+/**
+ * Function to get the first day of the week, monday, from date d.
+ *
+ * @param {string} d - some date format to be checked
+ * @return {string} - the date of the monday of the week of date d.
+ */
 function getFirstDayOfWeek(d) {
   const date = new Date(d);
   date.setHours(0, 0, 0, 0);
@@ -217,12 +234,25 @@ function getFirstDayOfWeek(d) {
   return newDate.toISOString();
 }
 
+/**
+ * Function to get the last day of the week, monday, from date d.
+ *
+ * @param {string} d - some date format to be checked
+ * @return {string} - the date of the sunday of the week of date d.
+ */
 function getLastDayOfWeek(d) {
   const date = new Date(getFirstDayOfWeek(d));
   date.setDate(date.getDate() + 6);
   return date.toISOString();
 }
 
+/**
+ * Fetch activities found in database for user for specified day.
+ *
+ * @param {string} activities - JSON list of all activities for current user.
+ * @param {string} day - specifies day of week, where monday is 0 and sunday is 6.
+ * @return {string} - JSON list of all activities for specified day.
+ */
 function getActivitiesForDay(activities, day) {
   let day_activities = []
   for (let i = 0; i < activities.length; i++) {

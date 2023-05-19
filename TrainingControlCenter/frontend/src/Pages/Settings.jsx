@@ -12,6 +12,11 @@ import Goals from '../Components/Settings/goals';
  */
 const theme = createTheme();
 
+/**
+ * The settings page where goals, favorites, other feature are set.
+ *
+ * @return {HTMLElement} - Creates the page with goals, favorites, and units elements.
+ */
 export default function Settings() {
   return (
     <ThemeProvider theme={theme}>

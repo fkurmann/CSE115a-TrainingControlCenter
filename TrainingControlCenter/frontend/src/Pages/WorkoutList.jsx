@@ -12,6 +12,11 @@ import WorkoutGrid from '../Components/dataGrid';
  */
 const theme = createTheme();
 
+/**
+ * The page to list all workouts and recent activities, whether manual or from strava.
+ *
+ * @return {HTMLElement} - Creates the Workout List page to display all workouts.
+ */
 export default function WorkoutList() {
   return (
     <ThemeProvider theme={theme}>

@@ -1,6 +1,10 @@
 const dbActivities = require('../db/dbActivities');
 
-// Maual entry activities
+/**
+ * Maual entry activities
+ *
+ * @async
+ */
 exports.addActivity = async (req, res) => {
   let {username, name, type, sport, description} = req.body;
   let {distance, time, start_date_local} = req.body.json;
@@ -62,7 +66,11 @@ exports.addActivity = async (req, res) => {
   }
 };
 
-// Strava upload activities
+/**
+ * Strava upload activities
+ *
+ * @async
+ */
 exports.addActivityStrava = async (req, res) => {
   let {username, name, type, sport, description, json} = req.body;
 
@@ -81,7 +89,11 @@ exports.addActivityStrava = async (req, res) => {
 
 };
 
-// Delete activity from user's activities, either one if name is given or all
+/**
+ * Delete activity from user's activities, either one if name is given or all
+ *
+ * @async
+ */
 exports.deleteActivity = async (req, res) => {
   const username = req.query.username;
   const name = req.query.name;
@@ -103,7 +115,11 @@ exports.deleteActivity = async (req, res) => {
 
 // Activity accessor functions (to expand in functionality and scope as filters are added)
 
-// Get all activities that match query
+/**
+ * Get all activities that match query
+ *
+ * @async
+ */
 exports.getActivities = async (req, res) => {
   const username = req.query.username;
   let name = req.query.name;
@@ -118,13 +134,13 @@ exports.getActivities = async (req, res) => {
 
   // Convert duration and distance units to database format from frontend format
   if (minDuration) {
-    minDuration = minDuration / 60
+    minDuration = minDuration / 60;
   } if (maxDuration) {
-    maxDuration = maxDuration / 60
+    maxDuration = maxDuration / 60;
   } if (minDistance) {
-    minDistance = minDistance * 1609.34
+    minDistance = minDistance * 1609.34;
   } if (maxDistance) {
-    maxDistance = maxDistance * 1609.34
+    maxDistance = maxDistance * 1609.34;
   }
 
   for (item of [name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {

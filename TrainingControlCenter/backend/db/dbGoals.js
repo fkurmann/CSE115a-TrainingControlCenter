@@ -84,7 +84,7 @@ exports.deleteGoal = async (username, name) => {
   // Access database
   try {
     await client.connect();
-    const result = await client.db("TCC").collection("goals").deleteOne(parameters);
+    const result = await client.db('TCC').collection('goals').deleteOne(parameters);
     if (result) {
       console.log(`Deleted user: ${username}'s goal ${name}':`);
       await client.close();

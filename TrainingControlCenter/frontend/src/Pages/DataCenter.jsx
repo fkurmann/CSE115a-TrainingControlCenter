@@ -16,6 +16,11 @@ import generalGraph from '../Components/images/generalGraph.png';
  */
 const theme = createTheme();
 
+/**
+ * Creates the Data Center Page for details data analysis.
+ *
+ * @return {HTMLElement} - the data center page
+ */
 export default function DataCenter() {
   return (
     <ThemeProvider theme={theme}>

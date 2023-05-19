@@ -6,7 +6,11 @@ lbWFpbCI6ImFubmFAYm9va3MuY29tIiwicm9sZSI6ImFkbWluIiwiaW
 F0IjoxNjA2Mjc3MDAxLCJleHAiOjE2MDYyNzcwNjF9.1nwY0lDMGrb7
 AUFFgSaYd4Q7Tzr-BjABclmoKZOqmr4`;
 
-// Login as a user, returns access token
+/**
+ * Login as a user, returns access token
+ *
+ * @async
+ */
 exports.login = async (req, res) => {
   const {username, password} = req.body;
   // Check if user with these credentials exists
@@ -29,7 +33,11 @@ exports.login = async (req, res) => {
   }
 };
 
-// Register a new user
+/**
+ * Register a new user
+ *
+ * @async
+ */
 exports.register = async (req, res) => {
   console.log('Registration function');
   // See if username is already taken
@@ -47,7 +55,11 @@ exports.register = async (req, res) => {
   }
 };
 
-// Check that authentication token is issued
+/**
+ * Check that authentication token is issued
+ *
+ * @async
+ */
 exports.check = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const userToken = authHeader.split(' ')[1];
@@ -60,7 +72,11 @@ exports.check = (req, res, next) => {
   });
 };
 
-// Add or update strava token
+/**
+ * Add or update strava token
+ *
+ * @async
+ */
 exports.updateToken = async (req, res) => {
   // See if username is already taken
   const username = req.query.username;
@@ -75,7 +91,11 @@ exports.updateToken = async (req, res) => {
   }
 };
 
-// Get strava token
+/**
+ * Get strava token
+ *
+ * @async
+ */
 exports.getToken = async (req, res) => {
   const username = req.query.username;
   const returnValue = await dbUsers.findUser(username, null);
