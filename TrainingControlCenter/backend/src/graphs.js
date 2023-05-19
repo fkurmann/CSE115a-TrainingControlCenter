@@ -30,9 +30,6 @@ exports.drawGraph = async (req, res) => {
   let formattedStartDate = startDate ? startDate.toISOString().substring(0, 10) : null;
   let formattedEndDate = endDate ? endDate.toISOString().substring(0, 10) : null;
 
-  // console.log(formattedStartDate)
-  // console.log(formattedEndDate)
-
   // Database call
   const returnValue = await dbActivities.findActivity(username, null, sport, null, null, null, null, null, formattedStartDate, formattedEndDate);
   // Error case
@@ -48,7 +45,6 @@ exports.drawGraph = async (req, res) => {
   // Stdout data
   python.stdout.on('data', (data) => {
     responseData = data.toString();
-    // console.log('stdout: ' + data);
   });
 
   // Error data
@@ -58,8 +54,7 @@ exports.drawGraph = async (req, res) => {
 
   // Close process
   python.on('close', (code) => {
-    console.log('Closing: ' + code);
-    console.log(responseData)
+    //console.log('Closing: ' + code);
     // res.send(responseData)
     res.status(200).json(returnValue);
   });
