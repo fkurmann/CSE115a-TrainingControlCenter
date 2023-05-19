@@ -2,7 +2,9 @@ const dbUsers = require('../db/dbUsers');
 const dbGoals = require('../db/dbGoals');
 
 // Manage favorites
-// Add sport to user's favorite sports
+/**
+ * Add sport to user's favorite sports
+ */
 exports.addFavorite = async (req, res) => {
   const username = req.query.username;
   const sport = req.query.sport;
@@ -24,7 +26,9 @@ exports.addFavorite = async (req, res) => {
   }
 };
 
-// Get all user's favorite sports
+/**
+ * Get all user's favorite sports
+ */
 exports.getFavorites = async (req, res) => {
   const username = req.query.username;
 
@@ -40,7 +44,9 @@ exports.getFavorites = async (req, res) => {
 };
 
 
-// Delete sport from user's favorite sports
+/**
+ * Delete sport from user's favorite sports
+ */
 exports.deleteFavorite = async (req, res) => {
   const username = req.query.username;
   const sport = req.query.sport;
@@ -65,7 +71,11 @@ exports.deleteFavorite = async (req, res) => {
 
 // Manage goals
 // These functions deleberatly don't check for user existence, that is assumed at this point
-// Add goal to user's goals, TODO check for goals with same name, existence
+/**
+ * Add goal to user's goals, TODO check for goals with same name, existence
+ *
+ * @async
+ */
 exports.addGoal = async (req, res) => {
   let {username, name, type, sport, distance, time} = req.body;
 
@@ -102,7 +112,11 @@ exports.addGoal = async (req, res) => {
 
 };
 
-// Get all goals that match query
+/**
+ * Get all goals that match query
+ *
+ * @async
+ */
 exports.getGoals = async (req, res) => {
   const username = req.query.username;
   let name = null;
@@ -127,11 +141,15 @@ exports.getGoals = async (req, res) => {
   }
 };
 
-// Delete goal from user's goals TODO check for goals with same name, existence, 
+/**
+ * Delete goal from user's goals TODO check for goals with same name, existence,
+ *
+ * @async
+ */
 exports.deleteGoal = async (req, res) => {
   const username = req.query.username;
   const name = req.query.name;
-    
+
   returnValue = await dbGoals.deleteGoal(username, name);
   // Error case
   if (returnValue === -1) {
@@ -140,5 +158,4 @@ exports.deleteGoal = async (req, res) => {
     // On success return 200
     res.status(200).send(name);
   }
-
 };

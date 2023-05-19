@@ -146,12 +146,11 @@ export default function Favorites() {
     </List>
     <Box component='form' noValidate onSubmit={handleSubmit}>
 
-      <Typography variant="h6">New Favorite</Typography>
       <Select
-        name='sport' 
-        label='Sport' 
-        value={addFav.sport} 
-        required 
+        name='sport'
+        label='Sport'
+        value={addFav.sport}
+        required
         onChange={(e) => setAddFav({ ...addFav, sport: e.target.value })}
       >
         {getFavoriteTypes().map((favoriteType, index) => (

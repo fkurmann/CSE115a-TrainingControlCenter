@@ -22,9 +22,9 @@ exports.createGoal = async (username, name, type, sport, distance, time) => {
     type: type,
     sport: sport,
     distance: distance,
-    time: time
+    time: time,
   }
- 
+
   // Access database
   try {
     await client.connect();
@@ -41,7 +41,7 @@ exports.createGoal = async (username, name, type, sport, distance, time) => {
 // Find goal, no user existence check, can find by username, name, type, sport
 exports.findGoal = async (username, name, type, sport) => {
   let parameters = {
-    username: username
+    username: username,
   }
   // Find by name
   if (name != null) {
@@ -84,7 +84,7 @@ exports.deleteGoal = async (username, name) => {
   // Access database
   try {
     await client.connect();
-    const result = await client.db("TCC").collection("goals").deleteOne(parameters);
+    const result = await client.db('TCC').collection('goals').deleteOne(parameters);
     if (result) {
       console.log(`Deleted user: ${username}'s goal ${name}':`);
       await client.close();
@@ -99,6 +99,5 @@ exports.deleteGoal = async (username, name) => {
     await client.close();
   }
 }
-
 
 // Collections = tables, documents = rows

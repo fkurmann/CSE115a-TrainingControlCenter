@@ -13,7 +13,6 @@ import Select from '@mui/material/Select';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CircularProgress from '@mui/material/CircularProgress';
-
 import SportIcon from '../sportIcon';
 
 const localStorageUser = localStorage.getItem('user');
@@ -40,7 +39,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
 
   const fetchFavorites = async () => {
     try {
-      const response = await fetch('http://localhost:3010/v0/favorites?' 
+      const response = await fetch('http://localhost:3010/v0/favorites?'
                         + new URLSearchParams({username: localStorageUser}));
 
       if (!response.ok) {
@@ -65,15 +64,15 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
   const types = [
     {
       value: 'race',
-      label: 'Race'
+      label: 'Race',
     },
     {
       value: 'repeat',
-      label: 'Repeat'
+      label: 'Repeat',
     },
     {
       value: 'one-time',
-      label: 'Does not repeat'
+      label: 'Does not repeat',
     },
   ]
 
@@ -120,7 +119,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                   <InputLabel>Distance</InputLabel>
                   <Input
                     label='Distance'
-                    endAdornment={<InputAdornment position='end'>mi</InputAdornment> }
+                    endAdornment={<InputAdornment position='end'>mi</InputAdornment>}
                     value={addGoal.distance}
                     onChange={(e) => {
                       setFormErrors(formErrors.filter(e => e !== 'distance'));
@@ -158,7 +157,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                       setAddGoal({ ...addGoal, time: e.target.value });
                     }} />
                 </FormControl>
-              : addGoal.type === 'repeat' ? 
+              : addGoal.type === 'repeat' ?
                 <FormControl error={formErrors.includes('time')} sx={{ width: '18ch', marginRight: 15, paddingBottom: 1 }}>
                   <Input
                     startAdornment={<InputAdornment position='start'>Every</InputAdornment> }

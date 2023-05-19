@@ -1,7 +1,6 @@
 import React from 'react';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import Button from '@mui/material/Button';
-
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -13,6 +12,11 @@ import WorkoutGrid from '../Components/dataGrid';
  */
 const theme = createTheme();
 
+/**
+ * The page to list all workouts and recent activities, whether manual or from strava.
+ *
+ * @return {HTMLElement} - Creates the Workout List page to display all workouts.
+ */
 export default function WorkoutList() {
   return (
     <ThemeProvider theme={theme}>
@@ -25,9 +29,8 @@ export default function WorkoutList() {
         <Box>
           <WorkoutGrid></WorkoutGrid>
         </Box>
-        
+
       </Container>
-      
     </ThemeProvider>
   );
 }

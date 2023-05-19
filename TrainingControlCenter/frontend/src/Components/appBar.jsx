@@ -13,6 +13,11 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
+/**
+ * Create the display for the webpage's application bar.
+ *
+ * @return {HTMLElement} - includes pages for Data Center, Workout Lists, Settings, and more.
+ */
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -175,7 +180,9 @@ function ResponsiveAppBar() {
                                                                             `?client_id=105448` +
                                                                             `&response_type=code` +
                                                                             `&redirect_uri=http://localhost:3000/stravaAuth` +
-                                                                            `&approval_prompt=force&scope=read_all,activity:read_all,profile:read_all`}>Sync Strava Profile
+                                                                            `&approval_prompt=force` +
+                                                                            `&scope=read_all,activity:read_all,profile:read_all`}>
+                Sync Strava Profile
                 </MenuItem>
                 <MenuItem component='a' onClick={handleLogout} href='/login'>Logout</MenuItem>
             </Menu>

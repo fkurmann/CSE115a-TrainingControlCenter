@@ -4,6 +4,11 @@ import { DataGrid, getGridNumericOperators } from '@mui/x-data-grid';
 import { CircularProgress, Popover } from '@mui/material';
 import ActivityCard from './activityCard';
 
+/**
+ * Creates a list of all workouts whether or manual or from strava.
+ *
+ * @return {HTMLElement} - returns MUI datagrid of all activities showing specific data points.
+ */
 export default function WorkoutGrid() {
   const user = localStorage.getItem('user');
 
@@ -25,10 +30,10 @@ export default function WorkoutGrid() {
     { field: 'type', headerName: 'Type', width: 150 },
     { field: 'start_date_local', headerName: 'Date', valueFormatter: params => (params.value.substring(0, 10)), width: 150 },
     { field: 'distance', headerName: 'Distance (mi)', width: 160,
-      valueGetter: params => !params.value ? null : Number(parseFloat((params.value)/1609).toFixed(2)),
+      valueGetter: params => !params.value ? null : Number(parseFloat((params.value) / 1609).toFixed(2)),
       filterOperators: getGridNumericOperators() },
     { field: 'moving_time', headerName: 'Time (min)', width: 100,
-      valueGetter: params => !params.value ? null : moment.utc(params.value*1000).format('HH:mm:ss'),
+      valueGetter: params => !params.value ? null : moment.utc(params.value * 1000).format('HH:mm:ss'),
       filterOperators: getGridNumericOperators() },
   ]
 
@@ -57,7 +62,8 @@ export default function WorkoutGrid() {
             // Remove any duplicated activities
             let unique_activities = [];
             res.forEach((a) => {
-              if(unique_activities.filter((b) => { return a.name === b.name && a.distance === b.distance && a.moving_time === b.moving_time }).length === 0) {
+              if (unique_activities.filter((b) => { return a.name === b.name && a.distance === b.distance
+                      && a.moving_time === b.moving_time }).length === 0) {
                 unique_activities.push(a);
               }
             });
@@ -105,11 +111,11 @@ export default function WorkoutGrid() {
         onClose={handleCloseActivityCard}
         anchorOrigin={{
           vertical: 'center',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         transformOrigin={{
           vertical: 'center',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
       >
         <ActivityCard activity={selectedActivity} />

@@ -1,12 +1,24 @@
 import * as React from 'react';
-
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, useMap, Marker, Popup, Polyline } from 'react-leaflet';
 import polyline from 'google-polyline';
 
-export default function ActivityMap({ start_latlng, end_latlng, map, height=40, width=40 }) {
+/**
+ * Creates activity map for activity card.
+ *
+ * @param {number} start_latlng - required parameter for starting latlng
+ * @param {number} end_latling - required parameter for ending latlng
+ * @param {string} map - map of activity
+ * @param {number} [height] - optional parameter of height of map
+ * @param {number} [width] - optional parameter of width of map
+ * @return {HTMLElement} - returns a react MUI map container for specified activity.
+ */
+export default function ActivityMap({ start_latlng, end_latlng, map, height = 40, width = 40 }) {
   const coords = polyline.decode(map.summary_polyline);
-  let minX = start_latlng[0], maxX = start_latlng[0], minY = start_latlng[1], maxY = start_latlng[1];
+  let minX = start_latlng[0];
+  let maxX = start_latlng[0];
+  let minY = start_latlng[1];
+  let maxY = start_latlng[1];
   coords.forEach((loc) => {
     if(loc[0] < minX) minX = loc[0];
     if(loc[0] > maxX) maxX = loc[0];

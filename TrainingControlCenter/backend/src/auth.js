@@ -6,7 +6,11 @@ lbWFpbCI6ImFubmFAYm9va3MuY29tIiwicm9sZSI6ImFkbWluIiwiaW
 F0IjoxNjA2Mjc3MDAxLCJleHAiOjE2MDYyNzcwNjF9.1nwY0lDMGrb7
 AUFFgSaYd4Q7Tzr-BjABclmoKZOqmr4`;
 
-// Login as a user, returns access token
+/**
+ * Login as a user, returns access token
+ *
+ * @async
+ */
 exports.login = async (req, res) => {
   const {username, password} = req.body;
   // Check if user with these credentials exists
@@ -22,12 +26,18 @@ exports.login = async (req, res) => {
         algorithm: 'HS256',
       });
     res.status(200).json({
-      username: username, accessToken: accessToken, favorites: returnValue.favorites
+      username: username,
+      accessToken: accessToken,
+      favorites: returnValue.favorites,
     });
   }
 };
 
-// Register a new user
+/**
+ * Register a new user
+ *
+ * @async
+ */
 exports.register = async (req, res) => {
   console.log('Registration function');
   // See if username is already taken
@@ -39,13 +49,17 @@ exports.register = async (req, res) => {
     // If username is availible, issue it
     returnValue = await dbUsers.createUser(username, password);
     res.status(200).json({
-      username: username, password: password
-    });    
+      username: username,
+      password: password,
+    });
   }
 };
 
-
-// Check that authentication token is issued
+/**
+ * Check that authentication token is issued
+ *
+ * @async
+ */
 exports.check = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const userToken = authHeader.split(' ')[1];
@@ -58,7 +72,11 @@ exports.check = (req, res, next) => {
   });
 };
 
-// Add or update strava token
+/**
+ * Add or update strava token
+ *
+ * @async
+ */
 exports.updateToken = async (req, res) => {
   // See if username is already taken
   const username = req.query.username;
@@ -69,14 +87,17 @@ exports.updateToken = async (req, res) => {
   } else {
     // If username is issued, update token
     returnValue = await dbUsers.updateUser(username, token);
-    res.status(200).send(token);  
+    res.status(200).send(token);
   }
 };
 
-// Get strava token
+/**
+ * Get strava token
+ *
+ * @async
+ */
 exports.getToken = async (req, res) => {
   const username = req.query.username;
-
   const returnValue = await dbUsers.findUser(username, null);
   // Error case
   if (returnValue === -1) {
@@ -85,7 +106,8 @@ exports.getToken = async (req, res) => {
     // On success return 200
     const token = returnValue.stravaToken;
     res.status(200).json({
-      username: username, stravaToken: returnValue.stravaToken
+      username: username,
+      stravaToken: returnValue.stravaToken,
     });
   }
 };

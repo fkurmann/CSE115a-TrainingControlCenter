@@ -10,7 +10,6 @@ import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
-
 import SportIcon from './sportIcon';
 import StravaIcon from './images/strava_icon.png';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -19,12 +18,19 @@ import ActivityMap from './activityMap';
 import { getActivityDetails } from './stravaData';
 import { CircularProgress } from '@mui/material';
 
-export default function ActivityCard({ activity, width=300 }) {
+/**
+ * Creates an MUI Card based on specified activity, whether or manual or strava.
+ *
+ * @param {Object} activity - manual or strava activity with detailed information.
+ * @param {int} [width] - optional parameter denoting width of MUI card.
+ * @return {HTMLElement} - creates and returns the activity card for specified activity.
+ */
+export default function ActivityCard({ activity, width = 300 }) {
   const name = activity.name;
   const sport = activity.sport_type ? activity.sport_type : activity.sport ? activity.sport : '';
   const distance = activity.distance;
   const moving_time = activity.moving_time;
-  const pace = moment.utc((moving_time || 0)*1000 / ((distance || 1000)/1000)).format('mm:ss');
+  const pace = moment.utc((moving_time || 0) * 1000 / ((distance || 1000) / 1000)).format('mm:ss');
   const strava_link = `http://strava.com/activities/${activity.id}`;
   // const elapsed_time = activity.elapsed_time;
   const elevation_gain = activity.total_elevation_gain;
@@ -36,7 +42,7 @@ export default function ActivityCard({ activity, width=300 }) {
   // const comment_count = activity.comment_count;
   // const photo_count = activity.total_photo_count;
   const map = activity.map;
-  const map_width = width-33;
+  const map_width = width - 33;
   const map_height = map_width * 7 / 8;
 
   const [expanded, setExpanded] = React.useState(false);
@@ -58,7 +64,7 @@ export default function ActivityCard({ activity, width=300 }) {
       });
     }
   }, [expanded, loading, detailedActivity, activity.id]);
-  
+
   return (
     <Card sx={{backgroundColor: '#f9f9f9', width: width}}>
       {name == null ? <></> : <>
@@ -79,7 +85,7 @@ export default function ActivityCard({ activity, width=300 }) {
         {
           !distance ? <></> :
           <Typography>
-            <strong>Distance:</strong> {(distance/1000).toFixed(2)} km
+            <strong>Distance:</strong> {(distance / 1000).toFixed(2)} km
           </Typography>
         }
         {

@@ -12,11 +12,18 @@ import SnowboardingIcon from '@mui/icons-material/Snowboarding';
 import IceSkatingIcon from '@mui/icons-material/IceSkating';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
-// Example usage:
-// 1. Import it
-//      import SportIcon from '../SportIcon';
-// 2. Use it with sport name
-//      <SportIcon sport='running' />
+/**
+ * Function for generating all needed MUI sport icons.
+ * Example usage:
+ * 1. Import it
+ *      import SportIcon from '../SportIcon';
+ * 2. Use it with sport name
+ *      <SportIcon sport='running' />
+ *
+ * @param {string} sport - sport type, i.e. run, bike, swim
+ * @param {string} [fontSize] - default to medium, can specify size of icon
+ * @return {HTMLElement} - return MUI sports icon
+ */
 export default function SportIcon({sport, fontSize='medium'}) {
   if(!sport) return <SportsIcon />
   sport = sport.toLowerCase()

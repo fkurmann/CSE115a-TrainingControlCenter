@@ -17,11 +17,17 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 const localStorageUser = localStorage.getItem('user');
 
+
+/**
+ * Creates form for creating a manual workout with details specified by user.
+ *
+ * @return {HTMLElement} MUI form for specifying attributes for user specified activity.
+ */
 export default function AddWorkoutForm() {
   const [{ name, type = '', sport }, setState] = useState({
     name: '',
     type: '',
-    sport: ''
+    sport: '',
   });
 
   // Success and error message
@@ -33,7 +39,7 @@ export default function AddWorkoutForm() {
     distance: '',
     time: null,
     start_date_local: '',
-    description: ''
+    description: '',
   });
 
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
@@ -69,8 +75,11 @@ export default function AddWorkoutForm() {
       if (response.status === 200) {
         setShowSuccessMessage(true);
         setState({ name: '', type: '', sport: '' });
-        setAdditionalInfo({ distance: '', time: '',
-                            date: '', start_date_local: '', description: ''});
+        setAdditionalInfo({ distance: '',
+                            time: '',
+                            date: '',
+                            start_date_local: '',
+                            description: ''});
         setShowAdditionalInfo(false);
         setTimeout(() => {
           setShowSuccessMessage(false);
@@ -99,7 +108,7 @@ export default function AddWorkoutForm() {
         "Race",
         "Endurance",
         "Social",
-        "Commute"
+        "Commute",
       ];
     return activityTypes;
   };

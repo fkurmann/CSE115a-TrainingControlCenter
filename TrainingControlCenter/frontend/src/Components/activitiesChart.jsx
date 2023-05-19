@@ -23,23 +23,44 @@ const ActivityChart = () => {
   const [secondChartData, setSecondChartData] = useState([]);
   const metersToMiles = 0.000621371;
 
+  /**
+   * Returns the current week in ISO format.
+   *
+   * @return {int} - ISO week of current date
+   */
   function getCurrentWeek() {
     const currentDate = new Date();
     const currentWeek = getISOWeek(currentDate);
     return currentWeek;
   }
 
+  /**
+   * Returns the current month in ISO format.
+   *
+   * @return {int} - ISO month of current date
+   */
   function getCurrentMonth() {
     const currentDate = new Date();
     const currentMonth = getMonth(currentDate) + 1;
     return currentMonth;
-  }  
-  
+  }
+
+  /**
+   * Returns the current year in ISO format.
+   *
+   * @return {int} - ISO year of current date
+   */
   function getCurrentYear() {
     const currentYear = new Date().getFullYear();
     return currentYear;
   }
-  
+
+  /**
+   * Returns the starting date of some given week.
+   *
+   * @param {int} weekNumber - Represents the current selected week.
+   * @return {int} - Returns the starting date of selected week.
+   */
   function getDateRange(weekNumber) {
     const startOfYear = new Date(new Date().getFullYear(), 0, 1);
     const millisecondsPerDay = 1000 * 60 * 60 * 24;
@@ -48,31 +69,39 @@ const ActivityChart = () => {
     // Subtract 1 because weekNumber is 1-based
     const weekStart = new Date(startOfYear.getTime() + ((weekNumber - 1) * daysPerWeek * millisecondsPerDay));
 
-    return weekStart;  
+    return weekStart;
   }
 
+  /**
+   * Returns the ending date of some given week.
+   *
+   * @param {int} weekNumber - Represents the current selected week.
+   * @return {int} - Returns the ending date of selected week.
+   */
   function getEndDate(weekNumber) {
     const startOfYear = new Date(new Date().getFullYear(), 0, 1);
     const millisecondsPerDay = 1000 * 60 * 60 * 24;
     const daysPerWeek = 7;
-  
+
     // Subtract 1 because weekNumber is 1-based
     const weekEnd = new Date(startOfYear.getTime() + (weekNumber * daysPerWeek * millisecondsPerDay) - millisecondsPerDay);
-  
-    return weekEnd;  
+
+    return weekEnd;
   }
 
+  /**
+   * Fetches data for first graph comparison.
+   *
+   * @async
+   */
   const fetchDataForFirstRanking = async () => {
     try {
       setFirstRankingLoading(true);
       const response = await fetch(`http://localhost:3010/v0/activities?username=${localStorageUser}`);
-  
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
       const fetchedActivities = await response.json();
-
       let seenTimes = new Set();
 
       const activitiesWithUniqueTime = fetchedActivities.filter(activity => {
@@ -87,7 +116,7 @@ const ActivityChart = () => {
       const filteredAndSorted = activitiesWithUniqueTime
         .filter((activity) => {
           const activityDate = new Date(activity.start_date_local);
-  
+
           if (selectedPeriod === 'week') {
             const weekStart = getDateRange(selectedWeek);
             const weekEnd = getEndDate(selectedWeek);
@@ -112,7 +141,7 @@ const ActivityChart = () => {
         }
         return prev;
       }, {});
-         
+
       const activitySumArray = Object.values(activitySum);
       const periodSumArray = Object.values(filteredAndSorted);
 
@@ -129,7 +158,7 @@ const ActivityChart = () => {
       setFirstRankingLoading(false);
       console.error('An error occurred. Please try again.');
     }
-  };  
+  };
 
   useEffect(() => {
     fetchDataForFirstRanking();
@@ -139,13 +168,10 @@ const ActivityChart = () => {
     try {
       setSecondRankingLoading(true);
       const response = await fetch(`http://localhost:3010/v0/activities?username=${localStorageUser}`);
-  
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
       const fetchedActivities = await response.json();
-
       let seenTimes = new Set();
 
       const activitiesWithUniqueTime = fetchedActivities.filter(activity => {
@@ -155,12 +181,12 @@ const ActivityChart = () => {
         }
         return false;
       });
-  
+
       // First, filter and sort activities by selectedCompare
       const filteredAndSorted = activitiesWithUniqueTime
         .filter((activity) => {
           const activityDate = new Date(activity.start_date_local);
-  
+
           if (selectedPeriod === 'week') {
             const weekStart = getDateRange(selectedCompare);
             const weekEnd = getEndDate(selectedCompare);
@@ -173,7 +199,7 @@ const ActivityChart = () => {
           return true;
         })
         .sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
-      
+
       // Then, sum up the moving_time and distance for the same type of activities
       const activitySum = filteredAndSorted.reduce((prev, curr) => {
         if (!prev[curr.sport]) {
@@ -184,10 +210,10 @@ const ActivityChart = () => {
         }
         return prev;
       }, {});
-  
+
       const activitySumArray = Object.values(activitySum);
       const periodSumArray = Object.values(filteredAndSorted);
-      
+
       setCompareActivities(activitySumArray);
       getSecondChartData(periodSumArray, selectedPeriod);
       setSecondRankingLoading(false);
@@ -196,14 +222,14 @@ const ActivityChart = () => {
       console.error('An error occurred. Please try again.');
     }
   };
-  
+
   useEffect(() => {
     fetchDataForSecondRanking();
   }, [selectedPeriod, selectedCompare]);
 
   const handlePeriodChange = async (period) => {
     setSelectedPeriod(period);
-  
+
     if (period === 'month') {
       setSelectedMonth(getCurrentMonth());
       setSelectedCompare(getCurrentMonth());
@@ -215,16 +241,16 @@ const ActivityChart = () => {
       setSelectedCompare(getCurrentYear());
     }
   };
-  
+
   const handleWeekChange = (event) => {
     const selectedWeek = event.target.value;
     setSelectedWeek(selectedWeek);
   };
-  
+
   const handleMonthChange = (event) => {
     const value = event.target.value;
     setSelectedMonth(value);
-  };  
+  };
 
   const handleYearChange = (event) => {
     const value = event.target.value;
@@ -240,10 +266,10 @@ const ActivityChart = () => {
       setSelectedCompare(event.target.value);
     }
   };
-  
+
   const getFirstChartData = (activities, period) => {
     let firstChartData = [];
-  
+
     if (period === 'week') {
       // Initialize a week's data
       const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -259,7 +285,7 @@ const ActivityChart = () => {
       // Initialize a month's data
       const daysInMonth = getDaysInMonth(new Date(selectedYear, selectedMonth - 1));
       firstChartData = Array.from({length: daysInMonth}, (_, i) => ({ name: i + 1, time: 0, distance: 0 }));
-  
+
       activities.forEach(activity => {
         const activityDate = new Date(activity.start_date_local);
         const dayOfMonth = activityDate.getUTCDate() - 1;
@@ -269,7 +295,7 @@ const ActivityChart = () => {
     } else if (period === 'year') {
       // Initialize a year's data
       firstChartData = Array.from({length: 12}, (_, i) => ({ name: format(new Date(selectedYear, i), 'MMM', { locale: enUS }), time: 0, distance: 0 }));
-  
+
       activities.forEach(activity => {
         const activityDate = new Date(activity.start_date_local);
         const month = activityDate.getUTCMonth();
@@ -279,10 +305,10 @@ const ActivityChart = () => {
     }
     setFirstChartData(firstChartData);
   };
-  
+
   const getSecondChartData = (activities, period) => {
     let secondChartData = [];
-  
+
     if (period === 'week') {
       // Initialize a week's data
       const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -298,7 +324,7 @@ const ActivityChart = () => {
       // Initialize a month's data
       const daysInMonth = getDaysInMonth(new Date(selectedYear, selectedMonth - 1));
       secondChartData = Array.from({length: daysInMonth}, (_, i) => ({ name: i + 1, time: 0, distance: 0 }));
-  
+
       activities.forEach(activity => {
         const activityDate = new Date(activity.start_date_local);
         const dayOfMonth = activityDate.getUTCDate() - 1;
@@ -308,7 +334,7 @@ const ActivityChart = () => {
     } else if (period === 'year') {
       // Initialize a year's data
       secondChartData = Array.from({length: 12}, (_, i) => ({ name: format(new Date(selectedYear, i), 'MMM', { locale: enUS }), time: 0, distance: 0 }));
-  
+
       activities.forEach(activity => {
         const activityDate = new Date(activity.start_date_local);
         const month = activityDate.getUTCMonth();
@@ -317,7 +343,7 @@ const ActivityChart = () => {
       });
     }
     setSecondChartData(secondChartData);
-  }; 
+  };
 
   // Units conversion
   const firstUnitConversion = firstChartData.map(data => ({
@@ -340,12 +366,12 @@ const ActivityChart = () => {
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const { name, time, distance } = payload[0].payload;
-  
+
       const formattedTime =
         time >= 86400
           ? `${Math.floor(time / 86400)}:${moment.utc(time * 1000).format('HH:mm:ss')}`
           : moment.utc(time * 1000).format('HH:mm:ss');
-  
+
       return (
         <div
           style={{
@@ -361,7 +387,7 @@ const ActivityChart = () => {
         </div>
       );
     }
-  
+
     return null;
   };
 
@@ -546,7 +572,7 @@ const ActivityChart = () => {
                tickFormatter={formatTime}
         />
         <YAxis yAxisId="right"
-               orientation="right" 
+               orientation="right"
                domain={[0, firstMaxDistance + 1]}
                label={{ value: 'Distance', angle: -90, position: 'insideRight' }}
         />
@@ -556,7 +582,7 @@ const ActivityChart = () => {
         <Line yAxisId="right" type="monotone" dataKey="distance" stroke="#82ca9d" />
         </LineChart>
       </Grid>
-          
+
       <Grid item xs={12} sm={6}>
         <LineChart
           width={500}
@@ -571,13 +597,13 @@ const ActivityChart = () => {
         >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
-        <YAxis yAxisId="left" 
+        <YAxis yAxisId="left"
                domain={[0, secondMaxTime + 1]}
                label={{ value: 'Time', angle: -90, position: 'insideRight' }}
                tickFormatter={formatTime}
                />
         <YAxis yAxisId="right"
-               orientation="right" 
+               orientation="right"
                domain={[0, secondMaxDistance + 1]}
                label={{ value: 'Distance', angle: -90, position: 'insideRight' }}
                />

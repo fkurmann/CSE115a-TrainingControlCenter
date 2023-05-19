@@ -18,6 +18,11 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 const localStorageUser = localStorage.getItem('user');
 
+/**
+ * Creates form for creating a graph with details specified by user.
+ *
+ * @return {HTMLElement} MUI form for specifying attributes for user specified graph.
+ */
 export default function AddGraphForm() {
   const [{ duration, startDate, graphType, goal, sport, outFile }, setState] = useState({
     duration: '',
@@ -25,7 +30,7 @@ export default function AddGraphForm() {
     graphType: '',
     goal: '',
     sport: '',
-    outFile: 'generalGraph'
+    outFile: 'generalGraph',
   });
 
   // Success and error message
@@ -41,7 +46,7 @@ export default function AddGraphForm() {
         method: "POST",
         body: JSON.stringify({
           username: localStorageUser,
-          duration: duration, 
+          duration: duration,
           graphType: graphType,
           sport: sport,
           goal: goal,
@@ -59,7 +64,7 @@ export default function AddGraphForm() {
 
       if (response.status === 200) {
         setShowSuccessMessage(true);
-        
+
       } else {
         const data = await response.json();
         setErrorMessage(data.message);
@@ -211,7 +216,7 @@ export default function AddGraphForm() {
         <Box mb={2} ml={2}>
           <FormControlLabel control={<Switch />} label="Compare with Goals" />
         </Box>
-        
+
       <Button variant="contained" color="primary" type="submit" ml={2}>
         Generate Graph
       </Button>
