@@ -28,6 +28,7 @@ import { CircularProgress } from '@mui/material';
 export default function ActivityCard({ activity, width = 300 }) {
   const name = activity.name;
   const activityJson = activity.json;
+  const manual_description = activity.description;
   const sport = activity.sport_type ? activity.sport_type : activity.sport ? activity.sport : '';
   const distance = activityJson.distance;
   const moving_time = activityJson.moving_time;
@@ -105,6 +106,12 @@ export default function ActivityCard({ activity, width = 300 }) {
           !elevation_gain ? <></> :
           <Typography>
             <strong>Elevation gain:</strong> {elevation_gain} m
+          </Typography>
+        }
+        {
+          !manual_description ? <></> :
+          <Typography>
+            <strong>Description:</strong> {manual_description}
           </Typography>
         }
       </CardContent>
