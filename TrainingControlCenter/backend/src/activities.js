@@ -47,7 +47,7 @@ exports.addActivity = async (req, res) => {
     return;
   }
 
-  let descriptionText = description ? String(description) : 'No description';
+  let descriptionText = description ? String(description) : 'None';
 
   // Add activity metadata to JSON in format similar to strava activity jsons
   const activityJson = {
