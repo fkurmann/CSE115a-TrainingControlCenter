@@ -20,6 +20,7 @@ const ActivityChart = () => {
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [compareActivities, setCompareActivities] = useState([]);
   const [firstRankingLoading, setFirstRankingLoading] = useState(false);
+  const [firstRankFinish, setFirstRankFinish] = useState(false);
   const [secondRankingLoading, setSecondRankingLoading] = useState(false);
   const [noRecords, setNoRecords] = useState(false);
   const [firstChartData, setFirstChartData] = useState([]);
@@ -181,8 +182,10 @@ const ActivityChart = () => {
       setFilteredActivities(activitySumArray);
       getFirstChartData(periodSumArray, selectedPeriod);
       setFirstRankingLoading(false);
+      setFirstRankFinish(true);
     } catch (error) {
       setFirstRankingLoading(false);
+      setFirstRankFinish(true);
       console.error('An error occurred. Please try again.');
     }
   };
@@ -259,8 +262,10 @@ const ActivityChart = () => {
   };
 
   useEffect(() => {
-    fetchDataForSecondRanking();
-  }, [selectedPeriod, selectedCompare]);
+    if (firstRankFinish) {
+      fetchDataForSecondRanking();
+    }
+  }, [selectedPeriod, selectedCompare, firstRankFinish]);
 
   const handlePeriodChange = async (period) => {
     setSelectedPeriod(period);
