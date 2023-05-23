@@ -18,8 +18,7 @@ export default function WorkoutGrid() {
   const [anchorElActivityCard, setAnchorElActivityCard] = React.useState(null);
 
   const handleOpenActivityCard = (event, activity) => {
-    if(activity.json && activity.json.name) setSelectedActivity(activity.json);
-    else setSelectedActivity(activity);
+    setSelectedActivity(activity);
     setAnchorElActivityCard(event.currentTarget);
   }
   const handleCloseActivityCard = () => setAnchorElActivityCard(null);

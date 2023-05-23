@@ -71,8 +71,7 @@ export default function HomeCalendar() {
   }, [user, weeklyActivities, isLoading, dayActivities]);
 
   const handleOpenActivityCard = (event, activity) => {
-    if('json' in activity) setSelectedActivity(activity.json);
-    else setSelectedActivity(activity);
+    setSelectedActivity(activity);
     setAnchorElActivityCard(event.currentTarget);
   }
   const handleCloseActivityCard = () => setAnchorElActivityCard(null);
