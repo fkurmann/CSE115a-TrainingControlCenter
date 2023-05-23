@@ -68,7 +68,7 @@ const ActivityChart = () => {
 
     // Subtract 1 because weekNumber is 1-based
     const weekStart = new Date(startOfYear.getTime() + ((weekNumber - 1) * daysPerWeek * millisecondsPerDay));
-
+    
     return weekStart;
   }
 
@@ -114,23 +114,31 @@ const ActivityChart = () => {
 
       // First, filter and sort activities by selectedPeriod
       const filteredAndSorted = activitiesWithUniqueTime
-        .filter((activity) => {
-          const activityDate = new Date(activity.start_date_local);
-
-          if (selectedPeriod === 'week') {
-            const weekStart = getDateRange(selectedWeek);
-            const weekEnd = getEndDate(selectedWeek);
-            return activityDate >= weekStart && activityDate <= weekEnd;
-          } else if (selectedPeriod === 'month') {
-            return getMonth(activityDate) + 1 === selectedMonth && getYear(activityDate) === getCurrentYear();
-          } else if (selectedPeriod === 'year') {
-            return getYear(activityDate) === selectedYear;
-          }
-          return true;
-        })
-        // Sort activities by start date
-        .sort((a, b) => new Date(b.start_date_local) - new Date(a.start_date_local));
-
+      .filter((activity) => {
+        let activityDate = new Date(activity.start_date_local);
+  
+        // Reset the time to midnight
+        activityDate.setHours(0, 0, 0, 0);
+  
+        if (selectedPeriod === 'week') {
+          let weekStart = getDateRange(selectedWeek);
+          let weekEnd = getEndDate(selectedWeek);
+  
+          // Reset the time to midnight
+          weekStart.setHours(0, 0, 0, 0);
+          weekEnd.setHours(0, 0, 0, 0);
+  
+          return activityDate >= weekStart && activityDate <= weekEnd;
+        } else if (selectedPeriod === 'month') {
+          return getMonth(activityDate) + 1 === selectedMonth && getYear(activityDate) === getCurrentYear();
+        } else if (selectedPeriod === 'year') {
+          return getYear(activityDate) === selectedYear;
+        }
+        return true;
+      })
+      // Sort activities by start date
+      .sort((a, b) => new Date(b.start_date_local) - new Date(a.start_date_local));
+  
       // Ranking: sum up the moving_time and distance for the same type of activities
       const activitySum = filteredAndSorted.reduce((prev, curr) => {
         if (!prev[curr.sport]) {
@@ -145,7 +153,7 @@ const ActivityChart = () => {
       const activitySumArray = Object.values(activitySum);
       const periodSumArray = Object.values(filteredAndSorted);
 
-      if (activitySumArray.length === 0 ) {
+      if (activitySumArray.length === 0 &&  periodSumArray.periodSumArray) {
         setNoRecords(true);
       } else {
         setNoRecords(false);
@@ -185,11 +193,19 @@ const ActivityChart = () => {
       // First, filter and sort activities by selectedCompare
       const filteredAndSorted = activitiesWithUniqueTime
         .filter((activity) => {
-          const activityDate = new Date(activity.start_date_local);
+          let activityDate = new Date(activity.start_date_local);
 
+          // Reset the time to midnight
+          activityDate.setHours(0, 0, 0, 0);
+          
           if (selectedPeriod === 'week') {
-            const weekStart = getDateRange(selectedCompare);
-            const weekEnd = getEndDate(selectedCompare);
+            let weekStart = getDateRange(selectedCompare);
+            let weekEnd = getEndDate(selectedCompare);
+    
+            // Reset the time to midnight
+            weekStart.setHours(0, 0, 0, 0);
+            weekEnd.setHours(0, 0, 0, 0);
+    
             return activityDate >= weekStart && activityDate <= weekEnd;
           } else if (selectedPeriod === 'month') {
             return getMonth(activityDate) + 1 === selectedCompare && getYear(activityDate) === getCurrentYear();
