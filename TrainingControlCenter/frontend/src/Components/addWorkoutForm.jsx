@@ -24,6 +24,9 @@ const localStorageUser = localStorage.getItem('user');
  * @return {HTMLElement} MUI form for specifying attributes for user specified activity.
  */
 export default function AddWorkoutForm() {
+  const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
+  const dist_unit = isMetric ? 'kilometers' : 'miles';
+  const meters_per_unit = isMetric ? 1000 : 1609.34;
   const [{ name, type = '', sport }, setState] = useState({
     name: '',
     type: '',
@@ -58,7 +61,7 @@ export default function AddWorkoutForm() {
           sport: sport,
           description: descriptions,
           json: {
-            distance: additionalInfo.distance,
+            distance: additionalInfo.distance * meters_per_unit,
             time: additionalInfo.time,
             start_date_local: formattedDate
           }
@@ -175,7 +178,6 @@ export default function AddWorkoutForm() {
         <Select
           labelId="activity-type-select"
           id="type"
-          label="Activity Type"
           value={type}
           onChange={(e) =>
             setState((prevState) => ({ ...prevState, type: e.target.value }))
@@ -200,7 +202,6 @@ export default function AddWorkoutForm() {
               setState((prevState) => ({ ...prevState, sport: e.target.value }))
             }
             autoWidth
-            label="Sport Type"
           >
             {sportsList.map((sportType, index) => (
               <MenuItem key={sportType} value={sportType} id={`menu-item-${sportType}-${index}`}>
@@ -242,7 +243,7 @@ export default function AddWorkoutForm() {
     <Collapse in={showAdditionalInfo}>
       {/* Distance */}
       <Box mb={2} ml={2}>
-          <Typography variant="h6">Distance (miles)</Typography>
+          <Typography variant="h6">Distance ({dist_unit})</Typography>
           <TextField
             id="distance"
             label="Distance"

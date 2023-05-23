@@ -51,9 +51,12 @@ exports.addActivity = async (req, res) => {
 
   // Add activity metadata to JSON in format similar to strava activity jsons
   const activityJson = {
+    name: name,
+    sport_type: sport,
     distance: distance || undefined,
     moving_time: time * 60 || undefined,
-    start_date_local: formattedDate || undefined,
+    start_date: formattedDate || undefined,
+    start_date_local: formattedDate || undefined
   };
 
   const returnValue = await dbActivities.createActivity(username, name, type, sport, descriptionText, activityJson);

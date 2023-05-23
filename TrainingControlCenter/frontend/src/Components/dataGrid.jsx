@@ -10,6 +10,9 @@ import ActivityCard from './activityCard';
  * @return {HTMLElement} - returns MUI datagrid of all activities showing specific data points.
  */
 export default function WorkoutGrid() {
+  const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
+  const dist_unit = isMetric ? 'km' : 'mi';
+  const meters_per_unit = isMetric ? 1000 : 1609.34;
   const user = localStorage.getItem('user');
 
   const [myActivities, setMyActivities] = React.useState(null);
@@ -27,9 +30,9 @@ export default function WorkoutGrid() {
     { field: 'name', headerName: 'Name', width: 300 },
     { field: 'sport', headerName: 'Sport', width: 150 },
     { field: 'type', headerName: 'Type', width: 150 },
-    { field: 'start_date_local', headerName: 'Date', valueFormatter: params => (params.value.substring(0, 10)), width: 150 },
-    { field: 'distance', headerName: 'Distance (mi)', width: 160,
-      valueGetter: params => !params.value ? null : Number(parseFloat((params.value) / 1609).toFixed(2)),
+    { field: 'start_date_local', headerName: 'Date', valueFormatter: params => (params.value ? params.value.substring(0, 10) : ''), width: 150 },
+    { field: 'distance', headerName: `Distance (${dist_unit})`, width: 160,
+      valueGetter: params => !params.value ? null : Number(parseFloat((params.value) / meters_per_unit).toFixed(2)),
       filterOperators: getGridNumericOperators() },
     { field: 'moving_time', headerName: 'Time (min)', width: 100,
       valueGetter: params => !params.value ? null : moment.utc(params.value * 1000).format('HH:mm:ss'),

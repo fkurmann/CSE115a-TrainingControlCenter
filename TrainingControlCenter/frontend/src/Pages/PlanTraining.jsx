@@ -5,11 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import ResponsiveAppBar from '../Components/appBar';
-
-/**
- * Create the theme to be used
- */
-const theme = createTheme();
+import { userTheme } from '../Components/theme';
 
 /**
  * Creates the Training Plan page for workout creation and planning.
@@ -18,7 +14,7 @@ const theme = createTheme();
  */
 export default function PlanTraining() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={userTheme}>
       <CssBaseline />
       <Container component='main'>
         <CssBaseline />

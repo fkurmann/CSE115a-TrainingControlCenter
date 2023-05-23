@@ -1,5 +1,5 @@
 import React from 'react';
-import {createTheme, ThemeProvider} from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
@@ -9,11 +9,7 @@ import ResponsiveAppBar from '../Components/appBar';
 import RecentActivitiesList from '../Components/recentActivities';
 import AddWorkoutForm from '../Components/addWorkoutForm';
 import HomeCalendar from '../Components/weeklyHomeCalendar';
-
-/**
- * Create the theme to be used
- */
-const theme = createTheme();
+import { userTheme } from '../Components/theme';
 
 /**
  * Creates the Home page upon successful user login.
@@ -22,7 +18,7 @@ const theme = createTheme();
  */
 export default function Home() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={userTheme}>
       <CssBaseline />
       <Container component='main'>
         <CssBaseline />
