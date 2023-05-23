@@ -2,6 +2,11 @@ import axios from 'axios';
 
 const stravaBaseURL = 'https://www.strava.com/api/v3';
 
+/**
+ * Obtains refresh token from strava API
+ *
+ * @return {Object} - JSON object from strava API call with refresh token.
+ */
 const getRefreshToken = async () => {
   const user = localStorage.getItem('user');
   const response = await fetch('http://localhost:3010/v0/token?' + new URLSearchParams({username: user}), {
@@ -16,10 +21,14 @@ const getRefreshToken = async () => {
   return response.json();
 }
 
+/**
+ * Exchanges temporary access token from strava using a user's refresh token.
+ *
+ * @return {Object} - JSON object from strava API with temporary access token.
+ */
 const getAccessToken = async () => {
   const user = localStorage.getItem('user');
   const refresh_token = (await getRefreshToken()).stravaToken;
-  console.log("here", refresh_token);
   const response = await fetch("https://www.strava.com/oauth/token", {
     method: "POST",
     headers: {
@@ -39,6 +48,11 @@ const getAccessToken = async () => {
   return response.json();
 }
 
+/**
+ * Upload strava activities from API call to database.
+ *
+ * @param {Object} activities - JSON List object of all activities to be uploaded to database.
+ */
 async function uploadActivities(activities) {
   const user = localStorage.getItem('user');
   for (let i = 0; i < activities.length; i++) {
@@ -91,13 +105,18 @@ async function uploadActivities(activities) {
   console.log("Stored activities for: ", user);
 }
 
+/**
+ * Fetches from Strava API to get all user activities and uploads to database.
+ *
+ * @return {Object} list of all activities from strava API call.
+ */
 export async function getAllActivities() {
   const stravaAccessToken = (await getAccessToken()).access_token;
 
-  var all_activities = [];
+  let all_activities = [];
   try {
-    var page = 1;
-    var res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
+    let page = 1;
+    let res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
       headers: {
         'Authorization': `Bearer ${stravaAccessToken}`,
       },
@@ -136,9 +155,14 @@ export async function getAllActivities() {
   return all_activities; // here should be uploading to DB not return.
 }
 
+/**
+ * Fetches from Strava API to get user's latest 5 activities and uploads to database.
+ *
+ * @return {Object} list of all activities from strava API call.
+ */
 export async function getFiveActivities() {
   const stravaAccessToken = (await getAccessToken()).access_token;
-  var activities = [];
+  let activities = [];
   try {
     const res = await axios.get(`${stravaBaseURL}/athlete/activities`, {
       headers: {
@@ -161,6 +185,12 @@ export async function getFiveActivities() {
   return activities;
 }
 
+/**
+ * Fetches from Strava API to get detailed information for specified activity.
+ *
+ * @param {string} id - strava ID of specified activity
+ * @return {Object} - JSON object from strava API with activity detailed information.
+ */
 export async function getActivityDetails(id) {
   const stravaAccessToken = (await getAccessToken()).access_token;
   const res = await axios.get(`${stravaBaseURL}/activities/${id}`, {

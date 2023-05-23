@@ -5,16 +5,19 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
-
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import PoolIcon from '@mui/icons-material/Pool';
-
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
 // TODO: Update icons, make all list items collapsable, home screen will feature latest activities from 3 categories
 
+/**
+ * Displays on Home page the latest activities from 3 specified categories.
+ *
+ * @return {HTMLElement} - returns the MUI list item of recent activities, manual or strava.
+ */
 export default function RecentActivitiesList() {
   const [open1, setOpen1] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
@@ -44,12 +47,12 @@ export default function RecentActivitiesList() {
       {/* Category 1 */}
       <ListItemButton onClick={handleClick1} selected={open1}>
         <ListItemIcon>
-          <DirectionsRunIcon /> 
+          <DirectionsRunIcon />
         </ListItemIcon>
         <ListItemText primary="Run" />
         {open1 ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
-      
+
       <Collapse in={open1} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItemButton sx={{ pl: 4 }}>
@@ -66,7 +69,7 @@ export default function RecentActivitiesList() {
         <ListItemText primary="Swim" />
         {open2 ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
-      
+
       <Collapse in={open2} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItemButton sx={{ pl: 4 }}>

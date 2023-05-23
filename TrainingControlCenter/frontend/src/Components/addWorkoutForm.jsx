@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import {
   TextField,
@@ -19,11 +18,19 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 const localStorageUser = localStorage.getItem('user');
 
 
+/**
+ * Creates form for creating a manual workout with details specified by user.
+ *
+ * @return {HTMLElement} MUI form for specifying attributes for user specified activity.
+ */
 export default function AddWorkoutForm() {
+  const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
+  const dist_unit = isMetric ? 'kilometers' : 'miles';
+  const meters_per_unit = isMetric ? 1000 : 1609.34;
   const [{ name, type = '', sport }, setState] = useState({
     name: '',
     type: '',
-    sport: ''
+    sport: '',
   });
 
   // Success and error message
@@ -35,7 +42,7 @@ export default function AddWorkoutForm() {
     distance: '',
     time: null,
     start_date_local: '',
-    description: ''
+    description: '',
   });
 
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
@@ -54,7 +61,7 @@ export default function AddWorkoutForm() {
           sport: sport,
           description: descriptions,
           json: {
-            distance: additionalInfo.distance,
+            distance: additionalInfo.distance * meters_per_unit,
             time: additionalInfo.time,
             start_date_local: formattedDate
           }
@@ -71,8 +78,11 @@ export default function AddWorkoutForm() {
       if (response.status === 200) {
         setShowSuccessMessage(true);
         setState({ name: '', type: '', sport: '' });
-        setAdditionalInfo({ distance: '', time: '',
-                            date: '', start_date_local: '', description: ''});
+        setAdditionalInfo({ distance: '',
+                            time: '',
+                            date: '',
+                            start_date_local: '',
+                            description: ''});
         setShowAdditionalInfo(false);
         setTimeout(() => {
           setShowSuccessMessage(false);
@@ -101,37 +111,49 @@ export default function AddWorkoutForm() {
         "Race",
         "Endurance",
         "Social",
-        "Commute"
+        "Commute",
       ];
     return activityTypes;
   };
 
+  const sportsList = [
+    "Cycling",
+    "Virtual Ride",
+    "Swimming",
+    "Running",
+    "Virtual Run",
+    "Walking",
+    "Hiking",
+    "Weight Training",
+    "Rowing",
+    "Skiing",
+  ];
+
   // get user favorite for sport types
-  const [favoriteSports, setFavoriteSports] = useState([]);
+  // const [favoriteSports, setFavoriteSports] = useState([]);
+  // const fetchFavorites = async () => {
+  //   try {
+  //     const response = await fetch('http://localhost:3010/v0/favorites?'
+  //                       + new URLSearchParams({username: localStorageUser}));
 
-  const fetchFavorites = async () => {
-    try {
-      const response = await fetch('http://localhost:3010/v0/favorites?'
-                        + new URLSearchParams({username: localStorageUser}));
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+  //     const favoriteSports = await response.json();
+  //     setFavoriteSports(favoriteSports);
+  //   } catch (error) {
+  //     console.error(error);
+  //     setErrorMessage('An error occurred. Please try again.');
 
-      const favoriteSports = await response.json();
-      setFavoriteSports(favoriteSports);
-    } catch (error) {
-      console.error(error);
-      setErrorMessage('An error occurred. Please try again.');
-
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 10000);
-    }
-  };
-  useEffect(() => {
-    fetchFavorites();
-  }, []);
+  //     setTimeout(() => {
+  //       setErrorMessage('');
+  //     }, 10000);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchFavorites();
+  // }, []);
 
   return (
     <>
@@ -181,7 +203,7 @@ export default function AddWorkoutForm() {
             }
             autoWidth
           >
-            {favoriteSports.map((sportType, index) => (
+            {sportsList.map((sportType, index) => (
               <MenuItem key={sportType} value={sportType} id={`menu-item-${sportType}-${index}`}>
                 {sportType}
               </MenuItem>
@@ -221,7 +243,7 @@ export default function AddWorkoutForm() {
     <Collapse in={showAdditionalInfo}>
       {/* Distance */}
       <Box mb={2} ml={2}>
-          <Typography variant="h6">Distance (miles)</Typography>
+          <Typography variant="h6">Distance ({dist_unit})</Typography>
           <TextField
             id="distance"
             label="Distance"

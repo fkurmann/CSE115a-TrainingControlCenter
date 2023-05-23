@@ -146,7 +146,6 @@ export default function Favorites() {
     </List>
     <Box component='form' noValidate onSubmit={handleSubmit}>
 
-      <Typography variant="h6">New Favorite</Typography>
       <Select
         name='sport' 
         value={addFav.sport} 

@@ -19,7 +19,7 @@ exports.createPlan = async (username) => {
   const planSkeleton = {
     username: username,
   }
- 
+
   // Access database
   try {
     await client.connect();
@@ -35,7 +35,7 @@ exports.createPlan = async (username) => {
 
 // Find plan, no user existence check
 exports.findPlan = async (username) => {
-  
+
   // Access database
   try {
     await client.connect();
@@ -55,6 +55,5 @@ exports.findPlan = async (username) => {
     await client.close();
   }
 }
-
 
 // Collections = tables, documents = rows

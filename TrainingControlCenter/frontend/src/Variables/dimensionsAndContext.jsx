@@ -4,10 +4,10 @@ import {styled} from '@mui/material/styles';
 // Global context
 export const UserContext = React.createContext();
 
-
 // **Dimensions is useful when scaling for smaller screens, backlog item**
 // Dimensions context and helpers
 export const DimensionsContext = React.createContext();
+
 // Dimension handling functions for mailbox display
 export const winDims = () => ({
   height: window.innerHeight,

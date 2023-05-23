@@ -2,12 +2,16 @@ import * as React from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import { CssBaseline, Container } from '@mui/material';
-
 import ResponsiveAppBar from '../Components/appBar';
 import Favorites from '../Components/Settings/favorites';
 import Goals from '../Components/Settings/goals';
 import Preferences from '../Components/Settings/preferences';
 
+/**
+ * The settings page where goals, favorites, other feature are set.
+ *
+ * @return {HTMLElement} - Creates the page with goals, favorites, and units elements.
+ */
 export default function Settings() {
   const [colorTheme, setColorTheme] = React.useState(localStorage.getItem('colorTheme') || 'blue');
   const [brightnessMode, setBrightnessMode] = React.useState(localStorage.getItem('brightnessMode') || 'light');

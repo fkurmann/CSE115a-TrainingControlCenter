@@ -43,7 +43,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
 
   const fetchFavorites = async () => {
     try {
-      const response = await fetch('http://localhost:3010/v0/favorites?' 
+      const response = await fetch('http://localhost:3010/v0/favorites?'
                         + new URLSearchParams({username: localStorageUser}));
 
       if (!response.ok) {
@@ -68,15 +68,15 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
   const types = [
     {
       value: 'race',
-      label: 'Race'
+      label: 'Race',
     },
     {
       value: 'repeat',
-      label: 'Repeat'
+      label: 'Repeat',
     },
     {
       value: 'one-time',
-      label: 'Does not repeat'
+      label: 'Does not repeat',
     },
   ]
 
@@ -161,7 +161,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                       setAddGoal({ ...addGoal, time: e.target.value });
                     }} />
                 </FormControl>
-              : addGoal.type === 'repeat' ? 
+              : addGoal.type === 'repeat' ?
                 <FormControl error={formErrors.includes('time')} sx={{ width: '18ch', marginRight: 15, paddingBottom: 1 }}>
                   <Input
                     startAdornment={<InputAdornment position='start'>Every</InputAdornment> }

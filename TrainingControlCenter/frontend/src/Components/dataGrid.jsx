@@ -4,7 +4,15 @@ import { DataGrid, getGridNumericOperators } from '@mui/x-data-grid';
 import { CircularProgress, Popover } from '@mui/material';
 import ActivityCard from './activityCard';
 
+/**
+ * Creates a list of all workouts whether or manual or from strava.
+ *
+ * @return {HTMLElement} - returns MUI datagrid of all activities showing specific data points.
+ */
 export default function WorkoutGrid() {
+  const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
+  const dist_unit = isMetric ? 'km' : 'mi';
+  const meters_per_unit = isMetric ? 1000 : 1609.34;
   const user = localStorage.getItem('user');
 
   const [myActivities, setMyActivities] = React.useState(null);
@@ -13,25 +21,24 @@ export default function WorkoutGrid() {
   const [anchorElActivityCard, setAnchorElActivityCard] = React.useState(null);
 
   const handleOpenActivityCard = (event, activity) => {
-    if(activity.json && activity.json.name) setSelectedActivity(activity.json);
-    else setSelectedActivity(activity);
+    setSelectedActivity(activity);
     setAnchorElActivityCard(event.currentTarget);
   }
   const handleCloseActivityCard = () => setAnchorElActivityCard(null);
 
   const columns = [
-    { field: 'name', headerName: 'Name', width: 250 },
+    { field: 'name', headerName: 'Name', width: 300 },
     { field: 'sport', headerName: 'Sport', width: 150 },
     { field: 'type', headerName: 'Type', width: 150 },
-    { field: 'start_date_local', headerName: 'Date', valueFormatter: params => (params.value), width: 150 },
-    { field: 'distance', headerName: 'Distance', width: 75, 
-      valueGetter: params => !params.value ? null : Number(parseFloat((params.value)/1609).toFixed(2)),
+    { field: 'start_date_local', headerName: 'Date', valueFormatter: params => (params.value ? params.value.substring(0, 10) : ''), width: 150 },
+    { field: 'distance', headerName: `Distance (${dist_unit})`, width: 160,
+      valueGetter: params => !params.value ? null : Number(parseFloat((params.value) / meters_per_unit).toFixed(2)),
       filterOperators: getGridNumericOperators() },
-    { field: 'moving_time', headerName: 'Time', width: 100,
-      valueGetter: params => !params.value ? null : moment.utc(params.value*1000).format('HH:mm:ss'),
+    { field: 'moving_time', headerName: 'Time (min)', width: 100,
+      valueGetter: params => !params.value ? null : moment.utc(params.value * 1000).format('HH:mm:ss'),
       filterOperators: getGridNumericOperators() },
   ]
-  
+
   // Initializes myActivities
   React.useEffect(() => {
     if(!myActivities){
@@ -57,7 +64,8 @@ export default function WorkoutGrid() {
             // Remove any duplicated activities
             let unique_activities = [];
             res.forEach((a) => {
-              if(unique_activities.filter((b) => { return a.name === b.name && a.distance === b.distance && a.moving_time === b.moving_time }).length === 0) {
+              if (unique_activities.filter((b) => { return a.name === b.name && a.distance === b.distance
+                      && a.moving_time === b.moving_time }).length === 0) {
                 unique_activities.push(a);
               }
             });
@@ -80,7 +88,7 @@ export default function WorkoutGrid() {
       setIsLoading(false);
     }
   }, [user, myActivities, isLoading]);
-  
+
   // Updates localStorage whenever myActivities is updated
   React.useEffect(() => {
     localStorage.setItem('activities', JSON.stringify(myActivities));
@@ -91,9 +99,7 @@ export default function WorkoutGrid() {
     {
     isLoading ?
     <CircularProgress /> :
-    
     <div style={{ height: 700, width: '100%' }}>
-      
       <DataGrid
         rows={myActivities}
         getRowId={(row) => row._id}
@@ -107,11 +113,11 @@ export default function WorkoutGrid() {
         onClose={handleCloseActivityCard}
         anchorOrigin={{
           vertical: 'center',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         transformOrigin={{
           vertical: 'center',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
       >
         <ActivityCard activity={selectedActivity} />

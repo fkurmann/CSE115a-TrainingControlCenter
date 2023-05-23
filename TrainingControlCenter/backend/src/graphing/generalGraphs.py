@@ -8,124 +8,158 @@ import sys
 import json
 import dateutil.parser
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 6391fe9da1748add831df59a84e96cd1ff43d7ea
 from datetime import date, datetime, timedelta
 
-def generalHistoryGraph (username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile):
 
-  print ('Params: ' + username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile)
-  startDate = date(int(startYear), int(startMonth), int(startDay)) 
-  # Figure creation
-  figureWidth=5
-  figureHeight=5
+def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile):
+    # print ('Params: ' + username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile)
+    startDate = date(int(startYear), int(startMonth) + 1, int(startDay))
+    # Figure creation
+    figureWidth = 5
+    figureHeight = 5
+    plt.figure(figsize=(figureWidth, figureHeight))
 
-  plt.figure(figsize=(figureWidth,figureHeight))
+    panelWidth = 4
+    panelHeight = 4
+    panel1 = plt.axes([0.5 / figureWidth, 0.5 / figureHeight, panelWidth / figureWidth, panelHeight / figureHeight])
 
-  panelWidth=4
-  panelHeight=4
+    activityList = json.loads(jsonInput)
 
-  panel1 = plt.axes([0.5/figureWidth, 0.5/figureHeight, panelWidth/figureWidth,panelHeight/figureHeight])
+    # for item in activityList:
+    #     print (item['name'])
 
-  activityList = json.loads(jsonInput)
+    # Get totals for distance or time
+    maxX = 13
+    if duration == 'Day':
+        maxX = 15
 
-  for item in activityList:
-    print (item['name'])
+    totals = []
+    for i in range(1, maxX):
+        totals.append([i, 0])
 
-  # Get totals for distance or time
-  maxX = 13
-  if duration == 'Day':
-    maxX = 15
-  
-  totals = []
-  for i in range (1, maxX):
-    totals.append([i, 0])
+    if (graphType == 'Distance'):
+        for item in activityList:
+            # Lots of translation
+            activityDate = datetime.strptime(item['start_date_local'], '%Y-%m-%dT%H:%M:%SZ').date()
+            # print(startDate, activityDate)
+            startDateDelta = (activityDate - startDate).days
+            startDateDelta = int(startDateDelta)
+            # print(startDateDelta)
 
-  if (graphType == 'Distance'):
-    for index, item in enumerate(activityList):
-      print(item['start_date_local'])
-      parsedDate = dateutil.parser.isoparse(item['start_date_local'])
-      print(parsedDate)
-      activityDate = datetime.fromisoformat(parsedDate)
-      print(activityDate)
-  
-      startDateDelta = (activityDate - startDate)
-      print(startDateDelta)
-      # if duration == 'Day':
-      #   startDateDelta =
-      # elif duration 'Week': 
-      #   startDateDelta =
-      # else: 
-      #   startDateDelta =
-      
-      totals[startDateDelta][1]=item['distance']/1609.34
-      
-  if (graphType == 'Time'):
-    for item in activityList:
-      totals[startDateDelta][1]=item['moving_time']/3600
-      startDateDelta
-    # Daily total graphing
+            if duration == 'Week':
+                startDateDelta = startDateDelta // 7
+            if duration == 'Month':
+                startDateDelta = startDateDelta // 30
 
-    # Weekly total graphing
+            if (startDateDelta != 0):
+                startDateDelta -= 1
 
-    # Monthly total graphing
+            # print(startDateDelta)
+            if (startDateDelta < maxX):
+                totals[startDateDelta][1] += (item['distance'] / 1609.34)
+
+    if (graphType == 'Time'):
+        for item in activityList:
+            # Lots of translation
+            activityDate = datetime.strptime(item['start_date_local'], '%Y-%m-%dT%H:%M:%SZ').date()
+            startDateDelta = (activityDate - startDate).days
+            startDateDelta = int(startDateDelta)
+
+            if duration == 'Week':
+                startDateDelta = startDateDelta // 7
+            if duration == 'Month':
+                startDateDelta = startDateDelta // 30
+
+            # Check logic:
+            if (startDateDelta != 0):
+                startDateDelta -= 1
+
+            if (startDateDelta < maxX):
+                totals[startDateDelta][1] += (item['moving_time'] / 3600)
+
+    # Graphing
+    # Panel ranges
+    maxY = max([sublist[1] for sublist in totals])  # maxY is the largest y value, can be goal value
+    maxY = math.ceil(maxY * 1.1)
+    if maxY < 10:
+        maxY = 10
+    yTickSpace = maxY // 10
+
+    panel1.set_xlim(0, maxX)
+    panel1.set_ylim(0, maxY)
+
+    for item in totals:
+        panel1.plot(item[0],
+                    item[1],
+                    marker='o',
+                    markerfacecolor='blue',
+                    markeredgewidth=0.1,
+                    markersize=4,
+                    color='black',
+                    linewidth=0,
+                    alpha=1)
+
+    # Median, average, standard deviation
+    totalValues = []
+    for item in totals:
+        if item[1] != 0:
+            totalValues.append(item[1])
+
+    averageValue = np.average(totalValues)
+    medianValue = np.median(totalValues)
+    lowerDev = averageValue - np.std(totalValues)
+    upperDev = averageValue + np.std(totalValues)
+   
+    average = mplpatches.Rectangle([0, averageValue], 
+                                    width=maxX, height=0,
+                                    edgecolor='green', facecolor='green', linewidth=0.75)
+    median = mplpatches.Rectangle([0, medianValue], 
+                                    width=maxX, height=0,
+                                    edgecolor='orange', facecolor='orange', linewidth=0.75)
+    stdDevLow = mplpatches.Rectangle([0, lowerDev], 
+                                    width=maxX, height=0,
+                                    edgecolor='yellow', facecolor='yellow', linewidth=0.75)
+    stdDevHigh = mplpatches.Rectangle([0, upperDev], 
+                                    width=maxX, height=0,
+                                    edgecolor='yellow', facecolor='yellow', linewidth=0.75)
+    panel1.add_patch(average)
+    panel1.add_patch(median)
+    panel1.add_patch(stdDevLow)
+    panel1.add_patch(stdDevHigh)
+
+    # Goal overlay, optional
+    # If goals selected, get goal for corresponding sport of type time/distance from database TODO
+    if goal == True:
+        pass
+
+    # Ticks and labels
+    panel1.set_xticks(np.arange(0, maxX))
+    panel1.set_yticks(np.arange(0, maxY, yTickSpace))
+
+    # Legend
+    panel1.legend([average, median, stdDevLow, stdDevHigh], ['Average', 'Median', '1 Standard Deviation'])
 
 
-  print(totals)
-    
-  
-    
+    # Title
+    panel1.set_title(f"{graphType} per {duration} for {sport}\nData starting {str(int(startMonth)+1)}/{str(int(startDay)+1)}/{startYear}")
 
-  # Graphing
-  # Panel ranges
-  maxY = max([sublist[1] for sublist in totals]) # maxY is the largest y value, can be goal value
-  maxY = math.ceil(maxY * 1.1)
+    panel1.set_xlabel(duration + 's')
+    panel1.set_ylabel(graphType)
 
-  yTickSpace = maxY//10
+    panel1.tick_params(bottom=True,
+                       labelbottom=True,
+                       left=True,
+                       labelleft=True,
+                       right=False,
+                       labelright=False,
+                       top=False,
+                       labeltop=False)
 
-  panel1.set_xlim(0, maxX)
-  panel1.set_ylim(0, maxY)   
+    # TODO, save location in images folder
+    plt.savefig('../frontend/src/Components/images/' + outFile, dpi=600)
+    # plt.savefig(outFile,dpi=600)
+    return 'Graphing Complete'
 
-  for item in totals:
-    panel1.plot(item[0],item[1],
-                  marker='o',
-                  markerfacecolor='red',
-                  markeredgewidth=0.1,
-                  markersize=4,
-                  color='black',
-                  linewidth=0,
-                  alpha=1
-      )
-
-
-  # Goal overlay, optional
-  # If goals selected, get goal for corresponding sport of type time/distance from database TODO
-
-  if goal == True:
-    pass
-
-  # Ticks and labels 
-  panel1.set_xticks(np.arange(0, maxX))
-  panel1.set_yticks(np.arange(0, maxY, yTickSpace))
-
-  # Title
-  panel1.set_title(graphType + ' per ' + duration + ' for ' + sport)
-
-  panel1.set_xlabel(duration + 's')
-  panel1.set_ylabel(graphType)
-
-
-  panel1.tick_params(bottom=True, labelbottom=True,\
-                    left=True, labelleft=True, \
-                    right=False, labelright=False,\
-                    top=False, labeltop=False)
-
-  # TODO, save location in images folder
-  plt.savefig('../frontend/images/' + outFile,dpi=600)
-  #plt.savefig(outFile,dpi=600)
-  return 'Graphing Complete'
 
 # generalHistoryGraph('fkurmann', 'Week', 'Distance', 'Run', False, 2023, 2, 19, 'string', 'test')
 generalHistoryGraph(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10])

@@ -4,7 +4,6 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-
 import { getFiveActivities } from '../Components/stravaData';
 import ResponsiveAppBar from '../Components/appBar';
 import RecentActivitiesList from '../Components/recentActivities';
@@ -12,6 +11,11 @@ import AddWorkoutForm from '../Components/addWorkoutForm';
 import HomeCalendar from '../Components/weeklyHomeCalendar';
 import { userTheme } from '../Components/theme';
 
+/**
+ * Creates the Home page upon successful user login.
+ *
+ * @return {HTMLElement} - Creates the Home Page with MUI elements.
+ */
 export default function Home() {
   return (
     <ThemeProvider theme={userTheme}>
@@ -41,9 +45,7 @@ export default function Home() {
             </div>
           </div>
         </Box>
-
       </Container>
-
     </ThemeProvider>
   );
 }

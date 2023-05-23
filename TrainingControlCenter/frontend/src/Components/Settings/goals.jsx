@@ -17,10 +17,8 @@ import {
   Typography
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-
 import SportIcon from '../sportIcon';
 import GoalCard from './goalCard';
 import GoalModal from './goalModal';
@@ -86,11 +84,11 @@ export default function Goals() {
 
   // Updates goalsByCategory and goalCategories whenever myGoals is updated
   React.useEffect(() => {
-    if(myGoals){
+    if (myGoals) {
       let goals = {};
       myGoals.forEach((goal) => {
         let sport = goal.sport;
-        if(!(sport in goals)){
+        if (!(sport in goals)) {
           goals[sport] = [];
         }
         goals[sport].push(goal);
@@ -99,24 +97,24 @@ export default function Goals() {
       let eq = true;
       const goals2 = goalsByCategory;
       Object.keys(goals).forEach((sport) => {
-        if (!(sport in goals2)){
+        if (!(sport in goals2)) {
           eq = false;
         }
-        else{
+        else {
           goals[sport].forEach((goal) => {
-            if(!(goals2[sport].find(g => g.name === goal.name))){
+            if (!(goals2[sport].find(g => g.name === goal.name))) {
               eq = false;
             }
           })
         }
       })
       Object.keys(goals2).forEach((sport) => {
-        if (!(sport in goals)){
+        if (!(sport in goals)) {
           eq = false;
         }
-        else{
+        else {
           goals2[sport].forEach((goal) => {
-            if(!(goals[sport].find(g => g.name === goal.name))){
+            if (!(goals[sport].find(g => g.name === goal.name))) {
               eq = false;
             }
           })
@@ -131,18 +129,18 @@ export default function Goals() {
       }
     }
   }, [myGoals, goalsByCategory, goalCategories]);
-  
+
   // Adds goal whenever goalToAdd is set
   React.useEffect(() => {
-    if(!('name' in goalToAdd)){
+    if (!('name' in goalToAdd)) {
       return;
     }
     let goal = goalToAdd;
     setGoalToAdd({});
-    if(goal.type === '') delete goal.type;
-    if(goal.sport === '') delete goal.sport;
-    if(goal.distance === '') delete goal.distance;
-    if(goal.time === '') delete goal.time;
+    if (goal.type === '') delete goal.type;
+    if (goal.sport === '') delete goal.sport;
+    if (goal.distance === '') delete goal.distance;
+    if (goal.time === '') delete goal.time;
     setMyGoals([...myGoals, goal]);
 
     fetch('http://localhost:3010/v0/goals', {
@@ -169,19 +167,19 @@ export default function Goals() {
 
   // Deletes goal whenever goalToDelete is set
   React.useEffect(() => {
-    if('name' in goalToAdd){
+    if ('name' in goalToAdd) {
       return;
     }
-    if(!('name' in goalToDelete)){
+    if (!('name' in goalToDelete)) {
       return;
     }
     const goal = goalToDelete;
     setGoalToDelete({});
-    if(!myGoals.find(g => g.name === goal.name)){
+    if (!myGoals.find(g => g.name === goal.name)) {
       console.log(`Not deleting goal ${goal.name}, not found`);
       return;
     }
-    if(anchorElGoal !== null) setAnchorElGoal(null);
+    if (anchorElGoal !== null) setAnchorElGoal(null);
     setMyGoals(myGoals.filter((g) => g.name !== goal.name));
 
     fetch('http://localhost:3010/v0/goals?' + new URLSearchParams({username: user, name: encodeURIComponent(goal.name.trim())}), {
@@ -201,43 +199,43 @@ export default function Goals() {
       });
 
   }, [user, myGoals, goalToDelete, goalToAdd, anchorElGoal]);
-  
+
   // Called when user submits the modal
   const handleSubmit = async (e) => {
     e.preventDefault();
     let goal = addGoal;
     let validGoal = true;
-    if(!('name' in goal) || goal.name === ''){
+    if (!('name' in goal) || goal.name === '') {
       setFormErrors([ ...formErrors, 'name']);
       validGoal = false;
     }
-    if(!('type' in goal) || goal.type === ''){
+    if (!('type' in goal) || goal.type === '') {
       setFormErrors([ ...formErrors, 'type']);
       validGoal = false;
     }
-    if('distance' in goal && goal.distance !== ''){
+    if ('distance' in goal && goal.distance !== '') {
       let d = parseInt(goal.distance);
-      if(isNaN(d)){
+      if (isNaN(d)) {
         setFormErrors([ ...formErrors, 'distance']);
         validGoal = false;
       }
-      else{
+      else {
         goal.distance = d;
       }
     }
-    if('time' in goal){
+    if ('time' in goal) {
       goal.time = parseInt(goal.time);
     }
-    if(!validGoal){
+    if (!validGoal) {
       return;
     }
-    if(JSON.stringify(goal) === JSON.stringify(editedGoal)){
+    if (JSON.stringify(goal) === JSON.stringify(editedGoal)) {
       console.log('Goal was not edited');
       handleCloseAddGoal();
       return;
     }
     setIsAddLoading(true);
-    if(editedGoal.username){
+    if (editedGoal.username) {
       console.log('Goal was edited, deleting old goal');
       const oldGoal = editedGoal;
       setEditedGoal({});
@@ -249,19 +247,19 @@ export default function Goals() {
 
   // Called when user clicks edit option
   const handleEdit = (goal) => {
-    if(!goal.type) goal.type = '';
-    if(!goal.sport) goal.sport = '';
-    if(!goal.distance) goal.distance = '';
-    if(!goal.time) goal.time = '';
+    if (!goal.type) goal.type = '';
+    if (!goal.sport) goal.sport = '';
+    if (!goal.distance) goal.distance = '';
+    if (!goal.time) goal.time = '';
     setEditedGoal(goal);
     setAddGoal(goal);
     handleOpenAddGoal();
   }
   const handleClickSport = (sport) => {
-    if(openSport.includes(sport)){
+    if (openSport.includes(sport)) {
       setOpenSport(openSport.filter((a) => a !== sport));
     }
-    else{
+    else {
       // setOpenSport([ ...open, sport]);
       setOpenSport([sport]);
     }

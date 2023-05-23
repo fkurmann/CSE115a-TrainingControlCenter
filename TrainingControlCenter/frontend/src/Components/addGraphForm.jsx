@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import {
   TextField,
@@ -19,9 +18,20 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 const localStorageUser = localStorage.getItem('user');
 
-
+/**
+ * Creates form for creating a graph with details specified by user.
+ *
+ * @return {HTMLElement} MUI form for specifying attributes for user specified graph.
+ */
 export default function AddGraphForm() {
-  const [{ duration, startDate, graphType, goal, sport, outfile }, setState] = useState({});
+  const [{ duration, startDate, graphType, goal, sport, outFile }, setState] = useState({
+    duration: '',
+    startDate: '',
+    graphType: '',
+    goal: '',
+    sport: '',
+    outFile: 'generalGraph',
+  });
 
   // Success and error message
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -36,12 +46,12 @@ export default function AddGraphForm() {
         method: "POST",
         body: JSON.stringify({
           username: localStorageUser,
-          duration: duration, 
+          duration: duration,
           graphType: graphType,
           sport: sport,
           goal: goal,
           startDate: formattedDate,
-          outfile: outfile
+          outFile: outFile
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -54,7 +64,7 @@ export default function AddGraphForm() {
 
       if (response.status === 200) {
         setShowSuccessMessage(true);
-        
+
       } else {
         const data = await response.json();
         setErrorMessage(data.message);
@@ -128,7 +138,7 @@ export default function AddGraphForm() {
           label="Graph Type"
           value={graphType}
           onChange={(e) =>
-            setState((prevState) => ({ ...prevState, type: e.target.value }))
+            setState((prevState) => ({ ...prevState, graphType: e.target.value }))
           }
           autoWidth
           required
@@ -149,7 +159,7 @@ export default function AddGraphForm() {
           label="Duration"
           value={duration}
           onChange={(e) =>
-            setState((prevState) => ({ ...prevState, type: e.target.value }))
+            setState((prevState) => ({ ...prevState, duration: e.target.value }))
           }
           autoWidth
           required
@@ -189,21 +199,24 @@ export default function AddGraphForm() {
             <MobileDatePicker
               inputFormat="YYYY-MM-DD"
               disableFuture
-              onChange={(e) =>
-                setState((prevState) => ({ ...prevState, startDate: e.target.value }))
+              required
+              onChange={(value) =>
+                setState((prevState) => ({
+                  ...prevState,
+                  startDate: value ? value.toISOString() : null,
+                }))
               }
               renderInput={(params) => <TextField {...params} readOnly />}
-              // required
             />
           </DemoContainer>
         </LocalizationProvider>
         </Box>
 
-        {/* Goals Toggle */}
+        {/* Goals Toggle TODO */}
         <Box mb={2} ml={2}>
           <FormControlLabel control={<Switch />} label="Compare with Goals" />
         </Box>
-        
+
       <Button variant="contained" color="primary" type="submit" ml={2}>
         Generate Graph
       </Button>

@@ -6,10 +6,14 @@ import {
   Stack,
   Popover,
 } from '@mui/material';
-
 import SportIcon from './sportIcon';
 import ActivityCard from './activityCard';
 
+/**
+ * Generates calendar of current week's activities, whether manual or from strava.
+ *
+ * @return {HTMLElement} - Calendar display with clickable icons of weekly activities.
+ */
 export default function HomeCalendar() {
   const user = localStorage.getItem('user');
   const [weeklyActivities, setWeeklyActivities] = React.useState(null);
@@ -67,8 +71,7 @@ export default function HomeCalendar() {
   }, [user, weeklyActivities, isLoading, dayActivities]);
 
   const handleOpenActivityCard = (event, activity) => {
-    if('json' in activity) setSelectedActivity(activity.json);
-    else setSelectedActivity(activity);
+    setSelectedActivity(activity);
     setAnchorElActivityCard(event.currentTarget);
   }
   const handleCloseActivityCard = () => setAnchorElActivityCard(null);
@@ -79,7 +82,7 @@ export default function HomeCalendar() {
     isLoading ?
     <CircularProgress /> :
     <>
-    <h2 align="right">Calendar/Week</h2>
+    <h2 align="right">Current Week Overview</h2>
     <div style={{ width: '100%' }}>
       <Box
         sx={{
@@ -184,6 +187,12 @@ export default function HomeCalendar() {
   );
 }
 
+/**
+ * Creates the layout for individual days/items of the weekly calendar.
+ *
+ * @param {HTMLElement} [props] - defines passed in attributes for item, like width and font size.
+ * @return {HTMLElement} - returns a MUI box with for displaying each day.
+ */
 function Item(props: BoxProps) {
   const { sx, ...other } = props;
   return (
@@ -209,6 +218,12 @@ function Item(props: BoxProps) {
   );
 }
 
+/**
+ * Function to get the first day of the week, monday, from date d.
+ *
+ * @param {string} d - some date format to be checked
+ * @return {string} - the date of the monday of the week of date d.
+ */
 function getFirstDayOfWeek(d) {
   const date = new Date(d);
   date.setHours(0, 0, 0, 0);
@@ -218,19 +233,36 @@ function getFirstDayOfWeek(d) {
   return newDate.toISOString();
 }
 
+/**
+ * Function to get the last day of the week, monday, from date d.
+ *
+ * @param {string} d - some date format to be checked
+ * @return {string} - the date of the sunday of the week of date d.
+ */
 function getLastDayOfWeek(d) {
   const date = new Date(getFirstDayOfWeek(d));
   date.setDate(date.getDate() + 7);
   return date.toISOString();
 }
 
+/**
+ * Fetch activities found in database for user for specified day.
+ *
+ * @param {string} activities - JSON list of all activities for current user.
+ * @param {string} day - specifies day of week, where monday is 0 and sunday is 6.
+ * @return {string} - JSON list of all activities for specified day.
+ */
 function getActivitiesForDay(activities, day) {
-  var day_activities = []
+  let day_activities = []
   for (let i = 0; i < activities.length; i++) {
-    if (new Date(activities[i]["json"]["start_date_local"]).getDay().toString() === day) {
+    if (new Date(activities[i]['json']['start_date_local']).getDay().toString() === day) {
       // Remove duplicate activities
       if(day_activities.filter((a) => {
-          return activities[i].json.distance === a.distance && activities[i].json.moving_time === a.moving_time
+          return activities[i].json.distance === a.distance &&
+                 activities[i].json.moving_time === a.moving_time &&
+                 activities[i].json.name === a.json.name &&
+                 activities[i].json.start_date_local === a.json.start_date_local &&
+                 activities[i].json.sport_type === a.json.sport_type
         }).length > 0) {
         continue;
       }

@@ -1,18 +1,21 @@
 const dbActivities = require('../db/dbActivities');
 
-// Maual entry activities
+/**
+ * Maual entry activities
+ *
+ * @async
+ */
 exports.addActivity = async (req, res) => {
   let {username, name, type, sport, description} = req.body;
   let {distance, time, start_date_local} = req.body.json;
 
-  console.log(start_date_local)
+  console.log(start_date_local);
 
   // Convert a date string to a Date object
   let date = start_date_local ? new Date(start_date_local) : null;
 
   // Convert the date object to a YYYY/MM/DD format
-  let formattedDate = date ? date.toISOString().substring(0, 10) : null;
-  let formattedDateWithSlashes = formattedDate ? formattedDate.replace(/-/g, '/') : null;
+  let formattedDate = date ? date.toISOString() : null;
 
   // Checks that values are not defaults, if they are, replace with null
   if (username === 'string') {
@@ -44,13 +47,16 @@ exports.addActivity = async (req, res) => {
     return;
   }
 
-  let descriptionText = description ? String(description) : 'No description';
+  let descriptionText = description ? String(description) : 'None';
 
   // Add activity metadata to JSON in format similar to strava activity jsons
   const activityJson = {
+    name: name,
+    sport_type: sport,
     distance: distance || undefined,
-    moving_time: time*60 || undefined,
-    start_date_local: formattedDateWithSlashes || undefined,
+    moving_time: time * 60 || undefined,
+    start_date: formattedDate || undefined,
+    start_date_local: formattedDate || undefined
   };
 
   const returnValue = await dbActivities.createActivity(username, name, type, sport, descriptionText, activityJson);
@@ -63,7 +69,11 @@ exports.addActivity = async (req, res) => {
   }
 };
 
-// Strava upload activities
+/**
+ * Strava upload activities
+ *
+ * @async
+ */
 exports.addActivityStrava = async (req, res) => {
   let {username, name, type, sport, description, json} = req.body;
 
@@ -81,7 +91,12 @@ exports.addActivityStrava = async (req, res) => {
   // }
 
 };
-// Delete activity from user's activities, either one if name is given or all
+
+/**
+ * Delete activity from user's activities, either one if name is given or all
+ *
+ * @async
+ */
 exports.deleteActivity = async (req, res) => {
   const username = req.query.username;
   const name = req.query.name;
@@ -103,13 +118,16 @@ exports.deleteActivity = async (req, res) => {
 
 // Activity accessor functions (to expand in functionality and scope as filters are added)
 
-// Get all activities that match query
+/**
+ * Get all activities that match query
+ *
+ * @async
+ */
 exports.getActivities = async (req, res) => {
   const username = req.query.username;
   let name = req.query.name;
   let sport = req.query.sport;
   let type = req.query.type;
-
   let minDuration = req.query.minDuration;
   let maxDuration = req.query.maxDuration;
   let minDistance = req.query.minDistance;
@@ -119,13 +137,13 @@ exports.getActivities = async (req, res) => {
 
   // Convert duration and distance units to database format from frontend format
   if (minDuration) {
-    minDuration = minDuration/60
+    minDuration = minDuration / 60;
   } if (maxDuration) {
-    maxDuration = maxDuration/60
+    maxDuration = maxDuration / 60;
   } if (minDistance) {
-    minDistance = minDistance*1609.34
+    minDistance = minDistance * 1609.34;
   } if (maxDistance) {
-    maxDistance = maxDistance*1609.34
+    maxDistance = maxDistance * 1609.34;
   }
 
   for (item of [name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
@@ -134,19 +152,7 @@ exports.getActivities = async (req, res) => {
     }
   }
 
-  // Convert duration and distance units to database format from frontend format
-  if (minDuration) {
-    minDuration = minDuration/60
-  } if (maxDuration) {
-    maxDuration = maxDuration/60
-  } if (minDistance) {
-    minDistance = minDistance*1609.34
-  } if (maxDistance) {
-    maxDistance = maxDistance*1609.34
-  }
-
   const returnValue = await dbActivities.findActivity(username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate);
-
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error getting activities, user may not exist');
@@ -154,4 +160,3 @@ exports.getActivities = async (req, res) => {
     res.status(200).json(returnValue);
   }
 };
-
