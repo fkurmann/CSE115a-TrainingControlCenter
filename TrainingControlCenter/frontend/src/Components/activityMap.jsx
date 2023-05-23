@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Polyline } from 'react-leaflet';
 import polyline from 'google-polyline';
 import icon from 'leaflet/dist/images/marker-icon.png';
-import icon2 from 'leaflet/dist/images/marker-icon-red.png';
+import icon2 from './images/marker-icon-red.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import L from 'leaflet';
 
