@@ -156,7 +156,6 @@ export default function AddWorkoutForm() {
         <Select
           labelId="activity-type-select"
           id="type"
-          label="Activity Type"
           value={type}
           onChange={(e) =>
             setState((prevState) => ({ ...prevState, type: e.target.value }))
@@ -181,7 +180,6 @@ export default function AddWorkoutForm() {
               setState((prevState) => ({ ...prevState, sport: e.target.value }))
             }
             autoWidth
-            label="Sport Type"
           >
             {favoriteSports.map((sportType, index) => (
               <MenuItem key={sportType} value={sportType} id={`menu-item-${sportType}-${index}`}>

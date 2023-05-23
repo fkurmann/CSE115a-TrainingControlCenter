@@ -220,7 +220,7 @@ function getFirstDayOfWeek(d) {
 
 function getLastDayOfWeek(d) {
   const date = new Date(getFirstDayOfWeek(d));
-  date.setDate(date.getDate() + 6);
+  date.setDate(date.getDate() + 7);
   return date.toISOString();
 }
 

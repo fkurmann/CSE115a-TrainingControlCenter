@@ -10,16 +10,11 @@ import ResponsiveAppBar from '../Components/appBar';
 import AddGraphForm from '../Components/addGraphForm';
 
 import ActivitiesChart from '../Components/activitiesChart'; // import starActivities
-
-
-/**
- * Create the theme to be used
- */
-const theme = createTheme();
+import { userTheme } from '../Components/theme';
 
 export default function DataCenter() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={userTheme}>
       <CssBaseline />
       <Container component='main'>
         <CssBaseline />

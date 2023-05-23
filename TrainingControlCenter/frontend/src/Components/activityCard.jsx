@@ -1,15 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Tooltip';
-import Collapse from '@mui/material/Collapse';
-import Divider from '@mui/material/Divider';
+import { Box, Card, CardActions, CardContent, CardHeader, CircularProgress, Collapse, Divider, IconButton, Tooltip, Typography } from '@mui/material';
 
 import SportIcon from './sportIcon';
 import StravaIcon from './images/strava_icon.png';
@@ -17,17 +8,21 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ActivityMap from './activityMap';
 import { getActivityDetails } from './stravaData';
-import { CircularProgress } from '@mui/material';
+import { grey } from '@mui/material/colors';
 
 export default function ActivityCard({ activity, width=300 }) {
+  const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
+  const dist_unit = isMetric ? 'km' : 'mi';
+  const meters_per_unit = isMetric ? 1000 : 1609.34;
   const name = activity.name;
   const sport = activity.sport_type ? activity.sport_type : activity.sport ? activity.sport : '';
   const distance = activity.distance;
   const moving_time = activity.moving_time;
-  const pace = moment.utc((moving_time || 0)*1000 / ((distance || 1000)/1000)).format('mm:ss');
+  const pace = moment.utc((moving_time || 0)*1000 / ((distance || 1000)/meters_per_unit)).format('m:ss');
   const strava_link = `http://strava.com/activities/${activity.id}`;
   // const elapsed_time = activity.elapsed_time;
-  const elevation_gain = activity.total_elevation_gain;
+  const elevation_gain = isMetric ? activity.total_elevation_gain : activity.total_elevation_gain * 3.28;
+  const elevation_unit = isMetric ? 'm' : 'ft';
   const date = moment(new Date(activity.start_date || 0));
   const start_latlng = activity.start_latlng;
   const end_latlng = activity.end_latlng;
@@ -44,7 +39,13 @@ export default function ActivityCard({ activity, width=300 }) {
   const [detailedActivity, setDetailedActivity] = React.useState(null);
 
   const secondsToDigital = (secs) => {
-    return moment.utc(secs*1000).format('HH:mm:ss');
+    let format = '';
+    if(secs / 60 < 10) format = 'm:ss';
+    else if(secs / 3600 < 1) format = 'mm:ss';
+    else if(secs / 3600 < 10) format = 'H:mm:ss';
+    else if(secs / 86400 < 1) format = 'HH:mm:ss';
+    else return Math.floor(secs / 86400) + 'd ' + moment.utc(secs*1000).format('HH:mm:ss');
+    return moment.utc(secs*1000).format(format);
   }
 
   React.useEffect(() => {
@@ -60,7 +61,7 @@ export default function ActivityCard({ activity, width=300 }) {
   }, [expanded, loading, detailedActivity, activity.id]);
   
   return (
-    <Card sx={{backgroundColor: '#f9f9f9', width: width}}>
+    <Card sx={{bgcolor: localStorage.getItem('brightnessMode') === 'dark' ? grey[900] : grey[50], width: width}}>
       {name == null ? <></> : <>
       <CardHeader
         title={name}
@@ -79,7 +80,7 @@ export default function ActivityCard({ activity, width=300 }) {
         {
           !distance ? <></> :
           <Typography>
-            <strong>Distance:</strong> {(distance/1000).toFixed(2)} km
+            <strong>Distance:</strong> {(distance/meters_per_unit).toFixed(2)} {dist_unit}
           </Typography>
         }
         {
@@ -91,13 +92,13 @@ export default function ActivityCard({ activity, width=300 }) {
         {
           !distance || !moving_time ? <></> :
           <Typography>
-            <strong>Pace:</strong> {pace} min/km
+            <strong>Pace:</strong> {pace} min/{dist_unit}
           </Typography>
         }
         {
           !elevation_gain ? <></> :
           <Typography>
-            <strong>Elevation gain:</strong> {elevation_gain} m
+            <strong>Elevation gain:</strong> {Math.floor(elevation_gain)} {elevation_unit}
           </Typography>
         }
       </CardContent>

@@ -129,7 +129,7 @@ export default function Favorites() {
 
   return (
     <>
-    <List sx={{ width: '100%', maxWidth: 500}}>
+    <List sx={{ width: '100%'}}>
       {myShownFavorites.map((sport) => (
         <div key={sport}>
         <ListItem disablePadding secondaryAction={isLoading.includes(sport) ? <CircularProgress size={24} /> : <></>}>
@@ -149,7 +149,6 @@ export default function Favorites() {
       <Typography variant="h6">New Favorite</Typography>
       <Select
         name='sport' 
-        label='Sport' 
         value={addFav.sport} 
         required 
         onChange={(e) => setAddFav({ ...addFav, sport: e.target.value })}

@@ -150,7 +150,7 @@ function ResponsiveAppBar() {
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="avatar">
-                  {localStorage.getItem('user').charAt(0)}
+                  {(localStorage.getItem('user') || '_').charAt(0)}
                 </Avatar>
               </IconButton>
             </Tooltip>

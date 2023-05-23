@@ -10,6 +10,9 @@ import { enUS } from 'date-fns/locale';
 const localStorageUser = localStorage.getItem('user');
 
 const ActivityChart = () => {
+  const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
+  const dist_unit = isMetric ? 'kilometers' : 'miles';
+  const meters_per_unit = isMetric ? 1000 : 1609.34;
   // const [activities, setActivities] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState('week');
   const [selectedWeek, setSelectedWeek] = useState(getCurrentWeek());
@@ -61,6 +64,16 @@ const ActivityChart = () => {
     const weekEnd = new Date(startOfYear.getTime() + (weekNumber * daysPerWeek * millisecondsPerDay) - millisecondsPerDay);
   
     return weekEnd;  
+  }
+
+  function secondsToDigital(secs) {
+    let format = '';
+    if(secs / 60 < 10) format = 'm:ss';
+    else if(secs / 3600 < 1) format = 'mm:ss';
+    else if(secs / 3600 < 10) format = 'H:mm:ss';
+    else if(secs / 86400 < 1) format = 'HH:mm:ss';
+    else return Math.floor(secs / 86400) + 'd ' + moment.utc(secs*1000).format('HH:mm:ss');
+    return moment.utc(secs*1000).format(format);
   }
 
   const fetchDataForFirstRanking = async () => {
@@ -466,7 +479,7 @@ const ActivityChart = () => {
           filteredActivities.map(activity => (
             <Paper key={activity._id}>
               <SportIcon sport={activity.sport} />
-              <p>{activity.sport} - {(activity.distance / 1609).toFixed(2)} miles - {activity.moving_time >= 86400 ? `${Math.floor(activity.moving_time / 86400)}:` : ''}{moment.utc(activity.moving_time*1000).format('HH:mm:ss')} total time</p>
+              <p>{activity.sport} - {(activity.distance / meters_per_unit).toFixed(2)} {dist_unit} - {secondsToDigital(activity.moving_time)} total time</p>
             </Paper>
           ))
         )}
@@ -481,7 +494,7 @@ const ActivityChart = () => {
           compareActivities.map(activity => (
             <Paper key={activity._id}>
               <SportIcon sport={activity.sport} />
-              <p>{activity.sport} - {(activity.distance / 1609).toFixed(2)} miles - {activity.moving_time >= 86400 ? `${Math.floor(activity.moving_time / 86400)}:` : ''}{moment.utc(activity.moving_time*1000).format('HH:mm:ss')} total time</p>
+              <p>{activity.sport} - {(activity.distance / meters_per_unit).toFixed(2)} {dist_unit} - {secondsToDigital(activity.moving_time)} total time</p>
             </Paper>
           ))
         )}

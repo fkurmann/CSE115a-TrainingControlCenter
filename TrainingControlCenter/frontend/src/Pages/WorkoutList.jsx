@@ -7,15 +7,11 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import ResponsiveAppBar from '../Components/appBar';
 import WorkoutGrid from '../Components/dataGrid';
-
-/**
- * Create the theme to be used
- */
-const theme = createTheme();
+import { userTheme } from '../Components/theme';
 
 export default function WorkoutList() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={userTheme}>
       <CssBaseline />
       <Container component='main'>
         <CssBaseline />

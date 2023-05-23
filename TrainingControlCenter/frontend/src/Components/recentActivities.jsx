@@ -42,7 +42,7 @@ export default function RecentActivitiesList() {
       }
     >
       {/* Category 1 */}
-      <ListItemButton onClick={handleClick1}>
+      <ListItemButton onClick={handleClick1} selected={open1}>
         <ListItemIcon>
           <DirectionsRunIcon /> 
         </ListItemIcon>
@@ -59,7 +59,7 @@ export default function RecentActivitiesList() {
       </Collapse>
 
       {/* Category 2 */}
-      <ListItemButton onClick={handleClick2}>
+      <ListItemButton onClick={handleClick2} selected={open2}>
         <ListItemIcon>
         <DirectionsBikeIcon />
         </ListItemIcon>
@@ -76,7 +76,7 @@ export default function RecentActivitiesList() {
       </Collapse>
 
       {/* Category 3 */}
-      <ListItemButton onClick={handleClick3}>
+      <ListItemButton onClick={handleClick3} selected={open3}>
         <ListItemIcon>
           <PoolIcon />
         </ListItemIcon>
