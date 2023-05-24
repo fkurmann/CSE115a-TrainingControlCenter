@@ -8,7 +8,7 @@ import sys
 import json
 import dateutil.parser
 
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 
 
 def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile):
@@ -25,8 +25,8 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
 
     activityList = json.loads(jsonInput)
 
-    # for item in activityList:
-    #     print (item['name'])
+    for item in activityList:
+        print (item['name'])
 
     # Get totals for distance or time
     maxX = 13
@@ -141,7 +141,7 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
 
 
     # Title
-    panel1.set_title(f"{graphType} per {duration} for {sport}\nData starting {str(int(startMonth)+1)}/{str(int(startDay)+1)}/{startYear}")
+    panel1.set_title(f"{graphType} per {duration} for {sport}\nData starting {str(int(startMonth)+1)}/{str(int(startDay))}/{startYear}")
 
     panel1.set_xlabel(duration + 's')
     panel1.set_ylabel(graphType)
@@ -157,9 +157,7 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
 
     # TODO, save location in images folder
     plt.savefig('../frontend/src/Components/images/' + outFile, dpi=600)
-    # plt.savefig(outFile,dpi=600)
     return 'Graphing Complete'
-
 
 # generalHistoryGraph('fkurmann', 'Week', 'Distance', 'Run', False, 2023, 2, 19, 'string', 'test')
 generalHistoryGraph(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10])
