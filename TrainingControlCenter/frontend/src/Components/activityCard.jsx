@@ -18,28 +18,28 @@ import { grey } from '@mui/material/colors';
  * @return {HTMLElement} - creates and returns the activity card for specified activity.
  */
 export default function ActivityCard({ activity, width = 300 }) {
-  if(activity.json) activity = activity.json;
+  const activityJson = activity.json;
   const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
   const dist_unit = isMetric ? 'km' : 'mi';
   const meters_per_unit = isMetric ? 1000 : 1609.34;
   const name = activity.name;
   const manual_description = activity.description;
   const sport = activity.sport_type ? activity.sport_type : activity.sport ? activity.sport : '';
-  const distance = activity.distance;
-  const moving_time = activity.moving_time;
-  const pace = moment.utc((moving_time || 0)*1000 / ((distance || 1000)/meters_per_unit)).format('m:ss');
-  const strava_link = `http://strava.com/activities/${activity.id}`;
+  const distance = activityJson.distance;
+  const moving_time = activityJson.moving_time;
+  const pace = moment.utc((moving_time || 0) * 1000 / ((distance || 1000) / meters_per_unit)).format('m:ss');
+  const strava_link = `http://strava.com/activities/${activityJson.id}`;
   // const elapsed_time = activity.elapsed_time;
-  const elevation_gain = isMetric ? activity.total_elevation_gain : activity.total_elevation_gain * 3.28;
+  const elevation_gain = isMetric ? activityJson.total_elevation_gain : activityJson.total_elevation_gain * 3.28;
   const elevation_unit = isMetric ? 'm' : 'ft';
   const date = activity.start_date ? moment(new Date(activity.start_date)) : moment(new Date());
-  const start_latlng = activity.start_latlng;
-  const end_latlng = activity.end_latlng;
+  const start_latlng = activityJson.start_latlng;
+  const end_latlng = activityJson.end_latlng;
   // const achievement_count = activity.achievement_count;
   // const kudos_count = activity.kudos_count;
   // const comment_count = activity.comment_count;
   // const photo_count = activity.total_photo_count;
-  const map = activity.map;
+  const map = activityJson.map;
   const map_width = width - 33;
   const map_height = map_width * 7 / 8;
 
@@ -66,14 +66,14 @@ export default function ActivityCard({ activity, width = 300 }) {
   React.useEffect(() => {
     if (!loading && expanded && detailedActivity == null) {
       setLoading(true);
-      getActivityDetails(activity.id).then((res) => {
+      getActivityDetails(activityJson.id).then((res) => {
         setLoading(false);
         setDetailedActivity(res);
       }).catch((error) => {
         console.log('Error when getting detailed activity', error);
       });
     }
-  }, [expanded, loading, detailedActivity, activity.id]);
+  }, [expanded, loading, detailedActivity, activityJson.id]);
 
   return (
     <Card sx={{bgcolor: localStorage.getItem('brightnessMode') === 'dark' ? grey[900] : grey[50], width: width}}>
@@ -117,7 +117,7 @@ export default function ActivityCard({ activity, width = 300 }) {
           </Typography>
         }
         {
-          !manual_description ? <></> :
+          !manual_description || activityJson.id ? <></> :
           <Typography>
             <strong>Description:</strong> {manual_description}
           </Typography>
@@ -125,7 +125,7 @@ export default function ActivityCard({ activity, width = 300 }) {
       </CardContent>
       <CardActions sx={{mt: -3}} disableSpacing>
         {
-          !activity.id ? <></> :
+          !activityJson.id ? <></> :
           <>
           <Tooltip title='View on Strava'>
             <IconButton target='_blank' href={strava_link}>
