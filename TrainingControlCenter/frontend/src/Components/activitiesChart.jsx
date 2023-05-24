@@ -109,6 +109,21 @@ const ActivityChart = () => {
   }
 
   /**
+   * Defines the mapping of sports to their normalized names.
+   * Used to group similar sports together.
+   */
+  const sportMappings = {
+    Running: ["Running", "Run"],
+    Hiking: ["Hiking", "Hike"],
+    Walking: ["Walking", "Walk"],
+    Swimming: ["Swimming", "Swim"],
+    WeightTraining: ["Weight Training"],
+    Rowing: ["Rowing", "Row"],
+    Skiing: ["Skiing", "Ski"],
+    Cycling: ["Cycling", "Cycle"]
+  };
+  
+  /**
    * Fetches data for first graph comparison.
    *
    * @async
@@ -160,12 +175,32 @@ const ActivityChart = () => {
   
       // Ranking: sum up the moving_time and distance for the same type of activities
       const activitySum = filteredAndSorted.reduce((prev, curr) => {
-        if (!prev[curr.sport]) {
-          prev[curr.sport] = { ...curr };
+        // Normalize the sport names
+        const normalizedSport = curr.sport.toLowerCase().trim();
+      
+        // Find the matching normalized sport name in the mappings
+        const matchedSport = Object.entries(sportMappings).find(([sport, aliases]) =>
+          aliases.some(alias => normalizedSport === alias.toLowerCase())
+        );
+      
+        if (matchedSport) {
+          const [sportName] = matchedSport;
+          if (!prev[sportName]) {
+            prev[sportName] = { ...curr, sport: sportName };
+          } else {
+            prev[sportName].distance += curr.distance;
+            prev[sportName].moving_time += Number(curr.moving_time);
+          }
         } else {
-          prev[curr.sport].distance += curr.distance;
-          prev[curr.sport].moving_time += Number(curr.moving_time);
+          // For other sports, keep them as they are
+          if (!prev[curr.sport]) {
+            prev[curr.sport] = { ...curr };
+          } else {
+            prev[curr.sport].distance += curr.distance;
+            prev[curr.sport].moving_time += Number(curr.moving_time);
+          }
         }
+      
         return prev;
       }, {});
 
@@ -237,12 +272,32 @@ const ActivityChart = () => {
 
       // Then, sum up the moving_time and distance for the same type of activities
       const activitySum = filteredAndSorted.reduce((prev, curr) => {
-        if (!prev[curr.sport]) {
-          prev[curr.sport] = { ...curr };
+        // Normalize the sport names
+        const normalizedSport = curr.sport.toLowerCase().trim();
+      
+        // Find the matching normalized sport name in the mappings
+        const matchedSport = Object.entries(sportMappings).find(([sport, aliases]) =>
+          aliases.some(alias => normalizedSport === alias.toLowerCase())
+        );
+      
+        if (matchedSport) {
+          const [sportName] = matchedSport;
+          if (!prev[sportName]) {
+            prev[sportName] = { ...curr, sport: sportName };
+          } else {
+            prev[sportName].distance += curr.distance;
+            prev[sportName].moving_time += Number(curr.moving_time);
+          }
         } else {
-          prev[curr.sport].distance += curr.distance;
-          prev[curr.sport].moving_time += Number(curr.moving_time);
+          // For other sports, keep them as they are
+          if (!prev[curr.sport]) {
+            prev[curr.sport] = { ...curr };
+          } else {
+            prev[curr.sport].distance += curr.distance;
+            prev[curr.sport].moving_time += Number(curr.moving_time);
+          }
         }
+      
         return prev;
       }, {});
 
