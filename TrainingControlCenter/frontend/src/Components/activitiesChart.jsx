@@ -226,6 +226,11 @@ const ActivityChart = () => {
     fetchDataForFirstRanking();
   }, [selectedPeriod, selectedWeek, selectedMonth, selectedYear]);
 
+  /**
+   * Fetches data for the second graph comparison.
+   *
+   * @async
+   */
   const fetchDataForSecondRanking = async () => {
     try {
       setSecondRankingLoading(true);
@@ -317,6 +322,12 @@ const ActivityChart = () => {
     fetchDataForSecondRanking();
   }, [selectedPeriod, selectedCompare]);
 
+  /**
+   * Handles the change of the selected period.
+   *
+   * @param {string} period - Represents the selected period ('month', 'week', or 'year').
+   * @returns {Promise<void>} - A Promise that resolves after updating the selected period and related state.
+   */
   const handlePeriodChange = async (period) => {
     setSelectedPeriod(period);
 
@@ -332,21 +343,45 @@ const ActivityChart = () => {
     }
   };
 
+  /**
+   * Handles the change of the selected week.
+   *
+   * @param {Object} event - The event object triggered by the week selection.
+   * @returns {void} - Returns nothing.
+   */
   const handleWeekChange = (event) => {
     const selectedWeek = event.target.value;
     setSelectedWeek(selectedWeek);
   };
 
+  /**
+   * Handles the change of the selected month.
+   *
+   * @param {Object} event - The event object triggered by the month selection.
+   * @returns {void} - Returns nothing.
+   */ 
   const handleMonthChange = (event) => {
     const value = event.target.value;
     setSelectedMonth(value);
   };
 
+  /**
+   * Handles the change of the selected year.
+   *
+   * @param {Object} event - The event object triggered by the year selection.
+   * @returns {void} - Returns nothing.
+   */  
   const handleYearChange = (event) => {
     const value = event.target.value;
     setSelectedYear(value);
   };
 
+  /**
+   * Handles the change of the selected comparison value.
+   * 
+   * @param {Object} event - The event object triggered by the comparison selection.
+   * @returns {void} - Returns nothing.
+   */  
   const handleCompareChange = (event) => {
     if (selectedPeriod === 'week') {
       setSelectedCompare(event.target.value);
@@ -357,6 +392,13 @@ const ActivityChart = () => {
     }
   };
 
+  /**
+   * Retrieves the data for the first chart based on the selected period.
+   *
+   * @param {Array} activities - The activities data to be processed.
+   * @param {string} period - The selected period ('week', 'month', or 'year').
+   * @returns {void} - Returns nothing.
+   */
   const getFirstChartData = (activities, period) => {
     let firstChartData = [];
 
@@ -396,6 +438,13 @@ const ActivityChart = () => {
     setFirstChartData(firstChartData);
   };
 
+  /**
+   * Retrieves the data for the second chart based on the selected period.
+   *
+   * @param {Array} activities - The activities data to be processed.
+   * @param {string} period - The selected period ('week', 'month', or 'year').
+   * @returns {void} - Returns nothing.
+   */  
   const getSecondChartData = (activities, period) => {
     let secondChartData = [];
 
@@ -435,24 +484,48 @@ const ActivityChart = () => {
     setSecondChartData(secondChartData);
   };
 
-  // Units conversion
+  /**
+   * Performs units conversion for the first chart data.
+   *
+   * @param {Array} firstChartData - The first chart data to be processed.
+   * @returns {Array} - The processed first chart data with converted units.
+   */
   const firstUnitConversion = firstChartData.map(data => ({
     ...data,
     distance: (data.distance * metersToMiles).toFixed(2),
   }));
 
+  /**
+   * Performs units conversion for the second chart data.
+   *
+   * @param {Array} secondChartData - The second chart data to be processed.
+   * @returns {Array} - The processed second chart data with converted units.
+   */
   const secondUnitConversoin = secondChartData.map(data => ({
     ...data,
     distance: (data.distance * metersToMiles).toFixed(2),
   }));
 
+  /**
+   * Calculate the maximum distance values
+   */ 
   const firstMaxDistance = Math.max(...firstUnitConversion.map(data => data.distance));
   const secondMaxDistance = Math.max(...secondUnitConversoin.map(data => data.distance));
 
+  /**
+   * Calculate the maximum time values
+   */ 
   const firstMaxTime = Math.max(...firstUnitConversion.map(data => data.time));
   const secondMaxTime = Math.max(...secondUnitConversoin.map(data => data.time));
 
-  // Chart: tooltip
+  /**
+   * Custom tooltip component for the chart.
+   *
+   * @param {Object} props - The props passed to the component.
+   * @param {boolean} props.active - Indicates if the tooltip is active.
+   * @param {Array} props.payload - The payload of the tooltip.
+   * @returns {JSX.Element|null} - The rendered tooltip component.
+   */
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const { name, time, distance } = payload[0].payload;
@@ -481,7 +554,12 @@ const ActivityChart = () => {
     return null;
   };
 
-  // Chart: format time
+  /**
+   * Formats the given time in seconds into a string representation of days, hours, minutes, and seconds.
+   *
+   * @param {number} seconds - The time in seconds.
+   * @returns {string} - The formatted time string in the format "days:hours:minutes:seconds".
+   */
   const formatTime = (seconds) => {
     const days = Math.floor(seconds / (3600 * 24));
     const hours = Math.floor((seconds % (3600 * 24)) / 3600);
