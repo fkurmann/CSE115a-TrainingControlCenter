@@ -95,6 +95,7 @@ export default function AddGraphForm() {
     const graphTypes = [
         "Time",
         "Distance",
+        "Elevation",
       ];
     return graphTypes;
   };
