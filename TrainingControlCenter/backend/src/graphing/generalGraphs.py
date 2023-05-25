@@ -21,12 +21,16 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
     panelHeight = 4
     panel1 = plt.axes([0.5 / figureWidth, 0.5 / figureHeight, panelWidth / figureWidth, panelHeight / figureHeight])
 
-    activityList = json.loads(jsonInput)
-
-    # need to remove duplicates
-
-    for item in activityList:
-        print(item['name'])
+    oldActivityList = json.loads(jsonInput)
+    activityIdList = []
+    activityList = []
+    for item in oldActivityList:
+        activityId = item['json']['id']
+        if activityId in activityIdList:
+            continue
+        elif activityId:
+            activityIdList.append(activityId)
+            activityList.append(item)
 
     # Get totals for distance or time
     maxX = 13
