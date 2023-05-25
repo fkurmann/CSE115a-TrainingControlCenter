@@ -16,7 +16,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 /**
  * Create the display for the webpage's application bar.
  *
- * @return {HTMLElement} - includes pages for Data Center, Workout Lists, Settings, and more.
+ * @return {HTMLElement} - includes pages for Data Center, Activity Lists, Settings, and more.
  */
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -96,7 +96,7 @@ function ResponsiveAppBar() {
               }}
             >
               <MenuItem component='a' onClick={handleCloseNavMenu} href='/'>Home</MenuItem>
-              <MenuItem component='a' onClick={handleCloseNavMenu} href='/workoutList'>Workout List</MenuItem>
+              <MenuItem component='a' onClick={handleCloseNavMenu} href='/activityList'>Activity List</MenuItem>
               <MenuItem component='a' onClick={handleCloseNavMenu} href='/dataCenter'>Data Center</MenuItem>
               <MenuItem component='a' onClick={handleCloseNavMenu} href='/planTraining'>Plan Training</MenuItem>
             </Menu>
@@ -130,10 +130,10 @@ function ResponsiveAppBar() {
             </Button>
             <Button
               onClick={handleCloseNavMenu}
-              href='/workoutList'
+              href='/activityList'
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
-              Workout List
+              Activity List
             </Button>
             <Button
               onClick={handleCloseNavMenu}
@@ -155,7 +155,7 @@ function ResponsiveAppBar() {
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="avatar">
-                  {localStorage.getItem('user').charAt(0)}
+                  {(localStorage.getItem('user') || '_').charAt(0)}
                 </Avatar>
               </IconButton>
             </Tooltip>

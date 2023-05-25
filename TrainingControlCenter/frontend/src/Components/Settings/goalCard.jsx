@@ -8,15 +8,18 @@ import IconButton from '@mui/material/IconButton';
 import SportIcon from '../sportIcon';
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { grey } from '@mui/material/colors';
 
 export default function GoalCard({ goal, onClick }) {
+  const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
+  const dist_unit = isMetric ? 'kilometers' : 'miles';
   const name = goal.name;
   const type = goal.type;
   const sport = goal.sport;
   const distance = goal.distance;
   const time = goal.time;
   return (
-    <Card sx={{backgroundColor: '#f9f9f9'}}>
+    <Card sx={{bgcolor: localStorage.getItem('brightnessMode') === 'dark' ? grey[800] : grey[100] }}>
       <CardHeader
         action={
           <IconButton onClick={(e) => {onClick(e, goal)}}>
@@ -33,15 +36,15 @@ export default function GoalCard({ goal, onClick }) {
         {
           type === 'race' ?
             <Typography variant='body2'>
-              <strong>{distance}</strong> miles in <strong>{time}</strong> minutes
+              <strong>{distance}</strong> {dist_unit} in <strong>{time}</strong> minutes
             </Typography>
           : type === 'repeat' ?
             <Typography variant='body2'>
-              <strong>{distance}</strong> miles every <strong>{time}</strong> days
+              <strong>{distance}</strong> {dist_unit} every <strong>{time}</strong> days
             </Typography>
           :
             <Typography variant='body2'>
-              <strong>{distance}</strong> miles within the next <strong>{time}</strong> days
+              <strong>{distance}</strong> {dist_unit} within the next <strong>{time}</strong> days
             </Typography>
         }
       </CardContent>

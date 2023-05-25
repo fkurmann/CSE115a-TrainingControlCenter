@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   TextField,
   Button,
@@ -17,30 +17,32 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 const localStorageUser = localStorage.getItem('user');
 
-
 /**
- * Creates form for creating a manual workout with details specified by user.
+ * Creates form for creating a manual activity with details specified by user.
  *
  * @return {HTMLElement} MUI form for specifying attributes for user specified activity.
  */
-export default function AddWorkoutForm() {
+export default function AddActivityForm() {
+  const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
+  const dist_unit = isMetric ? 'kilometers' : 'miles';
+  const meters_per_unit = isMetric ? 1000 : 1609.34;
   const [{ name, type = '', sport }, setState] = useState({
     name: '',
     type: '',
     sport: '',
   });
 
-  // Success and error message
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-
-  // additionalInfo
+  // AdditionalInfo
   const [additionalInfo, setAdditionalInfo] = useState({
     distance: '',
     time: null,
     start_date_local: '',
     description: '',
   });
+
+  // Success and error message
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
 
@@ -57,11 +59,10 @@ export default function AddWorkoutForm() {
           type: type,
           sport: sport,
           description: descriptions,
-          json: {
-            distance: additionalInfo.distance,
-            time: additionalInfo.time,
-            start_date_local: formattedDate
-          }
+          distance: additionalInfo.distance * meters_per_unit,
+          moving_time: additionalInfo.time,
+          start_date_local: formattedDate
+          
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -154,7 +155,7 @@ export default function AddWorkoutForm() {
 
   return (
     <>
-      <h2>Log a Workout</h2>
+      <h2>Log an Activity</h2>
       <form onSubmit={handleSubmit}>
         {/* Name */}
         <Typography variant="h6" ml={2}>Name of Activity*</Typography>
@@ -175,7 +176,6 @@ export default function AddWorkoutForm() {
         <Select
           labelId="activity-type-select"
           id="type"
-          label="Activity Type"
           value={type}
           onChange={(e) =>
             setState((prevState) => ({ ...prevState, type: e.target.value }))
@@ -200,7 +200,6 @@ export default function AddWorkoutForm() {
               setState((prevState) => ({ ...prevState, sport: e.target.value }))
             }
             autoWidth
-            label="Sport Type"
           >
             {sportsList.map((sportType, index) => (
               <MenuItem key={sportType} value={sportType} id={`menu-item-${sportType}-${index}`}>
@@ -242,7 +241,7 @@ export default function AddWorkoutForm() {
     <Collapse in={showAdditionalInfo}>
       {/* Distance */}
       <Box mb={2} ml={2}>
-          <Typography variant="h6">Distance (miles)</Typography>
+          <Typography variant="h6">Distance ({dist_unit})</Typography>
           <TextField
             id="distance"
             label="Distance"
@@ -293,7 +292,7 @@ export default function AddWorkoutForm() {
         </Box>
       </Collapse>
       <Button variant="contained" color="primary" type="submit" ml={2}>
-        Add Workout
+        Add Activity
       </Button>
         <Snackbar
           open={showSuccessMessage}
@@ -302,7 +301,7 @@ export default function AddWorkoutForm() {
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           <Alert severity="success" onClose={() => setShowSuccessMessage(false)}>
-            Workout added successfully!
+            Activity added successfully!
           </Alert>
         </Snackbar>
         <Snackbar

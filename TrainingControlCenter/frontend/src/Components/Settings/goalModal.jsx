@@ -13,11 +13,15 @@ import Select from '@mui/material/Select';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CircularProgress from '@mui/material/CircularProgress';
+import { grey } from '@mui/material/colors';
+
 import SportIcon from '../sportIcon';
 
 const localStorageUser = localStorage.getItem('user');
 
 export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleCloseAddGoal, handleSubmit, formErrors, setFormErrors, isEdit, isLoading }) {
+  const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
+  const dist_unit = isMetric ? 'km' : 'mi';
   const modalStyle = {
     position: 'absolute',
     top: '50%',
@@ -80,7 +84,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
     <Modal open={openAddGoal} onClose={handleCloseAddGoal} >
       <Box sx={modalStyle} component='form' noValidate onSubmit={handleSubmit}>
         <Typography variant='h5' gutterBottom>{isEdit ? 'Edit goal' : 'Add a new goal'}</Typography>
-        <Card sx={{mb: 1, backgroundColor: '#fafafa'}}>
+        <Card sx={{mb: 1, bgcolor: localStorage.getItem('brightnessMode') === 'dark' ? grey[900] : grey[50]}}>
           {isLoading ? <CardContent sx={{m: 0.5}}><CircularProgress /></CardContent> :
           <CardContent sx={{ml: 2.5}}>
             <FormControl variant='standard' error={formErrors.includes('name')} sx={{ width: '30ch', paddingBottom: 2 }}>
@@ -119,7 +123,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                   <InputLabel>Distance</InputLabel>
                   <Input
                     label='Distance'
-                    endAdornment={<InputAdornment position='end'>mi</InputAdornment>}
+                    endAdornment={<InputAdornment position='end'>{dist_unit}</InputAdornment> }
                     value={addGoal.distance}
                     onChange={(e) => {
                       setFormErrors(formErrors.filter(e => e !== 'distance'));

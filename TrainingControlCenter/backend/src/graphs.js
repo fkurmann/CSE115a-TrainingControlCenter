@@ -52,7 +52,7 @@ exports.drawGraph = async (req, res) => {
     console.log('Error: ' + data);
   });
 
-  // Close process
+  // Close process, return the activities that went into the graph
   python.on('close', (code) => {
     //console.log('Closing: ' + code);
     // res.send(responseData)

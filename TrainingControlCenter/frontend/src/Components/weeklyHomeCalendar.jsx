@@ -241,7 +241,7 @@ function getFirstDayOfWeek(d) {
  */
 function getLastDayOfWeek(d) {
   const date = new Date(getFirstDayOfWeek(d));
-  date.setDate(date.getDate() + 6);
+  date.setDate(date.getDate() + 7);
   return date.toISOString();
 }
 
@@ -258,7 +258,11 @@ function getActivitiesForDay(activities, day) {
     if (new Date(activities[i]['json']['start_date_local']).getDay().toString() === day) {
       // Remove duplicate activities
       if(day_activities.filter((a) => {
-          return activities[i].json.distance === a.distance && activities[i].json.moving_time === a.moving_time
+          return activities[i].json.distance === a.distance &&
+                 activities[i].json.moving_time === a.moving_time &&
+                 activities[i].json.name === a.json.name &&
+                 activities[i].json.start_date_local === a.json.start_date_local &&
+                 activities[i].json.sport_type === a.json.sport_type
         }).length > 0) {
         continue;
       }

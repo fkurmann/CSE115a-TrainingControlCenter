@@ -438,6 +438,137 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /plannedActivities:
+    post:
+      description: New planned activity
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activity'
+      responses:
+        200:
+          description: New planned activity saved
+          content:
+            application/json:
+              schema:
+                type: string
+        401:
+          description: Error saving planned activity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      description: Get planned activities
+      parameters:
+      - name: username
+        in: query
+        description: User
+        required: true
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Name of planned activity
+        required: false
+        schema:
+          type: string
+      - name: sport
+        in: query
+        description: Sport of planned activity
+        required: false
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: type of planned activity
+        required: false
+        schema:
+          type: string
+      - name: minDuration
+        in: query
+        description: minDuration of planned activity, minutes
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: maxDuration
+        in: query
+        description: maxDuration of planned activity, minutes
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: minDistance
+        in: query
+        description: minDistance of planned activity, miles
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: maxDistance
+        in: query
+        description: maxDistance of planned activity, miles
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: minDate
+        in: query
+        description: minDate of planned activity, (yyyy-mm-dd)
+        required: false
+        schema:
+          type: string
+      - name: maxDate
+        in: query
+        description: maxDate of planned activity, (yyyy-mm-dd)
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description:  Planned activities returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activities'
+        401:
+          description: Error getting planned  activities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Delete planned activity
+      parameters:
+      - name: username
+        in: query
+        description: User
+        required: true
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Name of planned activity
+        schema:
+          type: string
+      responses:
+        200:
+          description: Planned activity deleted
+          content:
+            application/json:
+              schema:
+                type: string
+        401:
+          description: Error deleting planned activity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /graphs:
     post:
       description: New graph
@@ -450,17 +581,11 @@ paths:
               $ref: '#/components/schemas/Graph'
       responses:
         200:
-          description: Activities returned
+          description: New graph saved with returned activities involved
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Activities'
-        # 200:
-        #   description: New graph saved
-        #   content:
-        #     application/json:
-        #       schema:
-        #         $ref: '#/components/schemas/Graph'
         401:
           description: Error saving graph
           content:
