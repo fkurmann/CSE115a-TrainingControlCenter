@@ -24,6 +24,8 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
 
     activityList = json.loads(jsonInput)
 
+    # need to remove duplicates
+
     for item in activityList:
         print (item['name'])
 
@@ -36,7 +38,15 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
     for i in range(1, maxX):
         totals.append([i, 0])
 
-    if (graphType == 'Distance'):
+    jsonKey = ('', 1)
+    if graphType == 'Distance':
+        jsonKey = ('distance', 1609.34)
+    elif graphType == 'Time':
+        jsonKey = ('moving_time', 3600)
+    elif graphType == 'Elevation':
+        jsonKey = ('total_elevation_gain', 1 / 3.28084)
+
+    if jsonKey[0]:
         for item in activityList:
             # Lots of translation
             activityDate = datetime.strptime(item['start_date_local'], '%Y-%m-%dT%H:%M:%SZ').date()
@@ -55,26 +65,7 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
 
             # print(startDateDelta)
             if (startDateDelta < maxX):
-                totals[startDateDelta][1] += (item['distance'] / 1609.34)
-
-    if (graphType == 'Time'):
-        for item in activityList:
-            # Lots of translation
-            activityDate = datetime.strptime(item['start_date_local'], '%Y-%m-%dT%H:%M:%SZ').date()
-            startDateDelta = (activityDate - startDate).days
-            startDateDelta = int(startDateDelta)
-
-            if duration == 'Week':
-                startDateDelta = startDateDelta // 7
-            if duration == 'Month':
-                startDateDelta = startDateDelta // 30
-
-            # Check logic:
-            if (startDateDelta != 0):
-                startDateDelta -= 1
-
-            if (startDateDelta < maxX):
-                totals[startDateDelta][1] += (item['moving_time'] / 3600)
+                totals[startDateDelta][1] += (item['json'][jsonKey[0]] / jsonKey[1])
 
     # Graphing
     # Panel ranges
