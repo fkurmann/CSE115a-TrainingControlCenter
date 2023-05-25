@@ -5,7 +5,7 @@ import Login from './Pages/Auth';
 import StravaAuth from './Pages/StravaAuth';
 import DataCenter from './Pages/DataCenter';
 import PlanTraining from './Pages/PlanTraining';
-import WorkoutList from './Pages/WorkoutList';
+import ActivityList from './Pages/ActivityList';
 
 const AuthenticatedRoute = ({children}) => {
   if (localStorage.getItem('user')) {
@@ -46,10 +46,10 @@ export default function App() {
           </AuthenticatedRoute>
         }
       />
-      <Route path='/workoutList'
+      <Route path='/activityList'
         element={
           <AuthenticatedRoute>
-            <WorkoutList />
+            <ActivityList />
           </AuthenticatedRoute>
         }
       />

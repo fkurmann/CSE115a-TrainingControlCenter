@@ -9,7 +9,7 @@ import ActivityCard from './activityCard';
  *
  * @return {HTMLElement} - returns MUI datagrid of all activities showing specific data points.
  */
-export default function WorkoutGrid() {
+export default function ActivityGrid() {
   const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
   const dist_unit = isMetric ? 'km' : 'mi';
   const meters_per_unit = isMetric ? 1000 : 1609.34;

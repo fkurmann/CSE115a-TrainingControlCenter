@@ -6,7 +6,6 @@ import matplotlib.image as mplimg
 import math
 import sys
 import json
-import dateutil.parser
 
 from datetime import date, datetime
 

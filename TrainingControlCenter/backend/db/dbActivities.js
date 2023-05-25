@@ -1,5 +1,4 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
-
 const uri = "mongodb+srv://fkurmann:tcc@tcc.zfhwc4p.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -47,44 +46,44 @@ exports.findActivity = async (username, name, sport, type, minDuration, maxDurat
 
   const variables = ['username', 'name', 'sport', 'type'];
   for (const[idx, item] of [username, name, sport, type].entries()) {
-    if (item != null) {
+    if (item != undefined) {
       parameters[variables[idx]] = item;
     }
   }
-  if ((minDuration != null) && (maxDuration != null)) {
+  if ((minDuration != undefined) && (maxDuration != undefined)) {
     parameters['json.moving_time'] = {$gte: minDuration, $lte: maxDuration};
-  } else if ((minDuration == null) && (maxDuration != null)) {
+  } else if ((minDuration == undefined) && (maxDuration != undefined)) {
     parameters['json.moving_time'] = {$lte: maxDuration};
-  } else if ((minDuration != null) && (maxDuration == null)) {
+  } else if ((minDuration != undefined) && (maxDuration == undefined)) {
     parameters['json.moving_time'] = {$gte: minDuration};
   }
 
-  if ((minDistance != null) && (maxDistance != null)) {
+  if ((minDistance != undefined) && (maxDistance != undefined)) {
     parameters['json.distance'] = {$gte: minDistance, $lte: maxDistance};
-  } else if ((minDistance == null) && (maxDistance != null)) {
+  } else if ((minDistance == undefined) && (maxDistance != undefined)) {
     parameters['json.distance'] = {$lte: maxDistance};
-  } else if ((minDistance != null) && (maxDistance == null)) {
+  } else if ((minDistance != undefined) && (maxDistance == undefined)) {
     parameters['json.distance'] = {$gte: minDistance};
   }
 
-  if (minDate != null) {
+  if (minDate != undefined) {
     if (isNaN(Date.parse(minDate))) {
       console.error(`Invalid date format '${minDate}'`);
       return -1;
     }
   }
-  if (maxDate != null) {
+  if (maxDate != undefined) {
     if (isNaN(Date.parse(maxDate))) {
       console.error(`Invalid date format '${maxDate}'`);
       return -1;
     }
   }
 
-  if ((minDate != null) && (maxDate != null)) {
+  if ((minDate != undefined) && (maxDate != undefined)) {
     parameters['json.start_date_local'] = {$gte: new Date(minDate).toISOString(), $lte: new Date(maxDate).toISOString()};
-  } else if ((minDate == null) && (maxDate != null)) {
+  } else if ((minDate == undefined) && (maxDate != undefined)) {
     parameters['json.start_date_local'] = {$lte: new Date(maxDate).toISOString()};
-  } else if ((minDate != null) && (maxDate == null)) {
+  } else if ((minDate != undefined) && (maxDate == undefined)) {
     parameters['json.start_date_local'] = {$gte: new Date(minDate).toISOString()};
   }
 
