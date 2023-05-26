@@ -48,9 +48,17 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
         jsonKey = ('moving_time', 3600)
     elif graphType == 'Elevation':
         jsonKey = ('total_elevation_gain', 1 / 3.28084)
+    elif graphType == 'Total Energy':
+        jsonKey = ('kilojoules', 1)
+    elif graphType == 'Average Power':
+        jsonKey = ('average_watts', 1)
+    elif graphType == 'Heart Rate':
+        jsonKey = ('average_heartrate', 1)
 
     if jsonKey[0]:
         for item in activityList:
+            if jsonKey[0] not in item['json']:
+                continue
             # Lots of translation
             activityDate = datetime.strptime(item['start_date_local'], '%Y-%m-%dT%H:%M:%SZ').date()
             # print(startDate, activityDate)

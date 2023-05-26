@@ -96,6 +96,9 @@ export default function AddGraphForm() {
         "Time",
         "Distance",
         "Elevation",
+        "Total Energy",
+        "Average Power",
+        "Heart Rate",
       ];
     return graphTypes;
   };
