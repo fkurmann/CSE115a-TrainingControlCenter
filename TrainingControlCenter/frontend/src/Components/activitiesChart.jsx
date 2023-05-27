@@ -114,14 +114,15 @@ const ActivityChart = () => {
    * Used to group similar sports together.
    */
   const sportMappings = {
-    Running: ["Running", "Run"],
+    Running: ["Running", "Run", "Virtual Run"],
     Hiking: ["Hiking", "Hike"],
     Walking: ["Walking", "Walk"],
     Swimming: ["Swimming", "Swim"],
     WeightTraining: ["Weight Training"],
+    Workout: ["Workout"],
     Rowing: ["Rowing", "Row"],
     Skiing: ["Skiing", "Ski"],
-    Cycling: ["Cycling", "Cycle"]
+    Riding: ["Riding", "Ride", "Virtual Ride"]
   };
   
   /**

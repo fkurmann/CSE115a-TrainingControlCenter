@@ -22,7 +22,7 @@ const localStorageUser = localStorage.getItem('user');
  *
  * @return {HTMLElement} MUI form for specifying attributes for user specified activity.
  */
-export default function AddPlannedActivityForm() {
+export default function AddActivityForm() {
   const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
   const dist_unit = isMetric ? 'kilometers' : 'miles';
   const meters_per_unit = isMetric ? 1000 : 1609.34;
@@ -51,7 +51,7 @@ export default function AddPlannedActivityForm() {
     try {
       const descriptions = additionalInfo.description.trim() === '' ? null : additionalInfo.description;
       const formattedDate = additionalInfo.start_date_local ? new Date(additionalInfo.start_date_local) : null;
-      const response = await fetch('http://localhost:3010/v0/plannedActivities?' , {
+      const response = await fetch('http://localhost:3010/v0/activities?' , {
         method: "POST",
         body: JSON.stringify({
           username: localStorageUser,
@@ -62,7 +62,7 @@ export default function AddPlannedActivityForm() {
           distance: additionalInfo.distance * meters_per_unit,
           moving_time: additionalInfo.time,
           start_date_local: formattedDate
-
+          
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -130,7 +130,7 @@ export default function AddPlannedActivityForm() {
 
   return (
     <>
-      <h2>Plan an Activity</h2>
+      <h2>Log an Activity</h2>
       <form onSubmit={handleSubmit}>
         {/* Name */}
         <Typography variant="h6" ml={2}>Name of Activity*</Typography>
@@ -190,7 +190,7 @@ export default function AddPlannedActivityForm() {
           <DemoContainer components={['MobileDatePicker']}>
             <MobileDatePicker
               inputFormat="YYYY-MM-DD"
-              disablePast
+              disableFuture
               onChange={(value) =>
                 setAdditionalInfo((prevState) => ({
                   ...prevState,
@@ -267,7 +267,7 @@ export default function AddPlannedActivityForm() {
         </Box>
       </Collapse>
       <Button variant="contained" color="primary" type="submit" ml={2}>
-        Plan Activity
+        Add Activity
       </Button>
         <Snackbar
           open={showSuccessMessage}
@@ -276,7 +276,7 @@ export default function AddPlannedActivityForm() {
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           <Alert severity="success" onClose={() => setShowSuccessMessage(false)}>
-            Planned activity added successfully!
+            Activity added successfully!
           </Alert>
         </Snackbar>
         <Snackbar
