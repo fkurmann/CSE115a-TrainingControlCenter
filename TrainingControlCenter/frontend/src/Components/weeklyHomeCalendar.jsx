@@ -193,7 +193,7 @@ export default function HomeCalendar() {
  * @param {HTMLElement} [props] - defines passed in attributes for item, like width and font size.
  * @return {HTMLElement} - returns a MUI box with for displaying each day.
  */
-function Item(props: BoxProps) {
+function Item(props) {
   const { sx, ...other } = props;
   return (
     <Box

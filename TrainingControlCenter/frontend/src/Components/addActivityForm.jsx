@@ -26,6 +26,33 @@ export default function AddActivityForm() {
   const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
   const dist_unit = isMetric ? 'kilometers' : 'miles';
   const meters_per_unit = isMetric ? 1000 : 1609.34;
+
+  // Types
+  const getActivityTypes = () => {
+    const activityTypes = [
+        "Workout",
+        "Race",
+        "Endurance",
+        "Social",
+        "Commute",
+      ];
+    return activityTypes;
+  };
+
+  const sportsList = [
+    "Ride",
+    "Run",
+    "Swim",
+    "Walk",
+    "Hike",
+    "Weight Training",
+    "Workout",
+    "Row",
+    "Ski",
+    "VirtualRide",
+    "VirtualRun",
+  ];
+
   const [{ name, type = '', sport }, setState] = useState({
     name: '',
     type: '',
@@ -43,7 +70,6 @@ export default function AddActivityForm() {
   // Success and error message
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -62,7 +88,6 @@ export default function AddActivityForm() {
           distance: additionalInfo.distance * meters_per_unit,
           moving_time: additionalInfo.time,
           start_date_local: formattedDate
-          
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -101,32 +126,6 @@ export default function AddActivityForm() {
       }, 10000);
     }
   };
-
-  // get activity types
-  const getActivityTypes = () => {
-    const activityTypes = [
-        "Workout",
-        "Race",
-        "Endurance",
-        "Social",
-        "Commute",
-      ];
-    return activityTypes;
-  };
-
-  const sportsList = [
-    "Ride",
-    "Run",
-    "Swim",
-    "Walk",
-    "Hike",
-    "Weight Training",
-    "Workout",
-    "Row",
-    "Ski",
-    "VirtualRide",
-    "VirtualRun",
-  ];
 
   return (
     <>

@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import ResponsiveAppBar from '../Components/appBar';
 import { userTheme } from '../Components/theme';
 import AddPlannedActivityForm from '../Components/addPlannedActivityForm';
+import PlanCalendar from '../Components/planCalendar';
 
 /**
  * Creates the Training Plan page for workout creation and planning.
@@ -22,7 +23,17 @@ export default function PlanTraining() {
         <ResponsiveAppBar />
         <h1>Training Control Center, {localStorage.getItem('user')}: Plan Training</h1>
         <Box>
-          <AddPlannedActivityForm />
+          
+        </Box>
+        <Box>
+          <div className='parent'>
+            <div style={{float: 'left'}}>
+              <AddPlannedActivityForm />
+            </div>
+            <div style={{float: 'right'}}>
+              <PlanCalendar></PlanCalendar>
+            </div>
+          </div>
         </Box>
       </Container>
     </ThemeProvider>

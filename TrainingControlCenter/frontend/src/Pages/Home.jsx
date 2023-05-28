@@ -6,7 +6,7 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { getFiveActivities } from '../Components/stravaData';
 import ResponsiveAppBar from '../Components/appBar';
-import AddActivityForm from '../Components/addActivityForm copy';
+import AddActivityForm from '../Components/addActivityForm';
 import HomeCalendar from '../Components/weeklyHomeCalendar';
 import { userTheme } from '../Components/theme';
 
