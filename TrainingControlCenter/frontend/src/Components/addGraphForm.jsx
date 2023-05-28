@@ -95,6 +95,10 @@ export default function AddGraphForm() {
     const graphTypes = [
         "Time",
         "Distance",
+        "Elevation",
+        "Total Energy",
+        "Average Power",
+        "Heart Rate",
       ];
     return graphTypes;
   };
