@@ -4,9 +4,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { Typography, Select, MenuItem } from '@mui/material';
+import { Select, MenuItem } from '@mui/material';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
@@ -26,7 +25,9 @@ export default function Favorites() {
         "Run",
         "Swim",
         "Walk",
+        "Hike",
         "Weight Training",
+        "Workout",
         "Row",
         "Ski",
         "VirtualRide",
@@ -129,7 +130,7 @@ export default function Favorites() {
 
   return (
     <>
-    <List sx={{ width: '100%', maxWidth: 500}}>
+    <List sx={{ width: '100%'}}>
       {myShownFavorites.map((sport) => (
         <div key={sport}>
         <ListItem disablePadding secondaryAction={isLoading.includes(sport) ? <CircularProgress size={24} /> : <></>}>
@@ -147,10 +148,9 @@ export default function Favorites() {
     <Box component='form' noValidate onSubmit={handleSubmit}>
 
       <Select
-        name='sport'
-        label='Sport'
-        value={addFav.sport}
-        required
+        name='sport' 
+        value={addFav.sport} 
+        required 
         onChange={(e) => setAddFav({ ...addFav, sport: e.target.value })}
       >
         {getFavoriteTypes().map((favoriteType, index) => (

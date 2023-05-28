@@ -1,29 +1,30 @@
 import React from 'react';
 import {ThemeProvider} from '@mui/material/styles';
-// import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import ResponsiveAppBar from '../Components/appBar';
+import ActivityGrid from '../Components/dataGrid';
 import { userTheme } from '../Components/theme';
-import AddPlannedActivityForm from '../Components/addPlannedActivityForm';
 
 /**
- * Creates the Training Plan page for workout creation and planning.
+ * The page to list all activities and recent activities, whether manual or from strava.
  *
- * @return {HTMLElement} - creates the page for planning workouts and training.
+ * @return {HTMLElement} - Creates the Workout List page to display all activities.
  */
-export default function PlanTraining() {
+export default function ActivityList() {
   return (
     <ThemeProvider theme={userTheme}>
       <CssBaseline />
       <Container component='main'>
         <CssBaseline />
+
         <ResponsiveAppBar />
-        <h1>Training Control Center, {localStorage.getItem('user')}: Plan Training</h1>
+        <h1>Training Control Center, {localStorage.getItem('user')}: Activities </h1>
         <Box>
-          <AddPlannedActivityForm />
+          <ActivityGrid></ActivityGrid>
         </Box>
+
       </Container>
     </ThemeProvider>
   );

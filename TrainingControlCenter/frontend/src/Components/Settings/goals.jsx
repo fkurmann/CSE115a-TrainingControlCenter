@@ -1,32 +1,35 @@
 import * as React from 'react';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
-import Collapse from '@mui/material/Collapse';
-import Box from '@mui/material/Box';
+import {
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  Collapse,
+  Box,
+  Button,
+  Menu,
+  MenuItem,
+  CircularProgress,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography
+} from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import CircularProgress from '@mui/material/CircularProgress';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import SportIcon from '../sportIcon';
 import GoalCard from './goalCard';
 import GoalModal from './goalModal';
-import { Typography } from '@mui/material';
+import { grey } from '@mui/material/colors';
 
 export default function Goals() {
   const user = localStorage.getItem('user');
   const emptyGoal = {username: user, name: '', type: '', sport: '', distance: '', time: ''};
   const [openSport, setOpenSport] = React.useState([]);
-  // const [myGoals, setMyGoals] = React.useState(localStorage.getItem('goals') === null ? null : JSON.parse(localStorage.getItem('goals')));
-  const [myGoals, setMyGoals] = React.useState(null);
+  const [myGoals, setMyGoals] = React.useState(localStorage.getItem('goals') ? JSON.parse(localStorage.getItem('goals')) : null);
+  // const [myGoals, setMyGoals] = React.useState(null);
   const [goalsByCategory, setGoalsByCategory] = React.useState({});
   const [goalCategories, setGoalCategories] = React.useState([]);
   const [openAddGoal, setOpenAddGoal] = React.useState(false);
@@ -153,6 +156,8 @@ export default function Goals() {
         }
         console.log(`Added ${goal.name} to goals`);
         setIsAddLoading(false);
+        setOpenSport([goal.sport]);
+        handleCloseAddGoal();
       })
       .catch((err) => {
         setIsAddLoading(false);
@@ -226,6 +231,7 @@ export default function Goals() {
     }
     if (JSON.stringify(goal) === JSON.stringify(editedGoal)) {
       console.log('Goal was not edited');
+      handleCloseAddGoal();
       return;
     }
     setIsAddLoading(true);
@@ -292,7 +298,7 @@ export default function Goals() {
         <Collapse in={openSport.includes(sport)} timeout="auto" unmountOnExit>
           <Grid container>
             {goalsByCategory[sport].map((goal) => (
-              <Accordion key={goal.name} sx={{ minWidth: 350, backgroundColor: '#fcfcfc' }}>
+              <Accordion key={goal.name} sx={{ minWidth: 350, bgcolor: localStorage.getItem('brightnessMode') === 'dark' ? grey[900] : grey[50] }}>
                 <AccordionSummary expandIcon={<ExpandMore />} >
                   <Typography>{goal.name}</Typography>
                 </AccordionSummary>

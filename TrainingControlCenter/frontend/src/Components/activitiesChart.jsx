@@ -9,6 +9,9 @@ import { enUS } from 'date-fns/locale'
 const localStorageUser = localStorage.getItem('user');
 
 const ActivityChart = () => {
+  const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
+  const dist_unit = isMetric ? 'kilometers' : 'miles';
+  const meters_per_unit = isMetric ? 1000 : 1609.34;
   const [selectedPeriod, setSelectedPeriod] = useState('week');
   const [selectedWeek, setSelectedWeek] = useState(getCurrentWeek());
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
@@ -17,6 +20,7 @@ const ActivityChart = () => {
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [compareActivities, setCompareActivities] = useState([]);
   const [firstRankingLoading, setFirstRankingLoading] = useState(false);
+  const [firstRankFinish, setFirstRankFinish] = useState(false);
   const [secondRankingLoading, setSecondRankingLoading] = useState(false);
   const [noRecords, setNoRecords] = useState(false);
   const [firstChartData, setFirstChartData] = useState([]);
@@ -68,7 +72,7 @@ const ActivityChart = () => {
 
     // Subtract 1 because weekNumber is 1-based
     const weekStart = new Date(startOfYear.getTime() + ((weekNumber - 1) * daysPerWeek * millisecondsPerDay));
-
+    
     return weekStart;
   }
 
@@ -89,6 +93,38 @@ const ActivityChart = () => {
     return weekEnd;
   }
 
+  /**
+   * Returns time formatted as {days}d {hours}:{mins}:{secs}
+   *
+   * @param {int} secs - Number of seconds.
+   * @return {int} - Returns the formatted time. 599 -> '9:59', 7200 -> '2:00:00', 86400 -> '1d 00:00:00'
+   */
+  function secondsToDigital(secs) {
+    let format = '';
+    if(secs / 60 < 10) format = 'm:ss';
+    else if(secs / 3600 < 1) format = 'mm:ss';
+    else if(secs / 3600 < 10) format = 'H:mm:ss';
+    else if(secs / 86400 < 1) format = 'HH:mm:ss';
+    else return Math.floor(secs / 86400) + 'd ' + moment.utc(secs*1000).format('HH:mm:ss');
+    return moment.utc(secs*1000).format(format);
+  }
+
+  /**
+   * Defines the mapping of sports to their normalized names.
+   * Used to group similar sports together.
+   */
+  const sportMappings = {
+    Running: ["Running", "Run", "Virtual Run"],
+    Hiking: ["Hiking", "Hike"],
+    Walking: ["Walking", "Walk"],
+    Swimming: ["Swimming", "Swim"],
+    WeightTraining: ["Weight Training"],
+    Workout: ["Workout"],
+    Rowing: ["Rowing", "Row"],
+    Skiing: ["Skiing", "Ski"],
+    Riding: ["Riding", "Ride", "Virtual Ride"]
+  };
+  
   /**
    * Fetches data for first graph comparison.
    *
@@ -114,38 +150,66 @@ const ActivityChart = () => {
 
       // First, filter and sort activities by selectedPeriod
       const filteredAndSorted = activitiesWithUniqueTime
-        .filter((activity) => {
-          const activityDate = new Date(activity.start_date_local);
-
-          if (selectedPeriod === 'week') {
-            const weekStart = getDateRange(selectedWeek);
-            const weekEnd = getEndDate(selectedWeek);
-            return activityDate >= weekStart && activityDate <= weekEnd;
-          } else if (selectedPeriod === 'month') {
-            return getMonth(activityDate) + 1 === selectedMonth && getYear(activityDate) === getCurrentYear();
-          } else if (selectedPeriod === 'year') {
-            return getYear(activityDate) === selectedYear;
-          }
-          return true;
-        })
-        // Sort activities by start date
-        .sort((a, b) => new Date(b.start_date_local) - new Date(a.start_date_local));
-
+      .filter((activity) => {
+        let activityDate = new Date(activity.start_date_local);
+  
+        // Reset the time to midnight
+        activityDate.setHours(0, 0, 0, 0);
+  
+        if (selectedPeriod === 'week') {
+          let weekStart = getDateRange(selectedWeek);
+          let weekEnd = getEndDate(selectedWeek);
+  
+          // Reset the time to midnight
+          weekStart.setHours(0, 0, 0, 0);
+          weekEnd.setHours(0, 0, 0, 0);
+  
+          return activityDate >= weekStart && activityDate <= weekEnd;
+        } else if (selectedPeriod === 'month') {
+          return getMonth(activityDate) + 1 === selectedMonth && getYear(activityDate) === getCurrentYear();
+        } else if (selectedPeriod === 'year') {
+          return getYear(activityDate) === selectedYear;
+        }
+        return true;
+      })
+      // Sort activities by start date
+      .sort((a, b) => new Date(b.start_date_local) - new Date(a.start_date_local));
+  
       // Ranking: sum up the moving_time and distance for the same type of activities
       const activitySum = filteredAndSorted.reduce((prev, curr) => {
-        if (!prev[curr.sport]) {
-          prev[curr.sport] = { ...curr };
+        // Normalize the sport names
+        const normalizedSport = curr.sport.toLowerCase().trim();
+      
+        // Find the matching normalized sport name in the mappings
+        const matchedSport = Object.entries(sportMappings).find(([sport, aliases]) =>
+          aliases.some(alias => normalizedSport === alias.toLowerCase())
+        );
+      
+        if (matchedSport) {
+          const [sportName] = matchedSport;
+          if (!prev[sportName]) {
+            prev[sportName] = { ...curr, sport: sportName };
+          } else {
+            prev[sportName].distance += curr.distance;
+            prev[sportName].moving_time += Number(curr.moving_time);
+          }
         } else {
-          prev[curr.sport].distance += curr.distance;
-          prev[curr.sport].moving_time += Number(curr.moving_time);
+          // For other sports, keep them as they are
+          if (!prev[curr.sport]) {
+            prev[curr.sport] = { ...curr };
+          } else {
+            prev[curr.sport].distance += curr.distance;
+            prev[curr.sport].moving_time += Number(curr.moving_time);
+          }
         }
+      
         return prev;
       }, {});
 
       const activitySumArray = Object.values(activitySum);
       const periodSumArray = Object.values(filteredAndSorted);
 
-      if (activitySumArray.length === 0 ) {
+      if (activitySumArray.length === 0 &&  periodSumArray.periodSumArray) {
         setNoRecords(true);
       } else {
         setNoRecords(false);
@@ -154,8 +218,10 @@ const ActivityChart = () => {
       setFilteredActivities(activitySumArray);
       getFirstChartData(periodSumArray, selectedPeriod);
       setFirstRankingLoading(false);
+      setFirstRankFinish(true);
     } catch (error) {
       setFirstRankingLoading(false);
+      setFirstRankFinish(true);
       console.error('An error occurred. Please try again.');
     }
   };
@@ -164,6 +230,11 @@ const ActivityChart = () => {
     fetchDataForFirstRanking();
   }, [selectedPeriod, selectedWeek, selectedMonth, selectedYear]);
 
+  /**
+   * Fetches data for the second graph comparison.
+   *
+   * @async
+   */
   const fetchDataForSecondRanking = async () => {
     try {
       setSecondRankingLoading(true);
@@ -185,11 +256,19 @@ const ActivityChart = () => {
       // First, filter and sort activities by selectedCompare
       const filteredAndSorted = activitiesWithUniqueTime
         .filter((activity) => {
-          const activityDate = new Date(activity.start_date_local);
+          let activityDate = new Date(activity.start_date_local);
 
+          // Reset the time to midnight
+          activityDate.setHours(0, 0, 0, 0);
+          
           if (selectedPeriod === 'week') {
-            const weekStart = getDateRange(selectedCompare);
-            const weekEnd = getEndDate(selectedCompare);
+            let weekStart = getDateRange(selectedCompare);
+            let weekEnd = getEndDate(selectedCompare);
+    
+            // Reset the time to midnight
+            weekStart.setHours(0, 0, 0, 0);
+            weekEnd.setHours(0, 0, 0, 0);
+    
             return activityDate >= weekStart && activityDate <= weekEnd;
           } else if (selectedPeriod === 'month') {
             return getMonth(activityDate) + 1 === selectedCompare && getYear(activityDate) === getCurrentYear();
@@ -202,12 +281,32 @@ const ActivityChart = () => {
 
       // Then, sum up the moving_time and distance for the same type of activities
       const activitySum = filteredAndSorted.reduce((prev, curr) => {
-        if (!prev[curr.sport]) {
-          prev[curr.sport] = { ...curr };
+        // Normalize the sport names
+        const normalizedSport = curr.sport.toLowerCase().trim();
+      
+        // Find the matching normalized sport name in the mappings
+        const matchedSport = Object.entries(sportMappings).find(([sport, aliases]) =>
+          aliases.some(alias => normalizedSport === alias.toLowerCase())
+        );
+      
+        if (matchedSport) {
+          const [sportName] = matchedSport;
+          if (!prev[sportName]) {
+            prev[sportName] = { ...curr, sport: sportName };
+          } else {
+            prev[sportName].distance += curr.distance;
+            prev[sportName].moving_time += Number(curr.moving_time);
+          }
         } else {
-          prev[curr.sport].distance += curr.distance;
-          prev[curr.sport].moving_time += Number(curr.moving_time);
+          // For other sports, keep them as they are
+          if (!prev[curr.sport]) {
+            prev[curr.sport] = { ...curr };
+          } else {
+            prev[curr.sport].distance += curr.distance;
+            prev[curr.sport].moving_time += Number(curr.moving_time);
+          }
         }
+      
         return prev;
       }, {});
 
@@ -224,9 +323,17 @@ const ActivityChart = () => {
   };
 
   useEffect(() => {
-    fetchDataForSecondRanking();
-  }, [selectedPeriod, selectedCompare]);
+    if (firstRankFinish) {
+      fetchDataForSecondRanking();
+    }
+  }, [selectedPeriod, selectedCompare, firstRankFinish]);
 
+  /**
+   * Handles the change of the selected period.
+   *
+   * @param {string} period - Represents the selected period ('month', 'week', or 'year').
+   * @returns {Promise<void>} - A Promise that resolves after updating the selected period and related state.
+   */
   const handlePeriodChange = async (period) => {
     setSelectedPeriod(period);
 
@@ -242,21 +349,45 @@ const ActivityChart = () => {
     }
   };
 
+  /**
+   * Handles the change of the selected week.
+   *
+   * @param {Object} event - The event object triggered by the week selection.
+   * @returns {void} - Returns nothing.
+   */
   const handleWeekChange = (event) => {
     const selectedWeek = event.target.value;
     setSelectedWeek(selectedWeek);
   };
 
+  /**
+   * Handles the change of the selected month.
+   *
+   * @param {Object} event - The event object triggered by the month selection.
+   * @returns {void} - Returns nothing.
+   */ 
   const handleMonthChange = (event) => {
     const value = event.target.value;
     setSelectedMonth(value);
   };
 
+  /**
+   * Handles the change of the selected year.
+   *
+   * @param {Object} event - The event object triggered by the year selection.
+   * @returns {void} - Returns nothing.
+   */  
   const handleYearChange = (event) => {
     const value = event.target.value;
     setSelectedYear(value);
   };
 
+  /**
+   * Handles the change of the selected comparison value.
+   * 
+   * @param {Object} event - The event object triggered by the comparison selection.
+   * @returns {void} - Returns nothing.
+   */  
   const handleCompareChange = (event) => {
     if (selectedPeriod === 'week') {
       setSelectedCompare(event.target.value);
@@ -267,6 +398,13 @@ const ActivityChart = () => {
     }
   };
 
+  /**
+   * Retrieves the data for the first chart based on the selected period.
+   *
+   * @param {Array} activities - The activities data to be processed.
+   * @param {string} period - The selected period ('week', 'month', or 'year').
+   * @returns {void} - Returns nothing.
+   */
   const getFirstChartData = (activities, period) => {
     let firstChartData = [];
 
@@ -306,6 +444,13 @@ const ActivityChart = () => {
     setFirstChartData(firstChartData);
   };
 
+  /**
+   * Retrieves the data for the second chart based on the selected period.
+   *
+   * @param {Array} activities - The activities data to be processed.
+   * @param {string} period - The selected period ('week', 'month', or 'year').
+   * @returns {void} - Returns nothing.
+   */  
   const getSecondChartData = (activities, period) => {
     let secondChartData = [];
 
@@ -345,24 +490,48 @@ const ActivityChart = () => {
     setSecondChartData(secondChartData);
   };
 
-  // Units conversion
+  /**
+   * Performs units conversion for the first chart data.
+   *
+   * @param {Array} firstChartData - The first chart data to be processed.
+   * @returns {Array} - The processed first chart data with converted units.
+   */
   const firstUnitConversion = firstChartData.map(data => ({
     ...data,
     distance: (data.distance * metersToMiles).toFixed(2),
   }));
 
+  /**
+   * Performs units conversion for the second chart data.
+   *
+   * @param {Array} secondChartData - The second chart data to be processed.
+   * @returns {Array} - The processed second chart data with converted units.
+   */
   const secondUnitConversoin = secondChartData.map(data => ({
     ...data,
     distance: (data.distance * metersToMiles).toFixed(2),
   }));
 
+  /**
+   * Calculate the maximum distance values
+   */ 
   const firstMaxDistance = Math.max(...firstUnitConversion.map(data => data.distance));
   const secondMaxDistance = Math.max(...secondUnitConversoin.map(data => data.distance));
 
+  /**
+   * Calculate the maximum time values
+   */ 
   const firstMaxTime = Math.max(...firstUnitConversion.map(data => data.time));
   const secondMaxTime = Math.max(...secondUnitConversoin.map(data => data.time));
 
-  // Chart: tooltip
+  /**
+   * Custom tooltip component for the chart.
+   *
+   * @param {Object} props - The props passed to the component.
+   * @param {boolean} props.active - Indicates if the tooltip is active.
+   * @param {Array} props.payload - The payload of the tooltip.
+   * @returns {JSX.Element|null} - The rendered tooltip component.
+   */
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const { name, time, distance } = payload[0].payload;
@@ -391,7 +560,12 @@ const ActivityChart = () => {
     return null;
   };
 
-  // Chart: format time
+  /**
+   * Formats the given time in seconds into a string representation of days, hours, minutes, and seconds.
+   *
+   * @param {number} seconds - The time in seconds.
+   * @returns {string} - The formatted time string in the format "days:hours:minutes:seconds".
+   */
   const formatTime = (seconds) => {
     const days = Math.floor(seconds / (3600 * 24));
     const hours = Math.floor((seconds % (3600 * 24)) / 3600);
@@ -528,7 +702,7 @@ const ActivityChart = () => {
           filteredActivities.map(activity => (
             <Paper key={activity._id}>
               <SportIcon sport={activity.sport} />
-              <p>{activity.sport} - {(activity.distance * metersToMiles).toFixed(2)} miles - {activity.moving_time >= 86400 ? `${Math.floor(activity.moving_time / 86400)}:` : ''}{moment.utc(activity.moving_time*1000).format('HH:mm:ss')} total time</p>
+              <p>{activity.sport} - {(activity.distance / meters_per_unit).toFixed(2)} {dist_unit} - {secondsToDigital(activity.moving_time)} total time</p>
             </Paper>
           ))
         )}
@@ -543,7 +717,7 @@ const ActivityChart = () => {
           compareActivities.map(activity => (
             <Paper key={activity._id}>
               <SportIcon sport={activity.sport} />
-              <p>{activity.sport} - {(activity.distance * metersToMiles).toFixed(2)} miles - {activity.moving_time >= 86400 ? `${Math.floor(activity.moving_time / 86400)}:` : ''}{moment.utc(activity.moving_time*1000).format('HH:mm:ss')} total time</p>
+              <p>{activity.sport} - {(activity.distance / meters_per_unit).toFixed(2)} {dist_unit} - {secondsToDigital(activity.moving_time)} total time</p>
             </Paper>
           ))
         )}

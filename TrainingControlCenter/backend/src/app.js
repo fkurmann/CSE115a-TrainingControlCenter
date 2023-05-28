@@ -8,6 +8,7 @@ const OpenApiValidator = require('express-openapi-validator');
 const auth = require('./auth');
 const settings = require('./settings');
 const activities = require('./activities');
+const plannedActivities = require('./plannedActivities');
 const graphs = require('./graphs')
 
 const app = express();
@@ -37,28 +38,33 @@ app.post('/v0/register', auth.register);
 app.post('/v0/login', auth.login);
 
 // Strava token
-app.post('/v0/token', auth.updateToken); //auth.check,
-app.get('/v0/token', auth.getToken); //auth.check,
+app.post('/v0/token', auth.updateToken); 
+app.get('/v0/token', auth.getToken); 
 
 // Get, add, delete favorite sports
-app.get('/v0/favorites', settings.getFavorites); //auth.check,
-app.post('/v0/favorites', settings.addFavorite); // auth.check,
-app.delete('/v0/favorites', settings.deleteFavorite); //auth.check,
+app.get('/v0/favorites', settings.getFavorites); 
+app.post('/v0/favorites', settings.addFavorite); 
+app.delete('/v0/favorites', settings.deleteFavorite); 
 
 // Get, add, delete goals
-app.get('/v0/goals', settings.getGoals); //auth.check,
-app.post('/v0/goals', settings.addGoal); // auth.check,
-app.delete('/v0/goals', settings.deleteGoal); //auth.check,
+app.get('/v0/goals', settings.getGoals); 
+app.post('/v0/goals', settings.addGoal); 
+app.delete('/v0/goals', settings.deleteGoal); 
 
 // Get, add, delete activities
-app.get('/v0/activities', activities.getActivities); //auth.check,
+app.get('/v0/activities', activities.getActivities); 
 // Manual Entry
-app.post('/v0/activities', activities.addActivity); // auth.check,
+app.post('/v0/activities', activities.addActivity);
 // Strava Entry
-app.post('/v0/activitiesStrava', activities.addActivityStrava); //auth.check,
-app.delete('/v0/activities', activities.deleteActivity); //auth.check,
+app.post('/v0/activitiesStrava', activities.addActivityStrava); 
+app.delete('/v0/activities', activities.deleteActivity); 
 
-// Graphing, spawn python function
+// Get, add, delete activities
+app.get('/v0/plannedActivities', plannedActivities.getPlannedActivities)
+app.post('/v0/plannedActivities', plannedActivities.addPlannedActivity);
+app.delete('/v0/plannedActivities', plannedActivities.deletePlannedActivity); 
+
+// Graphing
 app.post('/v0/graphs', graphs.drawGraph);
 
 app.use((err, req, res, next) => {

@@ -1,11 +1,11 @@
-const dbActivities = require('../db/dbActivities');
+const dbPlans = require('../db/dbPlans');
 
 /**
- * Maual entry activities
+ * Entry of planned activities
  *
  * @async
  */
-exports.addActivity = async (req, res) => {
+exports.addPlannedActivity = async (req, res) => {
   let {username, name, type, sport, description, distance, moving_time, start_date_local} = req.body;
 
   // Convert a date string to a Date object
@@ -35,53 +35,34 @@ exports.addActivity = async (req, res) => {
     start_date_local: formattedDate || undefined
   };
 
-  const returnValue = await dbActivities.createActivity(username, name, type, sport, descriptionText, activityJson);
+  const returnValue = await dbPlans.createPlannedActivity(username, name, type, sport, descriptionText, activityJson);
   // Error case
   if (returnValue === -1) {
-    res.status(401).send('Error adding activity');
+    res.status(401).send('Error adding planned activity');
   } else {
     // On success return 200
-    res.status(200).send(`Activity "${name}" added successfully for user "${username}".`);
+    res.status(200).send(`Planned activity "${name}" added successfully for user "${username}".`);
   }
 };
 
 /**
- * Strava upload activities
+ * Delete activity from user's planned activities, either one if name is given or all
  *
  * @async
  */
-exports.addActivityStrava = async (req, res) => {
-  let {username, name, type, sport, description, json} = req.body;
-
-  // No checking for parameters since this is not a direct interaction with user
-  const returnValue = await dbActivities.createActivity(username, name, type, sport, description, json);
-  // Error case
-  if (returnValue === -1) {
-    res.status(401).send('Error adding activity');
-  } else {
-    // On success return 200
-    res.status(200).send(`Activity "${name}" added successfully for user "${username}".`);
-  }
-};
-
-/**
- * Delete activity from user's activities, either one if name is given or all
- *
- * @async
- */
-exports.deleteActivity = async (req, res) => {
+exports.deletePlannedActivity = async (req, res) => {
   const username = req.query.username;
   const name = req.query.name;
   if (name != undefined) {
-    returnValue = await dbActivities.deleteActivity(username, name);
+    returnValue = await dbPlans.deletePlannedActivity(username, name);
   }
   else {
-    returnValue = await dbActivities.clearActivities(username);
+    returnValue = await dbPlans.clearPlannedActivities(username);
   }
 
   // Error case
   if (returnValue === -1) {
-    res.status(401).send('Error deleting activity');
+    res.status(401).send('Error deleting planned activity');
   } else {
     // On success return 200
     res.status(200).send(name);
@@ -89,11 +70,11 @@ exports.deleteActivity = async (req, res) => {
 };
 
 /**
- * Get all activities that match query
+ * Get all planned activities that match query
  *
  * @async
  */
-exports.getActivities = async (req, res) => {
+exports.getPlannedActivities = async (req, res) => {
   const username = req.query.username;
   let name = req.query.name;
   let sport = req.query.sport;
@@ -116,10 +97,16 @@ exports.getActivities = async (req, res) => {
     maxDistance = maxDistance * 1609.34;
   }
 
-  const returnValue = await dbActivities.findActivity(username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate);
+  for (item of [name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate]) {
+    if (item == undefined) {
+      item = null;
+    }
+  }
+
+  const returnValue = await dbPlans.findPlannedActivity(username, name, sport, type, minDuration, maxDuration, minDistance, maxDistance, minDate, maxDate);
   // Error case
   if (returnValue === -1) {
-    res.status(401).send('Error getting activities, user may not exist');
+    res.status(401).send('Error getting planned activities, user may not exist');
   } else {
     res.status(200).json(returnValue);
   }
