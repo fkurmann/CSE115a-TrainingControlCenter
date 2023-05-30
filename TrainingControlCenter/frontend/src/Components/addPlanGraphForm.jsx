@@ -15,15 +15,18 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import defaultImage from '../Components/images/default.png';
+import planPieGraph from '../Components/images/planPieGraph.png';
 
 const localStorageUser = localStorage.getItem('user');
 
 /**
- * Creates form for creating a graph with details specified by user.
+ * Creates form for creating a pie graph with details specified by user.
  *
  * @return {HTMLElement} MUI form for specifying attributes for user specified graph.
  */
-export default function AddGraphForm() {
+export default function AddPlanGraphForm() {
+  const [graphGenerated, setGraphGenerated] = useState(false);
   const [{ duration, startDate, graphType, goal, sport, outFile }, setState] = useState({
     duration: '',
     startDate: '',
@@ -48,10 +51,10 @@ export default function AddGraphForm() {
           username: localStorageUser,
           duration: duration,
           graphType: graphType,
-          sport: sport,
+          sport: 'PlanPie',
           goal: goal,
           startDate: formattedDate,
-          outFile: (sport == 'Pie') ? 'pieGraph' : 'generalGraph' 
+          outFile: 'planPieGraph' 
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -63,8 +66,8 @@ export default function AddGraphForm() {
       }
 
       if (response.status === 200) {
+        setGraphGenerated(true);
         setShowSuccessMessage(true);
-
       } else {
         const data = await response.json();
         setErrorMessage(data.message);
@@ -99,35 +102,6 @@ export default function AddGraphForm() {
       ];
     return graphTypes;
   };
-
-  // Get user favorite for sport types, default is all sports
-  const [favoriteSports, setFavoriteSports] = useState([]);
-  const fetchFavorites = async () => {
-    try {
-      const response = await fetch('http://localhost:3010/v0/favorites?'
-                        + new URLSearchParams({username: localStorageUser}));
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      let favoriteSports = await response.json();
-      let length = (Object.keys(favoriteSports).length)
-      favoriteSports[(length)] = "All Sports";
-      favoriteSports[(length+1)] = "Pie";      
-      setFavoriteSports(favoriteSports);
-    } catch (error) {
-      console.error(error);
-      setErrorMessage('An error occurred. Please try again.');
-
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 10000);
-    }
-  };
-  useEffect(() => {
-    fetchFavorites();
-  }, []);
 
   return (
     <>
@@ -175,26 +149,7 @@ export default function AddGraphForm() {
           ))}
         </Select>
         </Box>
-        {/* Sport */}
-        <Box mb={2} ml={2}>
-          <Typography variant="h6">Sport Type</Typography>
-          <Select
-            labelId={`sport-type-select`}
-            id={`sport`}
-            value={sport}
-            onChange={(e) =>
-              setState((prevState) => ({ ...prevState, sport: e.target.value }))
-            }
-            autoWidth
-            label="Sport Type"
-          >
-            {favoriteSports.map((sportType, index) => (
-              <MenuItem key={sportType} value={sportType} id={`menu-item-${sportType}-${index}`}>
-                {sportType}
-              </MenuItem>
-            ))}
-          </Select>
-        </Box>
+        
         {/* Date */}
         <Box mb={2} ml={2}>
         <Typography variant="h6">Start Date*</Typography>
@@ -202,7 +157,6 @@ export default function AddGraphForm() {
           <DemoContainer components={['MobileDatePicker']}>
             <MobileDatePicker
               inputFormat="YYYY-MM-DD"
-              disableFuture
               required
               onChange={(value) =>
                 setState((prevState) => ({
@@ -214,11 +168,6 @@ export default function AddGraphForm() {
             />
           </DemoContainer>
         </LocalizationProvider>
-        </Box>
-
-        {/* Goals Toggle TODO */}
-        <Box mb={2} ml={2}>
-          <FormControlLabel control={<Switch />} label="Compare with Goals" />
         </Box>
 
       <Button variant="contained" color="primary" type="submit" ml={2}>
@@ -245,6 +194,18 @@ export default function AddGraphForm() {
           </Alert>
         </Snackbar>
       </form>
+      <Typography variant="h6">Planned Training Distribution:</Typography>
+      <Box
+        graphGenerated
+        component="img"
+        sx={{
+          height: 500,
+          width: 700,
+        }}
+        alt={defaultImage}
+        src={graphGenerated? planPieGraph : defaultImage}
+      />
+
     </>
   );
 }

@@ -4,12 +4,15 @@ import Grid from '@mui/system/Unstable_Grid/Grid';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import { Typography } from '@mui/material';
 import ResponsiveAppBar from '../Components/appBar';
 import AddGraphForm from '../Components/addGraphForm';
 import { userTheme } from '../Components/theme';
 import ActivitiesChart from '../Components/activitiesChart'
 import defaultImage from '../Components/images/default.png';
 import generalGraph from '../Components/images/generalGraph.png';
+import pieGraph from '../Components/images/pieGraph.png';
+
 
 /**
  * Creates the Data Center Page for details data analysis.
@@ -24,7 +27,7 @@ export default function DataCenter() {
         <CssBaseline />
 
         <ResponsiveAppBar />
-        <h1>Training Control Center, {localStorage.getItem('user')}: Data Center</h1>
+        <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}: Data Center</Typography>
         <Box>
           <ActivitiesChart/>
           <Grid container spacing={12} sx={{mt: 1}}>
@@ -32,6 +35,7 @@ export default function DataCenter() {
             <AddGraphForm />
           </Grid>
           <Grid container xs={5}>
+            <Typography variant="h6">Line Graphs:</Typography>
             <Box
               component="img"
               sx={{
@@ -40,6 +44,16 @@ export default function DataCenter() {
               }}
               alt={defaultImage}
               src={generalGraph}
+            />
+            <Typography variant="h6">Pie Graphs:</Typography>
+            <Box
+              component="img"
+              sx={{
+                height: 500,
+                width: 700,
+              }}
+              alt={defaultImage}
+              src={pieGraph}
             />
           </Grid>
         </Grid>

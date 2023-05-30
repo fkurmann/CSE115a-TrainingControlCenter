@@ -1,4 +1,6 @@
 const dbActivities = require('../db/dbActivities');
+const dbPlans = require('../db/dbPlans');
+
 const { spawn } = require('child_process');
 
 /**
@@ -27,11 +29,28 @@ exports.drawGraph = async (req, res) => {
   }
 
   // Convert the date object to a YYYY/MM/DD format
-  let formattedStartDate = startDate ? startDate.toISOString().substring(0, 10) : null;
-  let formattedEndDate = endDate ? endDate.toISOString().substring(0, 10) : null;
+  let formattedStartDate = startDate ? startDate.toISOString().substring(0, 10) : undefined;
+  let formattedEndDate = endDate ? endDate.toISOString().substring(0, 10) : undefined;
+
+  let pieGraph = false;
+  let planPieGraph = false;
+  if (sport == "Pie") {
+    pieGraph = true;
+  }
+  if (sport == "PlanPie") {
+    planPieGraph = true;
+  }
+  if (sport == "Pie" || sport == "PlanPie"|| sport == "All Sports"){
+    sport = undefined;
+  }
 
   // Database call
-  const returnValue = await dbActivities.findActivity(username, null, sport, null, null, null, null, null, formattedStartDate, formattedEndDate);
+  let returnValue;
+  if (planPieGraph == true) {
+    returnValue = await dbPlans.findPlannedActivity(username, undefined, sport, undefined, undefined, undefined, undefined, undefined, formattedStartDate, formattedEndDate);
+  } else {
+    returnValue = await dbActivities.findActivity(username, undefined, sport, undefined, undefined, undefined, undefined, undefined, formattedStartDate, formattedEndDate);
+  }
   // Error case
   if (returnValue === -1) {
     res.status(401).send('Error getting activities from graph.js');
@@ -39,23 +58,47 @@ exports.drawGraph = async (req, res) => {
 
   // Spawn python graphing child processs
   let responseData;
-  const python = await spawn('python3', ['./src/graphing/generalGraphs.py', username, duration, graphType, sport, goal,
+
+  // Pie chart
+  if (pieGraph == true || planPieGraph == true) {
+    const python = await spawn('python3', ['./src/graphing/pieGraphs.py', username, duration, graphType,
+    startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), JSON.stringify(returnValue), outFile]);
+    // Stdout data
+    python.stdout.on('data', (data) => {
+      responseData = data.toString();
+      console.log(responseData);
+    });
+
+    // Error data
+    python.stderr.on('data', (data) => {
+      console.log('Error: ' + data);
+    });
+
+    // Close process, return the activities that went into the graph
+    python.on('close', (code) => {
+      console.log('Closing: ' + code);
+      res.status(200).json(returnValue);
+  });
+
+  // Line chart
+  } else {
+    const python = await spawn('python3', ['./src/graphing/generalGraphs.py', username, duration, graphType, sport, goal,
     startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), JSON.stringify(returnValue), outFile]);
 
-  // Stdout data
-  python.stdout.on('data', (data) => {
-    responseData = data.toString();
-  });
+    // Stdout data
+    python.stdout.on('data', (data) => {
+      responseData = data.toString();
+    });
 
-  // Error data
-  python.stderr.on('data', (data) => {
-    console.log('Error: ' + data);
-  });
+    // Error data
+    python.stderr.on('data', (data) => {
+      console.log('Error: ' + data);
+    });
 
-  // Close process, return the activities that went into the graph
-  python.on('close', (code) => {
-    //console.log('Closing: ' + code);
-    // res.send(responseData)
-    res.status(200).json(returnValue);
-  });
+    // Close process, return the activities that went into the graph
+    python.on('close', (code) => {
+      //console.log('Closing: ' + code);
+      res.status(200).json(returnValue);
+    });
+  }
 };

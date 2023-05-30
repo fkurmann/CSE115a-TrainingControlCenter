@@ -9,6 +9,7 @@ import ResponsiveAppBar from '../Components/appBar';
 import AddActivityForm from '../Components/addActivityForm';
 import HomeCalendar from '../Components/weeklyHomeCalendar';
 import { userTheme } from '../Components/theme';
+import { Typography } from '@mui/material';
 
 /**
  * Creates the Home page upon successful user login.
@@ -23,7 +24,7 @@ export default function Home() {
         <CssBaseline />
 
         <ResponsiveAppBar />
-        <h1>Training Control Center, {localStorage.getItem('user')}</h1>
+        <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}</Typography>
         <Box>
           <div className='parent'>
             <div style={{float: 'left'}}>

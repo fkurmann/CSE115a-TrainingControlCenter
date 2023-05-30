@@ -50,19 +50,19 @@ exports.findPlannedActivity = async (username, name, sport, type, minDuration, m
     }
   }
   if ((minDuration != undefined) && (maxDuration != undefined)) {
-    parameters['json.moving_time'] = {$gte: minDuration, $lte: maxDuration};
+    parameters['moving_time'] = {$gte: minDuration, $lte: maxDuration};
   } else if ((minDuration == undefined) && (maxDuration != undefined)) {
-    parameters['json.moving_time'] = {$lte: maxDuration};
+    parameters['moving_time'] = {$lte: maxDuration};
   } else if ((minDuration != undefined) && (maxDuration == undefined)) {
-    parameters['json.moving_time'] = {$gte: minDuration};
+    parameters['moving_time'] = {$gte: minDuration};
   }
 
   if ((minDistance != undefined) && (maxDistance != undefined)) {
-    parameters['json.distance'] = {$gte: minDistance, $lte: maxDistance};
+    parameters['distance'] = {$gte: minDistance, $lte: maxDistance};
   } else if ((minDistance == undefined) && (maxDistance != undefined)) {
-    parameters['json.distance'] = {$lte: maxDistance};
+    parameters['distance'] = {$lte: maxDistance};
   } else if ((minDistance != undefined) && (maxDistance == undefined)) {
-    parameters['json.distance'] = {$gte: minDistance};
+    parameters['distance'] = {$gte: minDistance};
   }
 
   if (minDate != undefined) {
@@ -79,11 +79,11 @@ exports.findPlannedActivity = async (username, name, sport, type, minDuration, m
   }
 
   if ((minDate != undefined) && (maxDate != undefined)) {
-    parameters['json.start_date_local'] = {$gte: new Date(minDate).toISOString(), $lte: new Date(maxDate).toISOString()};
+    parameters['start_date_local'] = {$gte: new Date(minDate).toISOString(), $lte: new Date(maxDate).toISOString()};
   } else if ((minDate == undefined) && (maxDate != undefined)) {
-    parameters['json.start_date_local'] = {$lte: new Date(maxDate).toISOString()};
+    parameters['start_date_local'] = {$lte: new Date(maxDate).toISOString()};
   } else if ((minDate != undefined) && (maxDate == undefined)) {
-    parameters['json.start_date_local'] = {$gte: new Date(minDate).toISOString()};
+    parameters['start_date_local'] = {$gte: new Date(minDate).toISOString()};
   }
 
   console.log(`Parameters: ${JSON.stringify(parameters)}`);
