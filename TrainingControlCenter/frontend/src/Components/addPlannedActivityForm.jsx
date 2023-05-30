@@ -8,9 +8,11 @@ import {
   Collapse,
   MenuItem,
   Select,
-  Typography
+  Typography,
+  IconButton,
+  InputAdornment,
 } from '@mui/material';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import EventIcon from '@mui/icons-material/Event';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
@@ -186,19 +188,29 @@ export default function AddPlannedActivityForm() {
         <Box mb={2} ml={2}>
         <Typography variant="h6">Date</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={['MobileDatePicker']}>
-            <MobileDatePicker
-              inputFormat="YYYY-MM-DD"
-              disablePast
-              onChange={(value) =>
-                setAdditionalInfo((prevState) => ({
-                  ...prevState,
-                  start_date_local: value ? value.toISOString() : null,
-                }))
-              }
-              renderInput={(params) => <TextField {...params} readOnly />}
-            />
-          </DemoContainer>
+          <MobileDatePicker
+            inputFormat="YYYY-MM-DD"
+            disablePast
+            value={additionalInfo.start_date_local}
+            onChange={(value) =>
+              setAdditionalInfo((prevState) => ({
+                ...prevState,
+                start_date_local: value ? value.toISOString() : null,
+              }))
+            }
+            renderInput={(params) => <TextField {...params}
+              readOnly
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton edge="end">
+                      <EventIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />}
+          />
         </LocalizationProvider>
         </Box>
 

@@ -9,9 +9,11 @@ import {
   Select,
   Typography,
   FormControlLabel,
-  Switch
+  Switch,
+  IconButton,
+  InputAdornment,
 } from '@mui/material';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import EventIcon from '@mui/icons-material/Event';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
@@ -154,19 +156,29 @@ export default function AddPlanGraphForm() {
         <Box mb={2} ml={2}>
         <Typography variant="h6">Start Date*</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={['MobileDatePicker']}>
-            <MobileDatePicker
-              inputFormat="YYYY-MM-DD"
-              required
-              onChange={(value) =>
-                setState((prevState) => ({
-                  ...prevState,
-                  startDate: value ? value.toISOString() : null,
-                }))
-              }
-              renderInput={(params) => <TextField {...params} readOnly />}
-            />
-          </DemoContainer>
+          <MobileDatePicker
+            inputFormat="YYYY-MM-DD"
+            required
+            value={startDate}
+            onChange={(value) =>
+              setState((prevState) => ({
+                ...prevState,
+                startDate: value ? value.toISOString() : null,
+              }))
+            }
+            renderInput={(params) => <TextField {...params}
+              readOnly
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton edge="end">
+                      <EventIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />}
+          />
         </LocalizationProvider>
         </Box>
 
