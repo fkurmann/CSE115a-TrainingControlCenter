@@ -5,6 +5,7 @@ import {
   IconButton,
   Stack,
   Popover,
+  Typography
 } from '@mui/material';
 import SportIcon from './sportIcon';
 import ActivityCard from './activityCard';
@@ -82,7 +83,7 @@ export default function HomeCalendar() {
     isLoading ?
     <CircularProgress /> :
     <>
-    <h2 align="right">Current Week Overview</h2>
+    <Typography variant="h5" align="right">Current Week Overview</Typography>
     <div style={{ width: '100%' }}>
       <Box
         sx={{

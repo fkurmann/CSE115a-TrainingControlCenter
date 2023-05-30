@@ -23,24 +23,20 @@ export default function PlanTraining() {
     <ThemeProvider theme={userTheme}>
       <CssBaseline />
       <Container component='main'>
-        <CssBaseline />
         <ResponsiveAppBar />
         <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}: Plan Training</Typography>
-        <Box>
-          
-        </Box>
-        <Box>
+        <Box mt={2} mb={2}>
           <div className='parent'>
             <div style={{float: 'left'}}>
               <AddPlannedActivityForm />
             </div>
             <div style={{float: 'right'}}>
-              <PlanCalendar></PlanCalendar>
+              <AddPlanGraphForm />
             </div>
           </div>
-          <Grid xs={4}>
-            <AddPlanGraphForm />
-          </Grid>
+        </Box>
+        <Box mt={2}>
+          <PlanCalendar></PlanCalendar>
         </Box>
       </Container>
     </ThemeProvider>

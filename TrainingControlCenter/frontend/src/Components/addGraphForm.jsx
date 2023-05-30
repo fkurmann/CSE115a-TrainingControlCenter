@@ -133,7 +133,7 @@ export default function AddGraphForm() {
 
   return (
     <>
-      <h2>Generate a Graph</h2>
+      <Typography variant="h5">Generate a Graph</Typography>
       <form onSubmit={handleSubmit}>
         {/* Graph Type */}
         <Typography variant="h6" ml={2}>Graph Type*</Typography>

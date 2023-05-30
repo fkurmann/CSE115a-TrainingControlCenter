@@ -19,14 +19,11 @@ export default function ActivityList() {
     <ThemeProvider theme={userTheme}>
       <CssBaseline />
       <Container component='main'>
-        <CssBaseline />
-
         <ResponsiveAppBar />
         <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}: Activities</Typography>
-        <Box>
-          <ActivityGrid></ActivityGrid>
+        <Box mt={2}>
+          <ActivityGrid />
         </Box>
-
       </Container>
     </ThemeProvider>
   );

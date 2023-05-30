@@ -107,7 +107,7 @@ export default function PlanCalendar() {
     } else {
       setLoading(false);
     }
-  }, [user, weeklyActivities, loading, dayActivities, setData, currentViewName, currentDate]);
+  }, [user, weeklyActivities, loading, dayActivities]); //setData, currentViewName, currentDate
 
   return (
     <>
