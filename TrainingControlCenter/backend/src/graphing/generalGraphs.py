@@ -11,7 +11,6 @@ from datetime import date, datetime
 
 
 def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile):
-    # print ('Params: ' + username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile)
     startDate = date(int(startYear), int(startMonth) + 1, int(startDay))
     # Figure creation
     figureWidth = 5
@@ -22,10 +21,16 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
     panelHeight = 4
     panel1 = plt.axes([0.5 / figureWidth, 0.5 / figureHeight, panelWidth / figureWidth, panelHeight / figureHeight])
 
-    activityList = json.loads(jsonInput)
-
-    for item in activityList:
-        print (item['name'])
+    oldActivityList = json.loads(jsonInput)
+    activityIdList = []
+    activityList = []
+    for item in oldActivityList:
+        activityId = item['json']['id']
+        if activityId in activityIdList:
+            continue
+        elif activityId:
+            activityIdList.append(activityId)
+            activityList.append(item)
 
     # Get totals for distance or time
     maxX = 13
@@ -36,8 +41,24 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
     for i in range(1, maxX):
         totals.append([i, 0])
 
-    if (graphType == 'Distance'):
+    jsonKey = ('', 1)
+    if graphType == 'Distance':
+        jsonKey = ('distance', 1609.34)
+    elif graphType == 'Time':
+        jsonKey = ('moving_time', 3600)
+    elif graphType == 'Elevation':
+        jsonKey = ('total_elevation_gain', 1 / 3.28084)
+    elif graphType == 'Total Energy':
+        jsonKey = ('kilojoules', 1)
+    elif graphType == 'Average Power':
+        jsonKey = ('average_watts', 1)
+    elif graphType == 'Heart Rate':
+        jsonKey = ('average_heartrate', 1)
+
+    if jsonKey[0]:
         for item in activityList:
+            if jsonKey[0] not in item['json']:
+                continue
             # Lots of translation
             activityDate = datetime.strptime(item['start_date_local'], '%Y-%m-%dT%H:%M:%SZ').date()
             # print(startDate, activityDate)
@@ -55,26 +76,7 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
 
             # print(startDateDelta)
             if (startDateDelta < maxX):
-                totals[startDateDelta][1] += (item['distance'] / 1609.34)
-
-    if (graphType == 'Time'):
-        for item in activityList:
-            # Lots of translation
-            activityDate = datetime.strptime(item['start_date_local'], '%Y-%m-%dT%H:%M:%SZ').date()
-            startDateDelta = (activityDate - startDate).days
-            startDateDelta = int(startDateDelta)
-
-            if duration == 'Week':
-                startDateDelta = startDateDelta // 7
-            if duration == 'Month':
-                startDateDelta = startDateDelta // 30
-
-            # Check logic:
-            if (startDateDelta != 0):
-                startDateDelta -= 1
-
-            if (startDateDelta < maxX):
-                totals[startDateDelta][1] += (item['moving_time'] / 3600)
+                totals[startDateDelta][1] += (item['json'][jsonKey[0]] / jsonKey[1])
 
     if (graphType == 'Quantity'):
         for item in activityList:
@@ -114,7 +116,7 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
                     markeredgewidth=0.1,
                     markersize=4,
                     color='black',
-                    linewidth=0,
+                    linewidth=1,
                     alpha=1)
 
     # Median, average, standard deviation
@@ -123,6 +125,7 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
         if item[1] != 0:
             totalValues.append(item[1])
     
+
 
     if (len(totalValues) != 0):
         averageValue = np.average(totalValues)
@@ -149,6 +152,7 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
         
         # Legend
         panel1.legend([average, median, stdDevLow, stdDevHigh], ['Average', 'Median', '1 Standard Deviation'])
+
 
     # Goal overlay, optional
     # If goals selected, get goal for corresponding sport of type time/distance from database TODO
@@ -177,6 +181,7 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
     # Save location in images folder
     plt.savefig('../frontend/src/Components/images/' + outFile, dpi=600)
     return 'Graphing Complete'
+
 
 # generalHistoryGraph('fkurmann', 'Week', 'Distance', 'Run', False, 2023, 2, 19, 'string', 'test')
 generalHistoryGraph(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10])
