@@ -33,6 +33,7 @@ export default function PlanCalendar() {
   };
 
   const reducer = (state, action) => {
+    console.log('Reducer', state, action);
     switch (action.type) {
       case 'setLoading':
         return { ...state, loading: action.payload };
@@ -50,7 +51,7 @@ export default function PlanCalendar() {
   const mapActivityData = activity => ({
     Sport: activity.sport,
     startDate: usaTime(activity.start_date_local),
-    endDate: usaTime(activity.start_date_local), // +1!
+    endDate: usaTime(activity.start_date_local + 10), // +1!
     title: activity.name,
   });
 
@@ -93,11 +94,15 @@ export default function PlanCalendar() {
               temp[i] = getActivitiesForDay(res, i.toString())
             }
             setDayActivities(temp);
+            // setData(res.json);
+            // setLoading(false);
           } else if (res.length === 0) {
-            console.log("Loaded planned activities", res);
+            console.log("Loaded planned activities, 0", res);
             setWeeklyActivities(["no activities"])
             let temp = {0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: []};
             setDayActivities(temp);
+            // setData(res.json);
+            // setLoading(false);
           }
         })
         .catch((err) => {
@@ -107,7 +112,7 @@ export default function PlanCalendar() {
     } else {
       setLoading(false);
     }
-  }, [user, weeklyActivities, loading, dayActivities]); //setData, currentViewName, currentDate
+  }, [user, weeklyActivities, loading, dayActivities, setData, currentViewName, currentDate]); //setData, currentViewName, currentDate
 
   return (
     <>
@@ -187,14 +192,14 @@ function getLastDayOfWeek(d) {
 function getActivitiesForDay(activities, day) {
   let day_activities = []
   for (let i = 0; i < activities.length; i++) {
-    if (new Date(activities[i]['json']['start_date_local']).getDay().toString() === day) {
+    if (new Date(activities[i]['start_date_local']).getDay().toString() === day) {
       // Remove duplicate activities
       if(day_activities.filter((a) => {
-          return activities[i].json.distance === a.distance &&
-                activities[i].json.moving_time === a.moving_time &&
-                activities[i].json.name === a.json.name &&
-                activities[i].json.start_date_local === a.json.start_date_local &&
-                activities[i].json.sport_type === a.json.sport_type
+          return activities[i].distance === a.distance &&
+                activities[i].moving_time === a.moving_time &&
+                activities[i].name === a.name &&
+                activities[i].start_date_local === a.start_date_local &&
+                activities[i].sport_type === a.sport_type
         }).length > 0) {
         continue;
       }
