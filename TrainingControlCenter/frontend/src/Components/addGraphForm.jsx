@@ -9,9 +9,11 @@ import {
   Select,
   Typography,
   FormControlLabel,
-  Switch
+  Switch,
+  IconButton,
+  InputAdornment,
 } from '@mui/material';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import EventIcon from '@mui/icons-material/Event';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
@@ -30,7 +32,7 @@ export default function AddGraphForm() {
     graphType: '',
     goal: '',
     sport: '',
-    outFile: 'generalGraph',
+    outFile: '',
   });
 
   // Success and error message
@@ -51,7 +53,7 @@ export default function AddGraphForm() {
           sport: sport,
           goal: goal,
           startDate: formattedDate,
-          outFile: outFile
+          outFile: (sport == 'Pie') ? 'pieGraph' : 'generalGraph' 
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -95,6 +97,7 @@ export default function AddGraphForm() {
     const graphTypes = [
         "Time",
         "Distance",
+        "Quantity",
         "Elevation",
         "Total Energy",
         "Average Power",
@@ -104,7 +107,7 @@ export default function AddGraphForm() {
   };
 
   // Get user favorite for sport types, default is all sports
-  const [favoriteSports, setFavoriteSports] = useState(['All Sports']);
+  const [favoriteSports, setFavoriteSports] = useState([]);
   const fetchFavorites = async () => {
     try {
       const response = await fetch('http://localhost:3010/v0/favorites?'
@@ -114,7 +117,10 @@ export default function AddGraphForm() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const favoriteSports = await response.json();
+      let favoriteSports = await response.json();
+      let length = (Object.keys(favoriteSports).length)
+      favoriteSports[(length)] = "All Sports";
+      favoriteSports[(length+1)] = "Pie";      
       setFavoriteSports(favoriteSports);
     } catch (error) {
       console.error(error);
@@ -131,7 +137,7 @@ export default function AddGraphForm() {
 
   return (
     <>
-      <h2>Generate a Graph</h2>
+      <Typography variant="h5">Generate a Graph</Typography>
       <form onSubmit={handleSubmit}>
         {/* Graph Type */}
         <Typography variant="h6" ml={2}>Graph Type*</Typography>
@@ -199,20 +205,30 @@ export default function AddGraphForm() {
         <Box mb={2} ml={2}>
         <Typography variant="h6">Start Date*</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={['MobileDatePicker']}>
-            <MobileDatePicker
-              inputFormat="YYYY-MM-DD"
-              disableFuture
-              required
-              onChange={(value) =>
-                setState((prevState) => ({
-                  ...prevState,
-                  startDate: value ? value.toISOString() : null,
-                }))
-              }
-              renderInput={(params) => <TextField {...params} readOnly />}
-            />
-          </DemoContainer>
+          <MobileDatePicker
+            inputFormat="YYYY-MM-DD"
+            disableFuture
+            required
+            value={startDate}
+            onChange={(value) =>
+              setState((prevState) => ({
+                ...prevState,
+                startDate: value ? value.toISOString() : null,
+              }))
+            }
+            renderInput={(params) => <TextField {...params}
+              readOnly
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton edge="end">
+                      <EventIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />}
+          />
         </LocalizationProvider>
         </Box>
 

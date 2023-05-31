@@ -8,9 +8,11 @@ import {
   Collapse,
   MenuItem,
   Select,
-  Typography
+  Typography,
+  IconButton,
+  InputAdornment,
 } from '@mui/material';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import EventIcon from '@mui/icons-material/Event';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
@@ -26,6 +28,33 @@ export default function AddActivityForm() {
   const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
   const dist_unit = isMetric ? 'kilometers' : 'miles';
   const meters_per_unit = isMetric ? 1000 : 1609.34;
+
+  // Types
+  const getActivityTypes = () => {
+    const activityTypes = [
+        "Workout",
+        "Race",
+        "Endurance",
+        "Social",
+        "Commute",
+      ];
+    return activityTypes;
+  };
+
+  const sportsList = [
+    "Ride",
+    "Run",
+    "Swim",
+    "Walk",
+    "Hike",
+    "Weight Training",
+    "Workout",
+    "Row",
+    "Ski",
+    "VirtualRide",
+    "VirtualRun",
+  ];
+
   const [{ name, type = '', sport }, setState] = useState({
     name: '',
     type: '',
@@ -43,7 +72,6 @@ export default function AddActivityForm() {
   // Success and error message
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -62,7 +90,6 @@ export default function AddActivityForm() {
           distance: additionalInfo.distance * meters_per_unit,
           moving_time: additionalInfo.time,
           start_date_local: formattedDate
-          
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -102,35 +129,9 @@ export default function AddActivityForm() {
     }
   };
 
-  // get activity types
-  const getActivityTypes = () => {
-    const activityTypes = [
-        "Workout",
-        "Race",
-        "Endurance",
-        "Social",
-        "Commute",
-      ];
-    return activityTypes;
-  };
-
-  const sportsList = [
-    "Ride",
-    "Run",
-    "Swim",
-    "Walk",
-    "Hike",
-    "Weight Training",
-    "Workout",
-    "Row",
-    "Ski",
-    "VirtualRide",
-    "VirtualRun",
-  ];
-
   return (
     <>
-      <h2>Log an Activity</h2>
+      <Typography variant="h5">Log an Activity</Typography>
       <form onSubmit={handleSubmit}>
         {/* Name */}
         <Typography variant="h6" ml={2}>Name of Activity*</Typography>
@@ -187,19 +188,29 @@ export default function AddActivityForm() {
         <Box mb={2} ml={2}>
         <Typography variant="h6">Date</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={['MobileDatePicker']}>
-            <MobileDatePicker
-              inputFormat="YYYY-MM-DD"
-              disableFuture
-              onChange={(value) =>
-                setAdditionalInfo((prevState) => ({
-                  ...prevState,
-                  start_date_local: value ? value.toISOString() : null,
-                }))
-              }
-              renderInput={(params) => <TextField {...params} readOnly />}
-            />
-          </DemoContainer>
+          <MobileDatePicker
+            inputFormat="YYYY-MM-DD"
+            disableFuture
+            value={additionalInfo.start_date_local}
+            onChange={(value) =>
+              setAdditionalInfo((prevState) => ({
+                ...prevState,
+                start_date_local: value ? value.toISOString() : null,
+              }))
+            }
+            renderInput={(params) => <TextField {...params}
+              readOnly
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton edge="end">
+                      <EventIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />}
+          />
         </LocalizationProvider>
         </Box>
 

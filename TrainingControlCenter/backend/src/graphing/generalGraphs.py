@@ -78,6 +78,25 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
             if (startDateDelta < maxX):
                 totals[startDateDelta][1] += (item['json'][jsonKey[0]] / jsonKey[1])
 
+    if (graphType == 'Quantity'):
+        for item in activityList:
+            # Lots of translation
+            activityDate = datetime.strptime(item['start_date_local'], '%Y-%m-%dT%H:%M:%SZ').date()
+            startDateDelta = (activityDate - startDate).days
+            startDateDelta = int(startDateDelta)
+
+            if duration == 'Week':
+                startDateDelta = startDateDelta // 7
+            if duration == 'Month':
+                startDateDelta = startDateDelta // 30
+
+            # Check logic:
+            if (startDateDelta != 0):
+                startDateDelta -= 1
+
+            if (startDateDelta < maxX):
+                totals[startDateDelta][1] += 1
+
     # Graphing
     # Panel ranges
     maxY = max([sublist[1] for sublist in totals])  # maxY is the largest y value, can be goal value
@@ -105,28 +124,35 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
     for item in totals:
         if item[1] != 0:
             totalValues.append(item[1])
+    
 
-    averageValue = np.average(totalValues)
-    medianValue = np.median(totalValues)
-    lowerDev = averageValue - np.std(totalValues)
-    upperDev = averageValue + np.std(totalValues)
 
-    average = mplpatches.Rectangle([0, averageValue],
-                                   width=maxX, height=0,
-                                   edgecolor='green', facecolor='green', linewidth=0.75)
-    median = mplpatches.Rectangle([0, medianValue],
-                                  width=maxX, height=0,
-                                  edgecolor='orange', facecolor='orange', linewidth=0.75)
-    stdDevLow = mplpatches.Rectangle([0, lowerDev],
-                                     width=maxX, height=0,
-                                     edgecolor='yellow', facecolor='yellow', linewidth=0.75)
-    stdDevHigh = mplpatches.Rectangle([0, upperDev],
-                                      width=maxX, height=0,
-                                      edgecolor='yellow', facecolor='yellow', linewidth=0.75)
-    panel1.add_patch(average)
-    panel1.add_patch(median)
-    panel1.add_patch(stdDevLow)
-    panel1.add_patch(stdDevHigh)
+    if (len(totalValues) != 0):
+        averageValue = np.average(totalValues)
+        medianValue = np.median(totalValues)
+        lowerDev = averageValue - np.std(totalValues)
+        upperDev = averageValue + np.std(totalValues)
+   
+        average = mplpatches.Rectangle([0, averageValue], 
+                                        width=maxX, height=0,
+                                        edgecolor='green', facecolor='green', linewidth=0.75)
+        median = mplpatches.Rectangle([0, medianValue], 
+                                        width=maxX, height=0,
+                                        edgecolor='orange', facecolor='orange', linewidth=0.75)
+        stdDevLow = mplpatches.Rectangle([0, lowerDev], 
+                                        width=maxX, height=0,
+                                        edgecolor='yellow', facecolor='yellow', linewidth=0.75)
+        stdDevHigh = mplpatches.Rectangle([0, upperDev], 
+                                        width=maxX, height=0,
+                                        edgecolor='yellow', facecolor='yellow', linewidth=0.75)
+        panel1.add_patch(average)
+        panel1.add_patch(median)
+        panel1.add_patch(stdDevLow)
+        panel1.add_patch(stdDevHigh)
+        
+        # Legend
+        panel1.legend([average, median, stdDevLow, stdDevHigh], ['Average', 'Median', '1 Standard Deviation'])
+
 
     # Goal overlay, optional
     # If goals selected, get goal for corresponding sport of type time/distance from database TODO
@@ -136,9 +162,6 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
     # Ticks and labels
     panel1.set_xticks(np.arange(0, maxX))
     panel1.set_yticks(np.arange(0, maxY, yTickSpace))
-
-    # Legend
-    panel1.legend([average, median, stdDevLow, stdDevHigh], ['Average', 'Median', '1 Standard Deviation'])
 
     # Title
     panel1.set_title(f"{graphType} per {duration} for {sport}\nData starting {str(int(startMonth)+1)}/{str(int(startDay))}/{startYear}")
@@ -155,7 +178,7 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
                        top=False,
                        labeltop=False)
 
-    # TODO, save location in images folder
+    # Save location in images folder
     plt.savefig('../frontend/src/Components/images/' + outFile, dpi=600)
     return 'Graphing Complete'
 
