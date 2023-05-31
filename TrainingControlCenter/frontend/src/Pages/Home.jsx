@@ -21,11 +21,9 @@ export default function Home() {
     <ThemeProvider theme={userTheme}>
       <CssBaseline />
       <Container component='main'>
-        <CssBaseline />
-
         <ResponsiveAppBar />
         <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}</Typography>
-        <Box>
+        <Box mt={2}>
           <div className='parent'>
             <div style={{float: 'left'}}>
               <AddActivityForm />

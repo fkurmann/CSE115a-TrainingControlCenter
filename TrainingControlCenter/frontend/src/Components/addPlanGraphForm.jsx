@@ -107,117 +107,126 @@ export default function AddPlanGraphForm() {
 
   return (
     <>
-      <h2>Generate a Graph</h2>
-      <form onSubmit={handleSubmit}>
-        {/* Graph Type */}
-        <Typography variant="h6" ml={2}>Graph Type*</Typography>
-        <Box mb={2} ml={2}>
-        <Select
-          labelId="graph-type-select"
-          id="type"
-          label="Graph Type"
-          value={graphType}
-          onChange={(e) =>
-            setState((prevState) => ({ ...prevState, graphType: e.target.value }))
-          }
-          autoWidth
-          required
-        >
-          {getGraphTypes().map((graphType) => (
-            <MenuItem key={graphType} value={graphType}>
-              {graphType}
-            </MenuItem>
-          ))}
-        </Select>
-        </Box>
-        {/* Duration */}
-        <Typography variant="h6" ml={2}>Duration*</Typography>
-        <Box mb={2} ml={2}>
-        <Select
-          labelId="duration-select"
-          id="type"
-          label="Duration"
-          value={duration}
-          onChange={(e) =>
-            setState((prevState) => ({ ...prevState, duration: e.target.value }))
-          }
-          autoWidth
-          required
-        >
-          {getDurationTypes().map((durationType) => (
-            <MenuItem key={durationType} value={durationType}>
-              {durationType}
-            </MenuItem>
-          ))}
-        </Select>
-        </Box>
-        
-        {/* Date */}
-        <Box mb={2} ml={2}>
-        <Typography variant="h6">Start Date*</Typography>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <MobileDatePicker
-            inputFormat="YYYY-MM-DD"
-            required
-            value={startDate}
-            onChange={(value) =>
-              setState((prevState) => ({
-                ...prevState,
-                startDate: value ? value.toISOString() : null,
-              }))
+    <Box>
+    <div className='parent'>
+      <div style={{float: 'left'}}>
+        <Typography variant="h5">Generate a Graph</Typography>
+        <form onSubmit={handleSubmit}>
+          
+          {/* Graph Type */}
+          <Typography variant="h6" ml={2}>Graph Type*</Typography>
+          <Box mb={2} ml={2}>
+          <Select
+            labelId="graph-type-select"
+            id="type"
+            label="Graph Type"
+            value={graphType}
+            onChange={(e) =>
+              setState((prevState) => ({ ...prevState, graphType: e.target.value }))
             }
-            renderInput={(params) => <TextField {...params}
-              readOnly
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton edge="end">
-                      <EventIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />}
-          />
-        </LocalizationProvider>
-        </Box>
+            autoWidth
+            required
+          >
+            {getGraphTypes().map((graphType) => (
+              <MenuItem key={graphType} value={graphType}>
+                {graphType}
+              </MenuItem>
+            ))}
+          </Select>
+          </Box>
 
-      <Button variant="contained" color="primary" type="submit" ml={2}>
-        Generate Graph
-      </Button>
-        <Snackbar
-          open={showSuccessMessage}
-          autoHideDuration={10000}
-          onClose={() => setShowSuccessMessage(false)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        >
-          <Alert severity="success" onClose={() => setShowSuccessMessage(false)}>
-            Generating graph
-          </Alert>
-        </Snackbar>
-        <Snackbar
-          open={!!errorMessage}
-          autoHideDuration={10000}
-          onClose={() => setErrorMessage('')}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        >
-          <Alert severity="error" onClose={() => setErrorMessage('')}>
-            {errorMessage}
-          </Alert>
-        </Snackbar>
-      </form>
-      <Typography variant="h6">Planned Training Distribution:</Typography>
-      <Box
-        graphGenerated
-        component="img"
-        sx={{
-          height: 500,
-          width: 700,
-        }}
-        alt={defaultImage}
-        src={graphGenerated? planPieGraph : defaultImage}
-      />
+          {/* Duration */}
+          <Typography variant="h6" ml={2}>Duration*</Typography>
+          <Box mb={2} ml={2}>
+          <Select
+            labelId="duration-select"
+            id="type"
+            label="Duration"
+            value={duration}
+            onChange={(e) =>
+              setState((prevState) => ({ ...prevState, duration: e.target.value }))
+            }
+            autoWidth
+            required
+          >
+            {getDurationTypes().map((durationType) => (
+              <MenuItem key={durationType} value={durationType}>
+                {durationType}
+              </MenuItem>
+            ))}
+          </Select>
+          </Box>
+          
+          {/* Date */}
+          <Box mb={2} ml={2}>
+          <Typography variant="h6">Start Date*</Typography>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <MobileDatePicker
+              inputFormat="YYYY-MM-DD"
+              required
+              value={startDate}
+              onChange={(value) =>
+                setState((prevState) => ({
+                  ...prevState,
+                  startDate: value ? value.toISOString() : null,
+                }))
+              }
+              renderInput={(params) => <TextField {...params}
+                readOnly
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton edge="end">
+                        <EventIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />}
+            />
+          </LocalizationProvider>
+          </Box>
 
-    </>
+          <Button variant="contained" color="primary" type="submit" ml={2}>
+            Generate Graph
+          </Button>
+          <Snackbar
+            open={showSuccessMessage}
+            autoHideDuration={10000}
+            onClose={() => setShowSuccessMessage(false)}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <Alert severity="success" onClose={() => setShowSuccessMessage(false)}>
+              Generating graph
+            </Alert>
+          </Snackbar>
+          <Snackbar
+            open={!!errorMessage}
+            autoHideDuration={10000}
+            onClose={() => setErrorMessage('')}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <Alert severity="error" onClose={() => setErrorMessage('')}>
+              {errorMessage}
+            </Alert>
+          </Snackbar>
+        </form>
+      </div>
+      <div style={{float: 'right'}}>
+        <Typography variant="h5">Planned Training Distribution Graph:</Typography>
+        <Box
+          graphGenerated
+          component="img"
+          sx={{
+            height: 300,
+            width: 500,
+          }}
+          alt={defaultImage}
+          src={graphGenerated? planPieGraph : defaultImage}
+        />
+      </div>
+    </div>
+  </Box>
+  </>
   );
 }

@@ -131,7 +131,7 @@ export default function AddPlannedActivityForm() {
 
   return (
     <>
-      <h2>Plan an Activity</h2>
+      <Typography variant="h5">Plan an Activity</Typography>
       <form onSubmit={handleSubmit}>
         {/* Name */}
         <Typography variant="h6" ml={2}>Name of Activity*</Typography>

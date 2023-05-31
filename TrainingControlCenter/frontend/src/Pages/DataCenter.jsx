@@ -24,18 +24,18 @@ export default function DataCenter() {
     <ThemeProvider theme={userTheme}>
       <CssBaseline />
       <Container component='main'>
-        <CssBaseline />
-
         <ResponsiveAppBar />
         <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}: Data Center</Typography>
-        <Box>
+        <Box mt={2}>
           <ActivitiesChart/>
-          <Grid container spacing={12} sx={{mt: 1}}>
-          <Grid xs={4}>
-            <AddGraphForm />
-          </Grid>
-          <Grid container xs={5}>
-            <Typography variant="h6">Line Graphs:</Typography>
+          <Grid container>
+            <Grid item xs={4}>
+              <AddGraphForm />
+            </Grid>
+          <Grid container xs={5}
+            alignItems="center"
+            justifyContent="center">
+            <Typography variant="h5">Line Graphs:</Typography>
             <Box
               component="img"
               sx={{
@@ -45,7 +45,7 @@ export default function DataCenter() {
               alt={defaultImage}
               src={generalGraph}
             />
-            <Typography variant="h6">Pie Graphs:</Typography>
+            <Typography variant="h5">Pie Graphs:</Typography>
             <Box
               component="img"
               sx={{
