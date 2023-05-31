@@ -6,9 +6,10 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { getFiveActivities } from '../Components/stravaData';
 import ResponsiveAppBar from '../Components/appBar';
-import AddActivityForm from '../Components/addActivityForm copy';
+import AddActivityForm from '../Components/addActivityForm';
 import HomeCalendar from '../Components/weeklyHomeCalendar';
 import { userTheme } from '../Components/theme';
+import { Typography } from '@mui/material';
 
 /**
  * Creates the Home page upon successful user login.
@@ -20,11 +21,9 @@ export default function Home() {
     <ThemeProvider theme={userTheme}>
       <CssBaseline />
       <Container component='main'>
-        <CssBaseline />
-
         <ResponsiveAppBar />
-        <h1>Training Control Center, {localStorage.getItem('user')}</h1>
-        <Box>
+        <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}</Typography>
+        <Box mt={2}>
           <div className='parent'>
             <div style={{float: 'left'}}>
               <AddActivityForm />
