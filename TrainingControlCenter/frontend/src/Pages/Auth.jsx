@@ -28,6 +28,11 @@ export default function Login() {
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('goals');
+    localStorage.removeItem('isMetric');
+    localStorage.removeItem('colorTheme');
+    localStorage.removeItem('brightnessMode');
+    localStorage.removeItem('activityMapColor');
+    localStorage.removeItem('activityMapMarkers');
   }, []);
 
   const handleInputChange = (event) => {
@@ -56,6 +61,11 @@ export default function Login() {
         localStorage.setItem('user', json.username);
         localStorage.setItem('accessToken', json.accessToken);
         localStorage.setItem('favorites', JSON.stringify(json.favorites)); // localStorage can only store strings
+        localStorage.setItem('isMetric', json.isMetric);
+        localStorage.setItem('brightnessMode', json.brightnessMode);
+        localStorage.setItem('colorTheme', json.colorTheme);
+        localStorage.setItem('activityMapColor', json.activityMapColor);
+        localStorage.setItem('activityMapMarkers', json.activityMapMarkers);
         history('/');
       })
       .catch((err) => {

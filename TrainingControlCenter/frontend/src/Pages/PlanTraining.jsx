@@ -20,7 +20,7 @@ import AddPlanGraphForm from '../Components/addPlanGraphForm';
  */
 export default function PlanTraining() {
   return (
-    <ThemeProvider theme={userTheme}>
+    <ThemeProvider theme={userTheme()}>
       <CssBaseline />
       <Container component='main'>
         <ResponsiveAppBar />

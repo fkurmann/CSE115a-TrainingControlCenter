@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const dbUsers = require('../db/dbUsers')
+const dbUsers = require('../db/dbUsers');
+const dbPreferences = require('../db/dbPreferences');
 
 const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ
 lbWFpbCI6ImFubmFAYm9va3MuY29tIiwicm9sZSI6ImFkbWluIiwiaW
@@ -15,6 +16,7 @@ exports.login = async (req, res) => {
   const {username, password} = req.body;
   // Check if user with these credentials exists
   const returnValue = await dbUsers.findUser(username, password);
+  const myPreferences = await dbPreferences.findPreferences(username);
   if (returnValue === -1) {
     res.status(401).send('Invalid credentials');
   } else {
@@ -29,6 +31,11 @@ exports.login = async (req, res) => {
       username: username,
       accessToken: accessToken,
       favorites: returnValue.favorites,
+      isMetric: myPreferences.isMetric || false,
+      brightnessMode: myPreferences.brightnessMode || 'light',
+      colorTheme: myPreferences.colorTheme || 'blue',
+      activityMapColor: myPreferences.activityMapColor || 'red',
+      activityMapMarkers: myPreferences.activityMapMarkers || false,
     });
   }
 };

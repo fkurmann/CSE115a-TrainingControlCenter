@@ -7,11 +7,13 @@ const myColors = {
   orange: 'rgb(237, 108, 2)',
   red: 'rgb(211, 47, 47)'
 };
-export const userTheme = createTheme({
-  palette: {
-    mode: localStorage.getItem('brightnessMode') || 'light',
-    primary: {
-      main: myColors[localStorage.getItem('colorTheme') || 'blue']
+export const userTheme = () => {
+  return createTheme({
+    palette: {
+      mode: localStorage.getItem('brightnessMode') || 'light',
+      primary: {
+        main: myColors[localStorage.getItem('colorTheme') || 'blue']
+      }
     }
-  }
-});
+  });
+}
