@@ -9,9 +9,9 @@ import { Typography } from '@mui/material';
 import ResponsiveAppBar from '../Components/appBar';
 import { userTheme } from '../Components/theme';
 import AddPlannedActivityForm from '../Components/addPlannedActivityForm';
+import AddPlannedSummary from '../Components/addPlannedSummary';
 import PlanCalendar from '../Components/planCalendar';
 import AddPlanGraphForm from '../Components/addPlanGraphForm';
-
 
 /**
  * Creates the Training Plan page for workout creation and planning.
@@ -29,6 +29,7 @@ export default function PlanTraining() {
           <div className='parent'>
             <div style={{float: 'left'}}>
               <AddPlannedActivityForm />
+              <AddPlannedSummary />
             </div>
             <div style={{float: 'right'}}>
               <AddPlanGraphForm />
