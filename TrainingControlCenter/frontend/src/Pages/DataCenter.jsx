@@ -18,7 +18,7 @@ import generalGraph from '../Components/images/generalGraph.png';
  */
 export default function DataCenter() {
   return (
-    <ThemeProvider theme={userTheme}>
+    <ThemeProvider theme={userTheme()}>
       <CssBaseline />
       <Container component='main'>
         <CssBaseline />

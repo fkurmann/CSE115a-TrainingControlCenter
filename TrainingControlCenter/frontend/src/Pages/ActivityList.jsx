@@ -14,7 +14,7 @@ import { userTheme } from '../Components/theme';
  */
 export default function ActivityList() {
   return (
-    <ThemeProvider theme={userTheme}>
+    <ThemeProvider theme={userTheme()}>
       <CssBaseline />
       <Container component='main'>
         <CssBaseline />

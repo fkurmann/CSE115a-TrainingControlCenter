@@ -17,7 +17,7 @@ import { userTheme } from '../Components/theme';
  */
 export default function Home() {
   return (
-    <ThemeProvider theme={userTheme}>
+    <ThemeProvider theme={userTheme()}>
       <CssBaseline />
       <Container component='main'>
         <CssBaseline />

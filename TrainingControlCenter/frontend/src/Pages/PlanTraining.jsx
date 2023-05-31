@@ -15,7 +15,7 @@ import AddPlannedActivityForm from '../Components/addPlannedActivityForm';
  */
 export default function PlanTraining() {
   return (
-    <ThemeProvider theme={userTheme}>
+    <ThemeProvider theme={userTheme()}>
       <CssBaseline />
       <Container component='main'>
         <CssBaseline />

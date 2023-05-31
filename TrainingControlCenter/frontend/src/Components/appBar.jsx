@@ -18,7 +18,7 @@ import AdbIcon from '@mui/icons-material/Adb';
  *
  * @return {HTMLElement} - includes pages for Data Center, Activity Lists, Settings, and more.
  */
-function ResponsiveAppBar() {
+export default function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -42,6 +42,21 @@ function ResponsiveAppBar() {
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');
   };
+
+  // This function creates a random avatar color based on username.
+  // Taken from https://mui.com/material-ui/react-avatar/
+  const avatarColor = (username) => {
+    let hash = 0;
+    for (let i = 0; i < username.length; i += 1) {
+      hash = username.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    let color = '#';
+    for (let i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+    return color;
+  }
 
   return (
     <AppBar position="static">
@@ -154,7 +169,7 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="avatar">
+                <Avatar sx={{ bgcolor: avatarColor(localStorage.getItem('user') || '_') }} alt="avatar" >
                   {(localStorage.getItem('user') || '_').charAt(0)}
                 </Avatar>
               </IconButton>
@@ -192,4 +207,3 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
-export default ResponsiveAppBar;

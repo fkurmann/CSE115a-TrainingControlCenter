@@ -30,29 +30,146 @@ function ColorChip({ color, isSmall=false }) {
 }
 
 export default function Preferences({ colorTheme, setColorTheme, brightnessMode, setBrightnessMode }) {
-  const [isMetric, setIsMetric] = React.useState(localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false);
+  const user = localStorage.getItem('user');
+  const [isMetric, setIsMetric] = React.useState(localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : null);
   const [activityMapColor, setActivityMapColor] = React.useState(localStorage.getItem('activityMapColor') || 'red');
-  const [activityMapMarkers, setActivityMapMarkers] = React.useState(localStorage.getItem('activityMapMarkers') ? localStorage.getItem('activityMapMarkers') === 'true' : true);
+  const [activityMapMarkers, setActivityMapMarkers] = React.useState(localStorage.getItem('activityMapMarkers') ? localStorage.getItem('activityMapMarkers') === 'true' : false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [inQueue, setInQueue] = React.useState([]);
+  const [isUpdating, setIsUpdating] = React.useState([]);
+  const [updatePreference, setUpdatePreference] = React.useState({username: user});
 
   React.useEffect(() => {
+    if (isMetric == null && !isLoading) {
+      console.log('Loading preferences');
+      setIsLoading(true);
+      fetch('http://localhost:3010/v0/preferences?' + new URLSearchParams({username: user}), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw res;
+          }
+          return res.json();
+        })
+        .then((res) => {
+          setIsLoading(false);
+          console.log('Loaded preferences', res);
+          setIsMetric(res.isMetric || false);
+          setColorTheme(res.colorTheme || 'blue');
+          setBrightnessMode(res.brightnessMode || 'light');
+          setActivityMapColor(res.activityMapColor || 'red');
+          setActivityMapMarkers(res.activityMapMarkers || false);
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          alert(`Error retrieving preferences for user ${user}`);
+        });
+    }
+  }, [isMetric, activityMapColor, activityMapMarkers, setColorTheme, setBrightnessMode, isLoading, user]);
+
+  React.useEffect(() => {
+    if (Object.keys(updatePreference).length === 1 || isUpdating.length > 0) {
+      return;
+    }
+    const body = updatePreference;
+    console.log(`Updating preferences: ${JSON.stringify(body)}`);
+    Object.keys(body).forEach((field) => {
+      if (field !== 'username') {
+        setIsUpdating([...isUpdating, field]);
+        setInQueue(inQueue.filter((f) => f !== field));
+      }
+    });
+    setUpdatePreference({username: user});
+    fetch('http://localhost:3010/v0/preferences', {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw res;
+        }
+        Object.keys(body).forEach((field) => {
+          if (field !== 'username') {
+            localStorage.setItem(field, body[field]);
+            setIsUpdating(isUpdating.filter((f) => f !== field));
+          }
+        });
+        console.log(`Updated preferences: ${JSON.stringify(body)}`);
+      })
+      .catch((err) => {
+        Object.keys(body).forEach((field) => {
+          if (field !== 'username') {
+            setIsUpdating(isUpdating.filter((f) => f !== field));
+          }
+        });
+        console.error('Error when toggling preferences');
+      });
+    
+  }, [updatePreference, isUpdating, inQueue, user]);
+
+  React.useEffect(() => {
+    const cur = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : null;
+    if (isMetric == null || cur === isMetric) {
+      return;
+    }
     localStorage.setItem('isMetric', isMetric);
-  }, [isMetric]);
+    if (!inQueue.includes('isMetric')) {
+      setInQueue([...inQueue, 'isMetric']);
+    }
+    setUpdatePreference({...updatePreference, isMetric: isMetric});
+  }, [isMetric, inQueue, updatePreference]);
 
   React.useEffect(() => {
+    if (activityMapColor === localStorage.getItem('activityMapColor')) {
+      return;
+    }
     localStorage.setItem('activityMapColor', activityMapColor);
-  }, [activityMapColor]);
+    if (!inQueue.includes('activityMapColor')) {
+      setInQueue([...inQueue, 'activityMapColor']);
+    }
+    setUpdatePreference({...updatePreference, activityMapColor: activityMapColor});
+  }, [activityMapColor, inQueue, updatePreference]);
 
   React.useEffect(() => {
+    const cur = localStorage.getItem('activityMapMarkers') ? localStorage.getItem('activityMapMarkers') === 'true' : null;
+    if (cur === activityMapMarkers) {
+      return;
+    }
     localStorage.setItem('activityMapMarkers', activityMapMarkers);
-  }, [activityMapMarkers]);
+    if (!inQueue.includes('activityMapMarkers')) {
+      setInQueue([...inQueue, 'activityMapMarkers']);
+    }
+    setUpdatePreference({...updatePreference, activityMapMarkers: activityMapMarkers});
+  }, [activityMapMarkers, inQueue, updatePreference]);
 
   React.useEffect(() => {
+    if (colorTheme === localStorage.getItem('colorTheme')) {
+      return;
+    }
     localStorage.setItem('colorTheme', colorTheme);
-  }, [colorTheme]);
+    if (!inQueue.includes('colorTheme')) {
+      setInQueue([...inQueue, 'colorTheme']);
+    }
+    setUpdatePreference({...updatePreference, colorTheme: colorTheme});
+  }, [colorTheme, inQueue, updatePreference]);
 
   React.useEffect(() => {
+    if (brightnessMode === localStorage.getItem('brightnessMode')) {
+      return;
+    }
     localStorage.setItem('brightnessMode', brightnessMode);
-  }, [brightnessMode]);
+    if (!inQueue.includes('brightnessMode')) {
+      setInQueue([...inQueue, 'brightnessMode']);
+    }
+    setUpdatePreference({...updatePreference, brightnessMode: brightnessMode});
+  }, [brightnessMode, inQueue, updatePreference]);
 
   return (
     <>
