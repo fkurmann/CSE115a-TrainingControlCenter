@@ -1,7 +1,4 @@
 import React, { useEffect, useState, useCallback } from 'react';
-
-import 'react-datepicker/dist/react-datepicker.css';
-
 import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -78,7 +75,7 @@ function TrainingStats() {
   
     return (
       <div>
-        <h2>Summary</h2>
+        <Typography variant="h5">Plan Summary</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Grid container spacing={6} justifyContent="flex-start">
             <Grid item xs={6}>

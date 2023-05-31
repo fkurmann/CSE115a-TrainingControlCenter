@@ -97,7 +97,7 @@ export default function AddGraphForm() {
     const graphTypes = [
         "Time",
         "Distance",
-        "Quantity"
+        "Quantity",
         "Elevation",
         "Total Energy",
         "Average Power",
