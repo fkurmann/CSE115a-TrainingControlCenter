@@ -6,6 +6,8 @@ import Box from '@mui/material/Box';
 import ResponsiveAppBar from '../Components/appBar';
 import ActivityGrid from '../Components/dataGrid';
 import { userTheme } from '../Components/theme';
+import { Typography } from '@mui/material';
+
 
 /**
  * The page to list all activities and recent activities, whether manual or from strava.
@@ -17,14 +19,11 @@ export default function ActivityList() {
     <ThemeProvider theme={userTheme}>
       <CssBaseline />
       <Container component='main'>
-        <CssBaseline />
-
         <ResponsiveAppBar />
-        <h1>Training Control Center, {localStorage.getItem('user')}: Activities </h1>
-        <Box>
-          <ActivityGrid></ActivityGrid>
+        <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}: Activities</Typography>
+        <Box mt={2}>
+          <ActivityGrid />
         </Box>
-
       </Container>
     </ThemeProvider>
   );
