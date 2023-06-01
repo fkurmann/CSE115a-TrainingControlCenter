@@ -23,11 +23,11 @@ export default function PlanCalendar() {
   const user = localStorage.getItem('user');
   const [weeklyActivities, setWeeklyActivities] = React.useState(null);
   const [dayActivities, setDayActivities] = React.useState({});
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const usaTime = date => new Date(date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
   const initialState = {
     data: [],
-    loading: false,
     currentDate: new Date(),
     currentViewName: 'Week',
   };
@@ -35,8 +35,6 @@ export default function PlanCalendar() {
   const reducer = (state, action) => {
     console.log('Reducer', state, action);
     switch (action.type) {
-      case 'setLoading':
-        return { ...state, loading: action.payload };
       case 'setData':
         return { ...state, data: action.payload.map(mapActivityData) };
       case 'setCurrentViewName':
@@ -56,16 +54,15 @@ export default function PlanCalendar() {
   });
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  const {data, loading, currentViewName, currentDate,} = state;
+  const {data, currentViewName, currentDate,} = state;
   const setCurrentViewName = React.useCallback(nextViewName => dispatch({type: 'setCurrentViewName', payload: nextViewName}), [dispatch]);
   const setData = React.useCallback(nextData => dispatch({ type: 'setData', payload: nextData}), [dispatch]);
   const setCurrentDate = React.useCallback(nextDate => dispatch({type: 'setCurrentDate', payload: nextDate}), [dispatch]);
-  const setLoading = React.useCallback(nextLoading => dispatch({type: 'setLoading', payload: nextLoading}), [dispatch]);
 
   React.useEffect(() => {
     if (!weeklyActivities) {
       console.log("Loading planned activities");
-      setLoading(true);
+      setIsLoading(true);
       const d = new Date();
       fetch("http://localhost:3010/v0/plannedActivities?" +
           new URLSearchParams({
@@ -110,15 +107,15 @@ export default function PlanCalendar() {
           alert(`Error retrieving planned activities for user ${user}`);
         })
     } else {
-      setLoading(false);
+      setIsLoading(false);
     }
-  }, [user, weeklyActivities, loading, dayActivities, setData, currentViewName, currentDate]); //setData, currentViewName, currentDate
+  }, [user, weeklyActivities, isLoading, dayActivities]); //setData, currentViewName, currentDate
 
   return (
     <>
     {
-    loading ?
-    <CircularProgress /> :
+    isLoading ?
+    <CircularProgress sx={{ position: 'absolute', bottom: '10%', left: '20%' }}/> :
     <Paper>
       <Scheduler
         data={data}
