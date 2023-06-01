@@ -29,7 +29,7 @@ export default function PlanTraining() {
           <div className='parent'>
             <div style={{float: 'left'}}>
               <AddPlannedActivityForm />
-              {/* <AddPlannedSummary /> */}
+              <AddPlannedSummary />
             </div>
             <div style={{float: 'right'}}>
               <AddPlanGraphForm />
