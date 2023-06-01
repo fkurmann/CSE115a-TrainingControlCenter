@@ -18,11 +18,6 @@ function TrainingStats() {
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState(dayjs().startOf('day'));
   const [endDate, setEndDate] = useState(dayjs().endOf('day'));
-  const [duration, setDuration] = useState("");
-  const [type, setType] = useState("");
-  const [sport, setSport] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   
   /**
    * Fetches workouts data from the server.
