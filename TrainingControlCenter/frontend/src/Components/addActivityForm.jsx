@@ -53,7 +53,7 @@ export default function AddActivityForm() {
     "Ski",
     "VirtualRide",
     "VirtualRun",
-  ];
+  ]; 
 
   const [{ name, type = '', sport }, setState] = useState({
     name: '',
@@ -131,8 +131,9 @@ export default function AddActivityForm() {
 
   return (
     <>
-      <Typography variant="h5">Log an Activity</Typography>
+      <Typography variant="h5">Log an Activity</Typography><br/>
       <form onSubmit={handleSubmit}>
+        <Box sx={{ borderRadius:  '16px', pr: 2, py: 1, boxShadow: 3 }}>
         {/* Name */}
         <Typography variant="h6" ml={2}>Name of Activity*</Typography>
         <Box mb={2} ml={2}>
@@ -277,9 +278,12 @@ export default function AddActivityForm() {
           />
         </Box>
       </Collapse>
+      
+      <Box mb={2} ml={2}>
       <Button variant="contained" color="primary" type="submit" ml={2}>
         Add Activity
       </Button>
+      </Box>
         <Snackbar
           open={showSuccessMessage}
           autoHideDuration={10000}
@@ -300,6 +304,7 @@ export default function AddActivityForm() {
             {errorMessage}
           </Alert>
         </Snackbar>
+        </Box>
       </form>
     </>
   );
