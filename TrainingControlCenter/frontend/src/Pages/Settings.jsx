@@ -76,7 +76,12 @@ export default function Settings() {
         <Grid xs={4}>
           <Container disableGutters>
             <h1>&nbsp;&nbsp;&nbsp;Preferences</h1>
-            <Preferences colorTheme={colorTheme} setColorTheme={setColorTheme} brightnessMode={brightnessMode} setBrightnessMode={setBrightnessMode} />
+            <Preferences
+              colorTheme={colorTheme}
+              setColorTheme={setColorTheme}
+              brightnessMode={brightnessMode}
+              setBrightnessMode={setBrightnessMode}
+            />
           </Container>
         </Grid>
         <Grid xs={4}>

@@ -4,9 +4,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TextField, Typography, Grid, Paper } from '@mui/material';
 import { formatISO } from 'date-fns'
-import dayjs from 'dayjs';
-
-const metersToMiles = 1609.34;
+import { CircularProgress } from '@mui/material';
+import dayjs from 'dayjs'; 
 
 /**
  * Represents the TrainingStats component.
@@ -17,28 +16,29 @@ function TrainingStats() {
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState(dayjs().startOf('day'));
   const [endDate, setEndDate] = useState(dayjs().endOf('day'));
-  const [duration, setDuration] = useState("");
-  const [type, setType] = useState("");
-  const [sport, setSport] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  
+  const [isLoading, setIsLoading] = useState(true);
+  const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
+  const dist_unit = isMetric ? 'kilometers' : 'miles';
+  const meters_per_unit = isMetric ? 1000 : 1609.34;
     /**
      * Fetches workouts data from the server.
      * @function
      */
     const fetchWorkouts = useCallback(async () => {
       try {
+        await new Promise(resolve => setTimeout(resolve, 5000));
         const response = await fetch(`http://localhost:3010/v0/plannedActivities?username=${localStorageUser}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const resData = await response.json();
         setData(resData);
+        setIsLoading(false);
       } catch (err) {
         console.log(err);
+        setIsLoading(false);
       }
-    }, [localStorageUser]);
+    }, [localStorageUser]);    
   
     useEffect(() => {
       fetchWorkouts();
@@ -57,7 +57,7 @@ function TrainingStats() {
      */
     const totalDistance = data
       .filter(d => d.start_date_local.slice(0, 10) >= startDateISO && d.start_date_local.slice(0, 10) <= endDateISO)
-      .reduce((acc, cur) => acc + cur.distance, 0) / metersToMiles;
+      .reduce((acc, cur) => acc + cur.distance, 0) / meters_per_unit;
   
     /**
      * Calculates the total time spent within the specified date range.
@@ -66,13 +66,12 @@ function TrainingStats() {
     const totalTimeInSeconds = data
       .filter(d => d.start_date_local.slice(0, 10) >= startDateISO && d.start_date_local.slice(0, 10) <= endDateISO)
       .reduce((acc, cur) => acc + cur.moving_time, 0);
-  
-    console.log(totalTimeInSeconds);
+
     const days = Math.floor(totalTimeInSeconds / (24 * 60 * 60));
     const hours = Math.floor((totalTimeInSeconds % (24 * 60 * 60)) / (60 * 60));
     const minutes = Math.floor((totalTimeInSeconds % (60 * 60)) / 60);
     const seconds = totalTimeInSeconds % 60;
-  
+
     return (
       <div>
         <Typography variant="h5">Plan Summary</Typography>
@@ -96,17 +95,23 @@ function TrainingStats() {
                   />
                 </Grid>
   
-                <Grid item xs={12}>
-                  <Paper elevation={2} style={{ padding: '10px', width: '415px' }}>
-                    <Typography variant="h6">
-                      Total Distance: {totalDistance.toFixed(2)} miles
-                    </Typography>
-                    <Typography variant="h6">
-                      Total Time: {`${days.toString().padStart(2, '0')}:
-                                  ${hours.toString().padStart(2, '0')}:
-                                  ${minutes.toString().padStart(2, '0')}:
-                                  ${seconds.toString().padStart(2, '0')}`}
-                    </Typography>
+                  <Grid item xs={12}>
+                    <Paper elevation={2} style={{ padding: '10px', width: '415px' }}>
+                      {isLoading ? (
+                        <CircularProgress />
+                      ) : (
+                        <>
+                          <Typography variant="h6">
+                            Total Distance: {totalDistance.toFixed(2)} {dist_unit}
+                          </Typography>
+                          <Typography variant="h6">
+                            Total Time: {`${days.toString().padStart(2, '0')}:
+                                        ${hours.toString().padStart(2, '0')}:
+                                        ${minutes.toString().padStart(2, '0')}:
+                                        ${seconds.toString().padStart(2, '0')}`}
+                          </Typography>
+                        </>
+                      )}
                   </Paper>
                 </Grid>
               </Grid>

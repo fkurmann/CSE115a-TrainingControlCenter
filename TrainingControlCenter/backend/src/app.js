@@ -9,7 +9,8 @@ const auth = require('./auth');
 const settings = require('./settings');
 const activities = require('./activities');
 const plannedActivities = require('./plannedActivities');
-const graphs = require('./graphs')
+const graphs = require('./graphs');
+const preferences = require('./preferences');
 
 const app = express();
 app.use(cors());
@@ -66,6 +67,10 @@ app.delete('/v0/plannedActivities', plannedActivities.deletePlannedActivity);
 
 // Graphing
 app.post('/v0/graphs', graphs.drawGraph);
+
+// Preferences
+app.get('/v0/preferences', preferences.getPreferences);
+app.post('/v0/preferences', preferences.updatePreferences);
 
 app.use((err, req, res, next) => {
   // console.log(req);

@@ -592,6 +592,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  
+  /preferences:
+    post:
+      description: Update preferences
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Preferences'
+      responses:
+        200:
+          description: Preferences updated
+          content:
+            application/json:
+              schema:
+                type: string
+        401:
+          description: Error updating preferences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      description: Get user's preferences
+      parameters:
+      - name: username
+        in: query
+        description: User
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Preferences returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Preferences'
+        401:
+          description: Error getting preferences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
  
 components:
   schemas:
@@ -733,6 +779,47 @@ components:
         - username
         - duration
         - graphType
+    
+    Preferences:
+      type: object
+      properties:
+        username:
+          type: string
+        isMetric:
+          type: boolean
+          nullable: true
+        colorTheme:
+          type: string
+          nullable: true
+          enum:
+            - blue
+            - purple
+            - green
+            - orange
+            - red
+        brightnessMode:
+          type: string
+          nullable: true
+          enum:
+            - light
+            - dark
+        activityMapColor:
+          type: string
+          nullable: true
+          enum:
+            - red
+            - orange
+            - green
+            - blue
+            - purple
+            - black
+            - brown
+            - magenta
+        activityMapMarkers:
+          type: boolean
+          nullable: true
+      required:
+        - username
   
   securitySchemes:
     bearerAuth:

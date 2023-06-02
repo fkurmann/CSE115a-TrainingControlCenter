@@ -21,7 +21,7 @@ import pieGraph from '../Components/images/pieGraph.png';
  */
 export default function DataCenter() {
   return (
-    <ThemeProvider theme={userTheme}>
+    <ThemeProvider theme={userTheme()}>
       <CssBaseline />
       <Container component='main'>
         <ResponsiveAppBar />
