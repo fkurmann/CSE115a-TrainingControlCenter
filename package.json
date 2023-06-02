@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"cd TrainingControlCenter/frontend/ && npm start\" \"cd TrainingControlCenter/backend && npm start\""
+    "pyreqs": "pip install -q -r requirements.txt",
+    "start": "concurrently \"npm run pyreqs\" \"cd TrainingControlCenter/frontend/ && npm start\" \"cd TrainingControlCenter/backend && npm start\""
   },
   "eslintConfig": {
     "extends": [
