@@ -60,7 +60,7 @@ export default function Login() {
       .then((json) => {
         localStorage.setItem('user', json.username);
         localStorage.setItem('accessToken', json.accessToken);
-        localStorage.setItem('favorites', JSON.stringify(json.favorites)); // localStorage can only store strings
+        localStorage.setItem('favorites', decodeURIComponent(JSON.stringify(json.favorites))); // localStorage can only store strings
         localStorage.setItem('isMetric', json.isMetric);
         localStorage.setItem('brightnessMode', json.brightnessMode);
         localStorage.setItem('colorTheme', json.colorTheme);

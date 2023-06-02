@@ -81,43 +81,31 @@ exports.findUser = async (username, password) => {
   }
 }
 
-// Add favorites
-exports.addFavorite = async (username, favorite) => {
+// Add or delete multiple favorites
+exports.updateFavorites = async (username, add_favorites, delete_favorites) => {
   // Access database
   try {
     await client.connect();
-    const result = await client.db("TCC").collection("users").updateOne({user: username}, { $push: {favorites: favorite} });
-
-    if (result) {
-      console.log(`Updated user: ${username}'s favorites ${favorite}':`);
-      await client.close();
-      return result;
-    } else {
-      console.log(`Error during updating of favorites`);
-      await client.close();
-      return -1;
+    let result = 0;
+    if (add_favorites && add_favorites.length > 0) {
+      result = await client.db("TCC").collection("users").updateOne({user: username}, { $addToSet: {favorites: {$each: add_favorites} } });
+      if (!result) {
+        console.log(`Error during updating of favorites`);
+        await client.close();
+        return -1;
+      }
     }
-  } finally {
-    // Ensures that the client will close when you finish/error
+    if (delete_favorites && delete_favorites.length > 0) {
+      result = await client.db("TCC").collection("users").updateOne({user: username}, { $pullAll: {favorites: delete_favorites} });
+      if (!result) {
+        console.log(`Error during deleting of favorites`);
+        await client.close();
+        return -1;
+      }
+    }
     await client.close();
-  }
-}
-// Delete favorites
-exports.deleteFavorite = async (username, favorite) => {
-  // Access database
-  try {
-    await client.connect();
-    const result = await client.db("TCC").collection("users").updateOne({user: username}, { $pull: {favorites: favorite} });
+    return result;
 
-    if (result) {
-      console.log(`Deleted user: ${username}'s favorites ${favorite}':`);
-      await client.close();
-      return 0;
-    } else {
-      console.log(`Error during deleting of favorites`);
-      await client.close();
-      return -1;
-    }
   } finally {
     // Ensures that the client will close when you finish/error
     await client.close();
