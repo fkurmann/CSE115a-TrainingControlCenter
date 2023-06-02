@@ -15,7 +15,7 @@ import {
 import EventIcon from '@mui/icons-material/Event';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 
 const localStorageUser = localStorage.getItem('user');
 
@@ -189,8 +189,8 @@ export default function AddPlannedActivityForm() {
         <Box mb={2} ml={2}>
         <Typography variant="h6">Date</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <MobileDatePicker
-            inputFormat="YYYY-MM-DD"
+          <MobileDateTimePicker
+            inputFormat="YYYY-MM-DD, hh:mm A"
             disablePast
             value={additionalInfo.start_date_local}
             onChange={(value) =>

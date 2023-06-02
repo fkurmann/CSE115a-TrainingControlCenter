@@ -74,7 +74,7 @@ function TrainingStats() {
 
     return (
       <div>
-        <Typography variant="h5">Plan Summary</Typography>
+        <Typography variant="h5">Plan Summary</Typography><br/>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Grid container spacing={6} justifyContent="flex-start">
             <Grid item xs={6}>
@@ -86,6 +86,7 @@ function TrainingStats() {
                     onChange={setStartDate}
                     renderInput={(params) => <TextField {...params} />}
                   />
+                  <br/><br/>
                   <DatePicker
                     label="End date"
                     value={endDate}

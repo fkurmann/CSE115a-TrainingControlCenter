@@ -3,6 +3,8 @@ import Paper from '@mui/material/Paper';
 import { CircularProgress } from '@mui/material';
 import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
+  Appointments,
+  AppointmentTooltip,
   Scheduler,
   WeekView,
   DayView,
@@ -11,6 +13,42 @@ import {
   ViewSwitcher,
   TodayButton,
 } from '@devexpress/dx-react-scheduler-material-ui';
+
+const test = [
+  {
+    "kind": "calendar#event",
+    "summary": "Test Item",
+    "start": {"dateTime": "2023-06-01T18:00:00+01:00",
+              "timeZone": "UTC"},
+    "end": {"dateTime": "2023-06-01T20:00:00+01:00",
+           "timeZone": "UTC"},
+    "sequence": 9,
+    "eventType": "default",
+  },
+  {
+  "kind": "calendar#event",
+  // "created": "2015-05-27T10:27:10.000Z",
+  // "updated": "2017-06-19T08:11:04.785Z",
+    "summary": "Test Item 2",
+    "start": {"dateTime": "2023-05-30T18:00:00+01:00",
+              "timeZone": "UTC"},
+    "end": {"dateTime": "2023-05-30T20:00:00+01:00",
+            "timeZone": "UTC"},
+    "sequence": 9,
+    "eventType": "default",
+  }];
+const test2 = [{
+  "kind": "calendar#event",
+  // "created": "2015-05-27T10:27:10.000Z",
+  // "updated": "2017-06-19T08:11:04.785Z",
+  "summary": "Test Item 2",
+  "start": {"dateTime": "2023-05-30T18:00:00+01:00",
+            "timeZone": "UTC"},
+  "end": {"dateTime": "2023-05-30T20:00:00+01:00",
+          "timeZone": "UTC"},
+  "sequence": 9,
+  "eventType": "default",
+}];
 
 // Get Data
 // Perhaps adding activities right in calendar as a future option.
@@ -28,6 +66,7 @@ export default function PlanCalendar() {
   const usaTime = date => new Date(date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
   const initialState = {
     data: [],
+    loading: false,
     currentDate: new Date(),
     currentViewName: 'Week',
   };
@@ -35,6 +74,8 @@ export default function PlanCalendar() {
   const reducer = (state, action) => {
     console.log('Reducer', state, action);
     switch (action.type) {
+      case 'setLoading':
+        return { ...state, loading: action.payload }
       case 'setData':
         return { ...state, data: action.payload.map(mapActivityData) };
       case 'setCurrentViewName':
@@ -47,17 +88,29 @@ export default function PlanCalendar() {
   };
 
   const mapActivityData = activity => ({
-    Sport: activity.sport,
-    startDate: usaTime(activity.start_date_local),
-    endDate: usaTime(activity.start_date_local + 10), // +1!
-    title: activity.name,
+    id: activity.id,
+    startDate: usaTime(activity.start.dateTime),
+    endDate: usaTime(activity.end.dateTime), // +1!
+    title: activity.summary,
   });
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  const {data, currentViewName, currentDate,} = state;
+  const {data, loading, currentViewName, currentDate,} = state;
   const setCurrentViewName = React.useCallback(nextViewName => dispatch({type: 'setCurrentViewName', payload: nextViewName}), [dispatch]);
   const setData = React.useCallback(nextData => dispatch({ type: 'setData', payload: nextData}), [dispatch]);
   const setCurrentDate = React.useCallback(nextDate => dispatch({type: 'setCurrentDate', payload: nextDate}), [dispatch]);
+  const setLoading = React.useCallback(nextLoading => dispatch({type: 'setLoading', payload: nextLoading}), [dispatch]);
+
+  const getData = (setData, setLoading) => {
+    setLoading(true);
+    setData(test);
+    console.log(test2);
+    setLoading(false);
+  };
+
+  React.useEffect(() => {
+    getData(setData, setLoading);
+  }, [setData, currentViewName, currentDate, setLoading]);
 
   React.useEffect(() => {
     if (!weeklyActivities) {
@@ -109,13 +162,13 @@ export default function PlanCalendar() {
     } else {
       setIsLoading(false);
     }
-  }, [user, weeklyActivities, isLoading, dayActivities]); //setData, currentViewName, currentDate
+  }, [user, weeklyActivities, isLoading, loading, dayActivities]); //setData, currentViewName, currentDate
 
   return (
     <>
     {
     isLoading ?
-    <CircularProgress sx={{ position: 'absolute', bottom: '10%', left: '20%' }}/> :
+    <CircularProgress sx={{ position: 'absolute', top: '10%', right: '15%' }}/> :
     <Paper>
       <Scheduler
         data={data}
@@ -135,16 +188,14 @@ export default function PlanCalendar() {
           startDayHour={5.5}
           endDayHour={21.5}
         />
-        <activitys />
+        <Appointments />
         <Toolbar/>
         <DateNavigator />
         <TodayButton />
         <ViewSwitcher />
-        <activityTooltip
-          showOpenButton
+        <AppointmentTooltip
           showCloseButton
         />
-        <activityForm readOnly />
       </Scheduler>
     </Paper>
   } 
