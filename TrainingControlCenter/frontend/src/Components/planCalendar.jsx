@@ -22,11 +22,10 @@ const test = [
               "timeZone": "UTC"},
     "end": {"dateTime": "2023-06-01T20:00:00+01:00",
            "timeZone": "UTC"},
-    "sequence": 9,
     "eventType": "default",
   },
   {
-  "kind": "calendar#event",
+    "kind": "calendar#event",
   // "created": "2015-05-27T10:27:10.000Z",
   // "updated": "2017-06-19T08:11:04.785Z",
     "summary": "Test Item 2",
@@ -34,21 +33,8 @@ const test = [
               "timeZone": "UTC"},
     "end": {"dateTime": "2023-05-30T20:00:00+01:00",
             "timeZone": "UTC"},
-    "sequence": 9,
     "eventType": "default",
   }];
-const test2 = [{
-  "kind": "calendar#event",
-  // "created": "2015-05-27T10:27:10.000Z",
-  // "updated": "2017-06-19T08:11:04.785Z",
-  "summary": "Test Item 2",
-  "start": {"dateTime": "2023-05-30T18:00:00+01:00",
-            "timeZone": "UTC"},
-  "end": {"dateTime": "2023-05-30T20:00:00+01:00",
-          "timeZone": "UTC"},
-  "sequence": 9,
-  "eventType": "default",
-}];
 
 // Get Data
 // Perhaps adding activities right in calendar as a future option.
@@ -104,7 +90,7 @@ export default function PlanCalendar() {
   const getData = (setData, setLoading) => {
     setLoading(true);
     setData(test);
-    console.log(test2);
+    console.log(test);
     setLoading(false);
   };
 

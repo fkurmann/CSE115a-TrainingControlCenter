@@ -66,6 +66,7 @@ export default function AddPlannedActivityForm() {
     distance: '',
     time: null,
     start_date_local: '',
+    end_date_local: '',
     description: '',
   });
 
@@ -78,7 +79,8 @@ export default function AddPlannedActivityForm() {
     e.preventDefault();
     try {
       const descriptions = additionalInfo.description.trim() === '' ? null : additionalInfo.description;
-      const formattedDate = additionalInfo.start_date_local ? new Date(additionalInfo.start_date_local) : null;
+      const formattedDateStart = additionalInfo.start_date_local ? new Date(additionalInfo.start_date_local) : null;
+      const formattedDateEnd = additionalInfo.end_date_local ? new Date(additionalInfo.end_date_local) : null;
       const response = await fetch('http://localhost:3010/v0/plannedActivities?' , {
         method: "POST",
         body: JSON.stringify({
@@ -89,7 +91,8 @@ export default function AddPlannedActivityForm() {
           description: descriptions,
           distance: additionalInfo.distance * meters_per_unit,
           moving_time: additionalInfo.time,
-          start_date_local: formattedDate
+          start_date_local: formattedDateStart,
+          end_date_local: formattedDateEnd,
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -185,9 +188,9 @@ export default function AddPlannedActivityForm() {
             ))}
           </Select>
         </Box>
-        {/* Date */}
+        {/* Start Date */}
         <Box mb={2} ml={2}>
-        <Typography variant="h6">Date</Typography>
+        <Typography variant="h6">Start Date/Time</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <MobileDateTimePicker
             inputFormat="YYYY-MM-DD, hh:mm A"
@@ -197,6 +200,35 @@ export default function AddPlannedActivityForm() {
               setAdditionalInfo((prevState) => ({
                 ...prevState,
                 start_date_local: value ? value.toISOString() : null,
+              }))
+            }
+            renderInput={(params) => <TextField {...params}
+              readOnly
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton edge="end">
+                      <EventIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />}
+          />
+        </LocalizationProvider>
+        </Box>
+        {/* End Date */}
+        <Box mb={2} ml={2}>
+        <Typography variant="h6">End Date/Time</Typography>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <MobileDateTimePicker
+            inputFormat="YYYY-MM-DD, hh:mm A"
+            disablePast
+            value={additionalInfo.end_date_local}
+            onChange={(value) =>
+              setAdditionalInfo((prevState) => ({
+                ...prevState,
+                end_date_local: value ? value.toISOString() : null,
               }))
             }
             renderInput={(params) => <TextField {...params}

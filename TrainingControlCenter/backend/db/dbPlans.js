@@ -24,6 +24,11 @@ exports.createPlannedActivity = async (username, name, type, sport, description,
     start_date_local: json.start_date_local,
     distance: json.distance,
     moving_time: json.moving_time,
+    kind: "calendar#event",
+    summary: name,
+    start: {dateTime: json.start_date_local, timeZone: "UTC"},
+    end: {dateTime: json.end_date_local, timeZone: "UTC"},
+    eventType: "default",
   }
 
   // Access database

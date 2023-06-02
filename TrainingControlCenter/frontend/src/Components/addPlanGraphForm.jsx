@@ -112,7 +112,7 @@ export default function AddPlanGraphForm() {
       <div style={{float: 'left'}}>
         <Typography variant="h5">Generate a Graph</Typography><br/>
         <form onSubmit={handleSubmit}>
-          <Box sx={{ borderRadius:  '16px', pr: 2, py: 1, boxShadow: 3 }}>
+          <Box sx={{ borderRadius:  '16px', pr: 5, py: 1, boxShadow: 3 }}>
           {/* Graph Type */}
           <Typography variant="h6" ml={2}>Graph Type*</Typography>
           <Box mb={2} ml={2}>
