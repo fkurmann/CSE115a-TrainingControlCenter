@@ -34,8 +34,8 @@ exports.addPlannedActivity = async (req, res) => {
     sport_type: sport,
     distance: distance || undefined,
     moving_time: moving_time * 60 || undefined,
-    start_date_local: formattedDateStart || undefined
-    end_date_local: formattedDateEnd || undefined
+    start_date_local: formattedDateStart || undefined,
+    end_date_local: formattedDateEnd || undefined,
   };
 
   const returnValue = await dbPlans.createPlannedActivity(username, name, type, sport, descriptionText, activityJson);
