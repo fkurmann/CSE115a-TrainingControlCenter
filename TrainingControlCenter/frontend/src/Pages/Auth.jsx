@@ -3,11 +3,15 @@ import {useNavigate} from 'react-router-dom';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 /**
@@ -23,6 +27,10 @@ const theme = createTheme();
 export default function Login() {
   const history = useNavigate();
   const [user, setUser] = React.useState({username: '', password: ''});
+  const [openBackdrop, setOpenBackdrop] = React.useState(false); // Is user currently registering an account or logging in?
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [snackbarStatus, setSnackbarStatus] = React.useState('success'); // 'success' or 'error'
+  const [snackbarMsg, setSnackbarMsg] = React.useState('');
 
   React.useEffect(() => {
     localStorage.removeItem('user');
@@ -43,6 +51,7 @@ export default function Login() {
   };
 
   const handleSubmit = (event) => {
+    setOpenBackdrop(true);
     event.preventDefault();
     fetch('http://localhost:3010/v0/login', {
       method: 'POST',
@@ -58,6 +67,10 @@ export default function Login() {
         return res.json();
       })
       .then((json) => {
+        setOpenBackdrop(false);
+        setOpenSnackbar(true);
+        setSnackbarStatus('success');
+        setSnackbarMsg('Logging in...');
         localStorage.setItem('user', json.username);
         localStorage.setItem('accessToken', json.accessToken);
         localStorage.setItem('favorites', decodeURIComponent(JSON.stringify(json.favorites))); // localStorage can only store strings
@@ -69,11 +82,15 @@ export default function Login() {
         history('/');
       })
       .catch((err) => {
-        alert('Error logging in, please try again');
+        setOpenBackdrop(false);
+        setOpenSnackbar(true);
+        setSnackbarStatus('error');
+        setSnackbarMsg('Invalid username or password');
       });
   };
 
   const handleRegister = (event) => {
+    setOpenBackdrop(true);
     event.preventDefault();
     fetch('http://localhost:3010/v0/register', {
       method: 'POST',
@@ -89,13 +106,26 @@ export default function Login() {
         return res.json();
       })
       .then((json) => {
-        alert('Account saved, ready to sign in');
+        setOpenBackdrop(false);
+        setOpenSnackbar(true);
+        setSnackbarStatus('success');
+        setSnackbarMsg('Account registered!');
 
       })
       .catch((err) => {
-        alert('Error, please enter a unique username and password');
+        setOpenBackdrop(false);
+        setOpenSnackbar(true);
+        setSnackbarStatus('error');
+        setSnackbarMsg('Please enter a unique username and password');
       });
   };
+
+  const handleCloseSnackbar = (e, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -162,6 +192,17 @@ export default function Login() {
           </Button>
         </Box>
       </Container>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={openBackdrop}
+      >
+        <CircularProgress color='inherit' />
+      </Backdrop>
+      <Snackbar open={openSnackbar} autoHideDuration={5000} onClose={handleCloseSnackbar}>
+        <Alert severity={snackbarStatus} onClose={handleCloseSnackbar}>
+          {snackbarMsg}
+        </Alert>
+      </Snackbar>
     </ThemeProvider>
   );
 }
