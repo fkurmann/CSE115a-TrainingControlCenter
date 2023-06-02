@@ -5,10 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TextField, Typography, Grid, Paper } from '@mui/material';
 import { formatISO } from 'date-fns'
 import { CircularProgress } from '@mui/material';
-
 import dayjs from 'dayjs'; 
-
-const metersToMiles = 1609.34;
 
 /**
  * Represents the TrainingStats component.
@@ -20,7 +17,9 @@ function TrainingStats() {
   const [startDate, setStartDate] = useState(dayjs().startOf('day'));
   const [endDate, setEndDate] = useState(dayjs().endOf('day'));
   const [isLoading, setIsLoading] = useState(true);
-
+  const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
+  const dist_unit = isMetric ? 'kilometers' : 'miles';
+  const meters_per_unit = isMetric ? 1000 : 1609.34;
     /**
      * Fetches workouts data from the server.
      * @function
@@ -58,7 +57,7 @@ function TrainingStats() {
      */
     const totalDistance = data
       .filter(d => d.start_date_local.slice(0, 10) >= startDateISO && d.start_date_local.slice(0, 10) <= endDateISO)
-      .reduce((acc, cur) => acc + cur.distance, 0) / metersToMiles;
+      .reduce((acc, cur) => acc + cur.distance, 0) / meters_per_unit;
   
     /**
      * Calculates the total time spent within the specified date range.
@@ -103,7 +102,7 @@ function TrainingStats() {
                       ) : (
                         <>
                           <Typography variant="h6">
-                            Total Distance: {totalDistance.toFixed(2)} miles
+                            Total Distance: {totalDistance.toFixed(2)} {dist_unit}
                           </Typography>
                           <Typography variant="h6">
                             Total Time: {`${days.toString().padStart(2, '0')}:
