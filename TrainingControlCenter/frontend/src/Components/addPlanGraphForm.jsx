@@ -217,7 +217,6 @@ export default function AddPlanGraphForm() {
       <div style={{float: 'right'}}>
         <Typography variant="h5" sx={{ px: 3 }}>Planned Training Distribution Graph:</Typography>
         <Box
-          graphGenerated
           component="img"
           sx={{
             height: 300,
@@ -225,7 +224,7 @@ export default function AddPlanGraphForm() {
             px: 1
           }}
           alt={defaultImage}
-          src={graphGenerated? planPieGraph : defaultImage}
+          src={graphGenerated ? planPieGraph : defaultImage}
         />
       </div>
     </div>

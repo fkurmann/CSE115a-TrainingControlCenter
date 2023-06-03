@@ -136,7 +136,7 @@ export default function AddPlannedActivityForm() {
     <>
       <Typography variant="h5">Plan an Activity</Typography><br/>
       <form onSubmit={handleSubmit}>
-        <Box sx={{ borderRadius:  '16px', pr: 2, py: 1, boxShadow: 3 }}>
+        <Box sx={{ borderRadius:  '16px', pr: 4, py: 1, boxShadow: 3 }}>
         {/* Name */}
         <Typography variant="h6" ml={2}>Name of Activity*</Typography>
         <Box mb={2} ml={2}>

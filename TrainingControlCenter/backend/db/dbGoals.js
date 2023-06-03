@@ -1,15 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://fkurmann:tcc@tcc.zfhwc4p.mongodb.net/?retryWrites=true&w=majority";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
 // Goal collection functions
 
 // Create new goal
@@ -23,6 +14,13 @@ exports.createGoal = async (username, name, type, sport, distance, time) => {
     distance: distance,
     time: time,
   }
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
 
   // Access database
   try {
@@ -54,6 +52,14 @@ exports.findGoal = async (username, name, type, sport) => {
   if (sport != null) {
     parameters.sport = sport;
   }
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();
@@ -80,6 +86,14 @@ exports.deleteGoal = async (username, name) => {
     username: username,
     name: name
   }
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();

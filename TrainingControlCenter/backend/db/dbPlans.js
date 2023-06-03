@@ -1,15 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://fkurmann:tcc@tcc.zfhwc4p.mongodb.net/?retryWrites=true&w=majority";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
 // Plans collection functions
 
 // Add planned activity to database
@@ -30,6 +21,14 @@ exports.createPlannedActivity = async (username, name, type, sport, description,
     end: {dateTime: json.end_date_local, timeZone: "UTC"},
     eventType: "default",
   }
+
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
 
   // Access database
   try {
@@ -92,6 +91,13 @@ exports.findPlannedActivity = async (username, name, sport, type, minDuration, m
   }
 
   console.log(`Parameters: ${JSON.stringify(parameters)}`);
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
 
   // Access database
   try {
@@ -100,7 +106,7 @@ exports.findPlannedActivity = async (username, name, sport, type, minDuration, m
     if (result) {
       let returnList = await result.toArray();
       console.log(`Found planned activities with the parameters '${parameters}':`);
-      await client.close();
+      // await client.close();
       return returnList;
     } else {
       console.log(`No planned activity found with parameters '${parameters}'`);
@@ -109,7 +115,7 @@ exports.findPlannedActivity = async (username, name, sport, type, minDuration, m
     }
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 
@@ -119,6 +125,14 @@ exports.deletePlannedActivity = async (username, name) => {
     username: username,
     name: name,
   }
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();
@@ -143,6 +157,14 @@ exports.clearPlannedActivities = async (username) => {
   const parameters = {
     username: username,
   }
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();

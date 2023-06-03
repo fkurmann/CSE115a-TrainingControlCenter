@@ -1,15 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://fkurmann:tcc@tcc.zfhwc4p.mongodb.net/?retryWrites=true&w=majority";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
 // User collection functions
 
 // Create new user
@@ -21,6 +12,14 @@ exports.createUser = async (username, password) => {
     favorites: [],
     stravaToken: null
   }
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();
@@ -36,6 +35,14 @@ exports.createUser = async (username, password) => {
 
 // Function to update the Strava token which will expire regularly
 exports.updateUser = async (username, token) => {
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();
@@ -62,6 +69,14 @@ exports.findUser = async (username, password) => {
       user: username
     }
   }
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();
@@ -83,6 +98,14 @@ exports.findUser = async (username, password) => {
 
 // Add favorites
 exports.addFavorite = async (username, favorite) => {
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();
@@ -104,6 +127,14 @@ exports.addFavorite = async (username, favorite) => {
 }
 // Delete favorites
 exports.deleteFavorite = async (username, favorite) => {
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();
