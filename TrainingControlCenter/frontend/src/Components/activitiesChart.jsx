@@ -71,7 +71,7 @@ const ActivityChart = () => {
 
     // Subtract 1 because weekNumber is 1-based
     const weekStart = new Date(startOfYear.getTime() + ((weekNumber - 1) * daysPerWeek * millisecondsPerDay));
-    
+
     return weekStart;
   }
 
@@ -123,7 +123,7 @@ const ActivityChart = () => {
     Skiing: ["Skiing", "Ski"],
     Riding: ["Riding", "Ride", "Virtual Ride"]
   };
-  
+
   /**
    * Fetches data for first graph comparison.
    *
@@ -151,18 +151,18 @@ const ActivityChart = () => {
       const filteredAndSorted = activitiesWithUniqueTime
       .filter((activity) => {
         let activityDate = new Date(activity.start_date_local);
-  
+
         // Reset the time to midnight
         activityDate.setHours(0, 0, 0, 0);
-  
+
         if (selectedPeriod === 'week') {
           let weekStart = getDateRange(selectedWeek);
           let weekEnd = getEndDate(selectedWeek);
-  
+
           // Reset the time to midnight
           weekStart.setHours(0, 0, 0, 0);
           weekEnd.setHours(0, 0, 0, 0);
-  
+
           return activityDate >= weekStart && activityDate <= weekEnd;
         } else if (selectedPeriod === 'month') {
           return getMonth(activityDate) + 1 === selectedMonth && getYear(activityDate) === getCurrentYear();
@@ -173,17 +173,17 @@ const ActivityChart = () => {
       })
       // Sort activities by start date
       .sort((a, b) => new Date(b.start_date_local) - new Date(a.start_date_local));
-  
+
       // Ranking: sum up the moving_time and distance for the same type of activities
       const activitySum = filteredAndSorted.reduce((prev, curr) => {
         // Normalize the sport names
         const normalizedSport = curr.sport.toLowerCase().trim();
-      
+
         // Find the matching normalized sport name in the mappings
         const matchedSport = Object.entries(sportMappings).find(([sport, aliases]) =>
           aliases.some(alias => normalizedSport === alias.toLowerCase())
         );
-      
+
         if (matchedSport) {
           const [sportName] = matchedSport;
           if (!prev[sportName]) {
@@ -201,7 +201,7 @@ const ActivityChart = () => {
             prev[curr.sport].moving_time += Number(curr.moving_time);
           }
         }
-      
+
         return prev;
       }, {});
 
@@ -257,15 +257,15 @@ const ActivityChart = () => {
 
           // Reset the time to midnight
           activityDate.setHours(0, 0, 0, 0);
-          
+
           if (selectedPeriod === 'week') {
             let weekStart = getDateRange(selectedCompare);
             let weekEnd = getEndDate(selectedCompare);
-    
+
             // Reset the time to midnight
             weekStart.setHours(0, 0, 0, 0);
             weekEnd.setHours(0, 0, 0, 0);
-    
+
             return activityDate >= weekStart && activityDate <= weekEnd;
           } else if (selectedPeriod === 'month') {
             return getMonth(activityDate) + 1 === selectedCompare && getYear(activityDate) === getCurrentYear();
@@ -280,12 +280,12 @@ const ActivityChart = () => {
       const activitySum = filteredAndSorted.reduce((prev, curr) => {
         // Normalize the sport names
         const normalizedSport = curr.sport.toLowerCase().trim();
-      
+
         // Find the matching normalized sport name in the mappings
         const matchedSport = Object.entries(sportMappings).find(([sport, aliases]) =>
           aliases.some(alias => normalizedSport === alias.toLowerCase())
         );
-      
+
         if (matchedSport) {
           const [sportName] = matchedSport;
           if (!prev[sportName]) {
@@ -303,7 +303,7 @@ const ActivityChart = () => {
             prev[curr.sport].moving_time += Number(curr.moving_time);
           }
         }
-      
+
         return prev;
       }, {});
 
@@ -360,7 +360,7 @@ const ActivityChart = () => {
    *
    * @param {Object} event - The event object triggered by the month selection.
    * @returns {void} - Returns nothing.
-   */ 
+   */
   const handleMonthChange = (event) => {
     const value = event.target.value;
     setSelectedMonth(value);
@@ -371,7 +371,7 @@ const ActivityChart = () => {
    *
    * @param {Object} event - The event object triggered by the year selection.
    * @returns {void} - Returns nothing.
-   */  
+   */
   const handleYearChange = (event) => {
     const value = event.target.value;
     setSelectedYear(value);
@@ -379,10 +379,10 @@ const ActivityChart = () => {
 
   /**
    * Handles the change of the selected comparison value.
-   * 
+   *
    * @param {Object} event - The event object triggered by the comparison selection.
    * @returns {void} - Returns nothing.
-   */  
+   */
   const handleCompareChange = (event) => {
     if (selectedPeriod === 'week') {
       setSelectedCompare(event.target.value);
@@ -445,7 +445,7 @@ const ActivityChart = () => {
    * @param {Array} activities - The activities data to be processed.
    * @param {string} period - The selected period ('week', 'month', or 'year').
    * @returns {void} - Returns nothing.
-   */  
+   */
   const getSecondChartData = (activities, period) => {
     let secondChartData = [];
 
@@ -509,13 +509,13 @@ const ActivityChart = () => {
 
   /**
    * Calculate the maximum distance values
-   */ 
+   */
   const firstMaxDistance = Math.max(...firstUnitConversion.map(data => data.distance));
   const secondMaxDistance = Math.max(...secondUnitConversoin.map(data => data.distance));
 
   /**
    * Calculate the maximum time values
-   */ 
+   */
   const firstMaxTime = Math.max(...firstUnitConversion.map(data => data.time));
   const secondMaxTime = Math.max(...secondUnitConversoin.map(data => data.time));
 

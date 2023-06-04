@@ -106,7 +106,7 @@ exports.findPlannedActivity = async (username, name, sport, type, minDuration, m
     if (result) {
       let returnList = await result.toArray();
       console.log(`Found planned activities with the parameters '${parameters}':`);
-      // await client.close();
+      await client.close();
       return returnList;
     } else {
       console.log(`No planned activity found with parameters '${parameters}'`);
@@ -115,7 +115,7 @@ exports.findPlannedActivity = async (username, name, sport, type, minDuration, m
     }
   } finally {
     // Ensures that the client will close when you finish/error
-    // await client.close();
+    await client.close();
   }
 }
 

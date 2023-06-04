@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   TextField,
   Button,
@@ -8,8 +8,6 @@ import {
   MenuItem,
   Select,
   Typography,
-  FormControlLabel,
-  Switch,
   IconButton,
   InputAdornment,
 } from '@mui/material';
@@ -56,7 +54,7 @@ export default function AddPlanGraphForm() {
           sport: 'PlanPie',
           goal: goal,
           startDate: formattedDate,
-          outFile: 'planPieGraph' 
+          outFile: 'planPieGraph'
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -156,7 +154,7 @@ export default function AddPlanGraphForm() {
             ))}
           </Select>
           </Box>
-          
+
           {/* Date */}
           <Box mb={2} ml={2}>
           <Typography variant="h6">Start Date*</Typography>

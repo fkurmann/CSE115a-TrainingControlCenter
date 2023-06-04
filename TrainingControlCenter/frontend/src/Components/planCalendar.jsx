@@ -91,7 +91,6 @@ export default function PlanCalendar() {
     }
   };
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
-    console.log("appointment", appointmentData);
     const sport_title = appointmentData.sport + " - " + appointmentData.type;
     return (
       <>
@@ -130,11 +129,6 @@ export default function PlanCalendar() {
       </AppointmentForm.BasicLayout>
       </>
     );
-  };
-
-  const Layout = (props) => {
-    console.log("HI");
-    return <AppointmentForm.Label {...props} text="Tester" type="title" />
   };
 
   const getData = (setData, setLoading) => {
@@ -200,7 +194,7 @@ export default function PlanCalendar() {
           startDayHour={5.5}
           endDayHour={21.5}
         />
-        <Appointments onClick={test}/>
+        <Appointments />
         <Toolbar/>
         <DateNavigator />
         <TodayButton />
@@ -217,11 +211,7 @@ export default function PlanCalendar() {
         />
       </Scheduler>
     </Paper>
-  } 
+  }
   </>
   );
 };
-
-function test() {
-    console.log("HI");
-}
