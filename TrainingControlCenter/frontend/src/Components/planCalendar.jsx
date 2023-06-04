@@ -4,6 +4,7 @@ import { CircularProgress } from '@mui/material';
 import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
   Appointments,
+  AppointmentForm,
   AppointmentTooltip,
   Scheduler,
   WeekView,
@@ -54,6 +55,11 @@ export default function PlanCalendar() {
     startDate: usaTime(activity.start.dateTime),
     endDate: usaTime(activity.end.dateTime),
     title: activity.summary,
+    description: activity.description,
+    sport: activity.sport,
+    type: activity.type,
+    distance: activity.distance,
+    time: activity.moving_time,
   });
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
@@ -62,6 +68,74 @@ export default function PlanCalendar() {
   const setData = React.useCallback(nextData => dispatch({ type: 'setData', payload: nextData}), [dispatch]);
   const setCurrentDate = React.useCallback(nextDate => dispatch({type: 'setCurrentDate', payload: nextDate}), [dispatch]);
   const setLoading = React.useCallback(nextLoading => dispatch({type: 'setLoading', payload: nextLoading}), [dispatch]);
+
+  const BoolEditor = (props) => {
+    return null;
+  };
+
+  const LabelComponent = (props) => {
+    if (props.text === 'Details') {
+      return <AppointmentForm.Label text="Activity Details" type="title"/>
+    } else if (props.text === 'More Information') {
+      return null
+    } else if (props.text === '-') {
+      return <AppointmentForm.Label
+      { ...props}
+      />
+    }
+  };
+
+  const InputComponent = (props) => {
+    if (props.type === 'titleTextEditor') {
+      return null;
+    }
+  };
+  const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
+    console.log("appointment", appointmentData);
+    const sport_title = appointmentData.sport + " - " + appointmentData.type;
+    return (
+      <>
+      <AppointmentForm.BasicLayout
+        appointmentData={appointmentData}
+        {...restProps}
+      >
+      <AppointmentForm.Label text={appointmentData.title} type="title" />
+      <AppointmentForm.Label text="Information" type="subtitle" />
+      <AppointmentForm.TextEditor
+        readOnly
+        value={sport_title}
+        placeholder="Sport/Activity Type"
+      />
+
+      <AppointmentForm.Label text="Distance" type="subtitle" />
+      <AppointmentForm.TextEditor
+        readOnly
+        value={appointmentData.distance}
+        placeholder="Distance"
+      />
+
+      <AppointmentForm.Label text="Duration" type="subtitle" />
+      <AppointmentForm.TextEditor
+        readOnly
+        value={appointmentData.time}
+        placeholder="Duration"
+      />
+
+      <AppointmentForm.Label text="Description" type="subtitle" />
+      <AppointmentForm.TextEditor
+        readOnly
+        value={appointmentData.description}
+        placeholder="Description"
+      />
+      </AppointmentForm.BasicLayout>
+      </>
+    );
+  };
+
+  const Layout = (props) => {
+    console.log("HI");
+    return <AppointmentForm.Label {...props} text="Tester" type="title" />
+  };
 
   const getData = (setData, setLoading) => {
     setLoading(true);
@@ -133,6 +207,13 @@ export default function PlanCalendar() {
         <ViewSwitcher />
         <AppointmentTooltip
           showCloseButton
+        />
+        <AppointmentForm
+          readOnly
+          basicLayoutComponent={BasicLayout}
+          booleanEditorComponent={BoolEditor}
+          labelComponent={LabelComponent}
+          textEditorComponent={InputComponent}
         />
       </Scheduler>
     </Paper>
