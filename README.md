@@ -20,9 +20,7 @@ A training plans tool will allow users to plan their training in advance to reac
 ## Installation
 ```
 $ git clone git@github.com:fkurmann/CSE115a-TrainingControlCenter.git
-$ cd TrainingControlCenter
-$ pip3 install -r requirements.txt
-$ npm install
+$ npm run install-pkg
 $ npm start
 ```
 

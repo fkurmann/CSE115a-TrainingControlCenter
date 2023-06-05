@@ -23,7 +23,7 @@ export default function PlanTraining() {
       <CssBaseline />
       <Container component='main'>
         <ResponsiveAppBar />
-        <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}: Plan Training</Typography>
+        <Typography variant="h4">Plan Training</Typography>
         <Box mt={2} mb={2}>
           <div className='parent'>
             <div style={{float: 'left'}}>
