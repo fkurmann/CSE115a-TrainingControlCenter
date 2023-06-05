@@ -140,10 +140,9 @@ export async function getAllActivities() {
         },
       });
       if (res.status === 200) {
-        console.log(res.data.length);
-        for (let i = 0; i < res.data.length; i++) {
-          all_activities.push(res.data[i]);
-        }
+        res.data.forEach(async (activity) => {
+          all_activities.push(activity);
+        });
       }
     }
   } catch (error) {
