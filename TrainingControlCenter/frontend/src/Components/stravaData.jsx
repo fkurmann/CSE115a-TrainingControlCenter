@@ -54,18 +54,19 @@ const getAccessToken = async () => {
  * @param {Object} activities - JSON List object of all activities to be uploaded to database.
  */
 async function uploadActivities(activities) {
+  alert("Uploading... Please stay on this page until receive confirmation.");
   const user = localStorage.getItem('user');
   for (let i = 0; i < activities.length; i++) {
     try {
       // If activity has a description in Strava
-      if (activities[i]['description']) {
+      if (i === activities.length - 1) {
         const res = await axios.post('http://localhost:3010/v0/activitiesStrava',
         {
           username: user,
           name: (activities[i]['name']),
           type: (activities[i]['type']),
           sport: (activities[i]['sport_type']),
-          description: JSON.stringify(activities[i]['description']),
+          description: activities[i]['description'] ? JSON.stringify(activities[i]['description']) : 'No Description',
           json: JSON.parse(JSON.stringify(activities[i])),
         },
         {
@@ -77,14 +78,13 @@ async function uploadActivities(activities) {
           continue;
         }
       } else {
-        // If activity has no description in Strava
-        const res = await axios.post('http://localhost:3010/v0/activitiesStrava',
+        const res = axios.post('http://localhost:3010/v0/activitiesStrava',
         {
           username: user,
           name: (activities[i]['name']),
           type: (activities[i]['type']),
           sport: (activities[i]['sport_type']),
-          description: 'No description',
+          description: activities[i]['description'] ? JSON.stringify(activities[i]['description']) : 'No Description',
           json: JSON.parse(JSON.stringify(activities[i])),
         },
         {
@@ -98,10 +98,10 @@ async function uploadActivities(activities) {
       }
     } catch (error) {
       console.error('Error posting activity', activities[i], error);
-      return null;
+      return false;
     }
   }
-  alert("Successfully stored strava activities!"); // react mui box here instead
+  alert("Successfully stored strava activities!");
   console.log("Stored activities for: ", user);
 }
 
@@ -145,7 +145,6 @@ export async function getAllActivities() {
           all_activities.push(res.data[i]);
         }
       }
-      await new Promise(r => setTimeout(r, 4000));
     }
   } catch (error) {
     console.error('Error fetching all activities:', error);
