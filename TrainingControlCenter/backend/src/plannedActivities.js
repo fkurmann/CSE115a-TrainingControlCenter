@@ -6,13 +6,15 @@ const dbPlans = require('../db/dbPlans');
  * @async
  */
 exports.addPlannedActivity = async (req, res) => {
-  let {username, name, type, sport, description, distance, moving_time, start_date_local} = req.body;
+  let {username, name, type, sport, description, distance, moving_time, start_date_local, end_date_local} = req.body;
 
   // Convert a date string to a Date object
-  let date = start_date_local ? new Date(start_date_local) : null;
+  let date_start = start_date_local ? new Date(start_date_local) : null;
+  let date_end = end_date_local ? new Date(end_date_local) : null;
 
   // Convert the date object to a YYYY/MM/DD format
-  let formattedDate = date ? date.toISOString() : null;
+  let formattedDateStart = date_start ? date_start.toISOString() : null;
+  let formattedDateEnd = date_end ? date_end.toISOString() : null;
 
   // Input Value checks
   if (typeof distance !== 'undefined' && distance < 0) {
@@ -32,7 +34,8 @@ exports.addPlannedActivity = async (req, res) => {
     sport_type: sport,
     distance: distance || undefined,
     moving_time: moving_time * 60 || undefined,
-    start_date_local: formattedDate || undefined
+    start_date_local: formattedDateStart || undefined,
+    end_date_local: formattedDateEnd || undefined,
   };
 
   const returnValue = await dbPlans.createPlannedActivity(username, name, type, sport, descriptionText, activityJson);

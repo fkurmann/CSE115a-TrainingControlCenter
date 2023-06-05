@@ -26,7 +26,6 @@ function TrainingStats() {
      */
     const fetchWorkouts = useCallback(async () => {
       try {
-        await new Promise(resolve => setTimeout(resolve, 5000));
         const response = await fetch(`http://localhost:3010/v0/plannedActivities?username=${localStorageUser}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -74,7 +73,7 @@ function TrainingStats() {
 
     return (
       <div>
-        <Typography variant="h5">Plan Summary</Typography>
+        <Typography variant="h5">Plan Summary</Typography><br/>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Grid container spacing={6} justifyContent="flex-start">
             <Grid item xs={6}>
@@ -86,6 +85,7 @@ function TrainingStats() {
                     onChange={setStartDate}
                     renderInput={(params) => <TextField {...params} />}
                   />
+                  <br/><br/>
                   <DatePicker
                     label="End date"
                     value={endDate}

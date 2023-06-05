@@ -1,15 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://fkurmann:tcc@tcc.zfhwc4p.mongodb.net/?retryWrites=true&w=majority";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
 // Activitiy collection functions
 
 // Add activity to database
@@ -26,6 +17,13 @@ exports.createActivity = async (username, name, type, sport, description, json) 
     moving_time: json.moving_time,
     json: json,
   }
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
 
   // Access database
   try {
@@ -88,6 +86,13 @@ exports.findActivity = async (username, name, sport, type, minDuration, maxDurat
   }
 
   console.log(`Parameters: ${JSON.stringify(parameters)}`);
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
 
   // Access database
   try {
@@ -115,6 +120,14 @@ exports.deleteActivity = async (username, name) => {
     username: username,
     name: name,
   }
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();
@@ -139,6 +152,14 @@ exports.clearActivities = async (username) => {
   const parameters = {
     username: username,
   }
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();
