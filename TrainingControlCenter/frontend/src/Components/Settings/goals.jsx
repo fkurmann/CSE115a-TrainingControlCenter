@@ -1,4 +1,5 @@
 import * as React from 'react';
+import moment from 'moment';
 import {
   List,
   ListItemButton,
@@ -26,7 +27,7 @@ import { grey } from '@mui/material/colors';
 
 export default function Goals() {
   const user = localStorage.getItem('user');
-  const emptyGoal = {username: user, name: '', type: '', sport: '', distance: '', time: ''};
+  const emptyGoal = {username: user, name: '', type: '', sport: '', distance: 0, time: 0};
   const [openSport, setOpenSport] = React.useState([]);
   const [myGoals, setMyGoals] = React.useState(localStorage.getItem('goals') ? JSON.parse(localStorage.getItem('goals')) : null);
   // const [myGoals, setMyGoals] = React.useState(null);
@@ -62,7 +63,7 @@ export default function Goals() {
         })
         .then((res) => {
           if(res){
-            console.log('Loaded goals');
+            console.log('Loaded goals', res);
             localStorage.setItem('goals', JSON.stringify(res));
             setMyGoals(res);
             setIsLoading(false);
@@ -141,7 +142,6 @@ export default function Goals() {
     if (goal.sport === '') delete goal.sport;
     if (goal.distance === '') delete goal.distance;
     if (goal.time === '') delete goal.time;
-    setMyGoals([...myGoals, goal]);
 
     fetch('http://localhost:3010/v0/goals', {
       method: 'POST',
@@ -155,6 +155,7 @@ export default function Goals() {
           throw res;
         }
         console.log(`Added ${goal.name} to goals`);
+        setMyGoals([...myGoals, goal]);
         setIsAddLoading(false);
         setOpenSport([goal.sport]);
         handleCloseAddGoal();
@@ -213,18 +214,17 @@ export default function Goals() {
       setFormErrors([ ...formErrors, 'type']);
       validGoal = false;
     }
-    if ('distance' in goal && goal.distance !== '') {
-      let d = parseInt(goal.distance);
-      if (isNaN(d)) {
-        setFormErrors([ ...formErrors, 'distance']);
-        validGoal = false;
-      }
-      else {
-        goal.distance = d;
-      }
+    if (!('sport' in goal) || goal.sport === '') {
+      setFormErrors([ ...formErrors, 'sport']);
+      validGoal = false;
     }
-    if ('time' in goal) {
-      goal.time = parseInt(goal.time);
+    if (!('distance' in goal) || goal.distance == null || isNaN(goal.distance)) {
+      setFormErrors([ ...formErrors, 'distance']);
+      validGoal = false;
+    }
+    if (!('time' in goal) || goal.time == null) {
+      setFormErrors([ ...formErrors, 'time']);
+      validGoal = false;
     }
     if (!validGoal) {
       return;
@@ -234,13 +234,18 @@ export default function Goals() {
       handleCloseAddGoal();
       return;
     }
+    if (goal.type === 'one-time') {
+      // Convert date to epoch seconds
+      goal.time = moment(goal.time).unix();
+    }
+    setAddGoal(emptyGoal);
     setIsAddLoading(true);
     if (editedGoal.username) {
       console.log('Goal was edited, deleting old goal');
       const oldGoal = editedGoal;
       setEditedGoal({});
       setGoalToDelete(oldGoal);
-      await new Promise(r => setTimeout(r, 3000));
+      await new Promise(r => setTimeout(r, 3000)); // Remove later once MongoDB is fixed
     }
     setGoalToAdd(goal);
   }
@@ -250,7 +255,7 @@ export default function Goals() {
     if (!goal.type) goal.type = '';
     if (!goal.sport) goal.sport = '';
     if (!goal.distance) goal.distance = '';
-    if (!goal.time) goal.time = '';
+    if (!goal.time) goal.time = 0;
     setEditedGoal(goal);
     setAddGoal(goal);
     handleOpenAddGoal();

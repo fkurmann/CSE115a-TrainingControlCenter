@@ -126,7 +126,7 @@ exports.getGoals = async (req, res) => {
  */
 exports.deleteGoal = async (req, res) => {
   const username = req.query.username;
-  const name = req.query.name;
+  const name = decodeURIComponent(req.query.name);
 
   returnValue = await dbGoals.deleteGoal(username, name);
   // Error case
