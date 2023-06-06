@@ -32,7 +32,7 @@ export default function ActivityCard({ activity, width = 300 }) {
   // const elapsed_time = activity.elapsed_time;
   const elevation_gain = isMetric ? activityJson.total_elevation_gain : activityJson.total_elevation_gain * 3.28;
   const elevation_unit = isMetric ? 'm' : 'ft';
-  const date = activity.start_date ? moment(new Date(activity.start_date)) : moment(new Date());
+  const date = activityJson.start_date ? moment(new Date(activityJson.start_date)) : null;
   const start_latlng = activityJson.start_latlng;
   const end_latlng = activityJson.end_latlng;
   // const achievement_count = activity.achievement_count;
@@ -80,7 +80,7 @@ export default function ActivityCard({ activity, width = 300 }) {
       {name == null ? <></> : <>
       <CardHeader
         title={name}
-        subheader={activity.username ? '' : date.format('llll')}
+        subheader={date ? date.format('llll') : ''}
         action={<Box sx={{mr: 1.3, mt: 1.5}}>
                   <SportIcon sport={sport} fontSize='large' />
                 </Box>}
@@ -129,7 +129,7 @@ export default function ActivityCard({ activity, width = 300 }) {
           <>
           <Tooltip title='View on Strava'>
             <IconButton target='_blank' href={strava_link}>
-              <img src={StravaIcon} style={{width: 20, height: 20}} />
+              <img alt='Strava' src={StravaIcon} style={{width: 20, height: 20}} />
             </IconButton>
           </Tooltip>
           <Tooltip title='More details'>

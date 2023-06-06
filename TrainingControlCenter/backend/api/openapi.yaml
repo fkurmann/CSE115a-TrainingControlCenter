@@ -684,8 +684,8 @@ components:
           type: string
           nullable: true
         distance:
-          type: integer
-          format: int32
+          type: number
+          multipleOf: 0.01
           nullable: true
         time:
           type: integer

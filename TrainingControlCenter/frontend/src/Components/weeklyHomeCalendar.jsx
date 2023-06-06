@@ -256,7 +256,8 @@ function getLastDayOfWeek(d) {
 function getActivitiesForDay(activities, day) {
   let day_activities = []
   for (let i = 0; i < activities.length; i++) {
-    if (new Date(activities[i]['json']['start_date_local']).getDay().toString() === day) {
+    // Should be start_date instead of start_date_local
+    if (new Date(activities[i]['json']['start_date']).getDay().toString() === day) {
       // Remove duplicate activities
       if(day_activities.filter((a) => {
           return activities[i].json.distance === a.distance &&

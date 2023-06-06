@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Unstable_Grid2';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Input from '@mui/material/Input';
-import Typography from '@mui/material/Typography';
-import InputAdornment from '@mui/material/InputAdornment';
-import Select from '@mui/material/Select';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CircularProgress from '@mui/material/CircularProgress';
-import { grey } from '@mui/material/colors';
+import moment from 'moment';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  FormControl,
+  Grid,
+  IconButton,
+  Input,
+  InputAdornment,
+  InputLabel,
+  Modal,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
 
+import { grey } from '@mui/material/colors';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+
+import EventIcon from '@mui/icons-material/Event';
 import SportIcon from '../sportIcon';
 
 const localStorageUser = localStorage.getItem('user');
@@ -38,8 +49,8 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
   const [favoriteSports, setFavoriteSports] = useState([]);
 
   // Success and error message
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  // const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  // const [errorMessage, setErrorMessage] = useState('');
 
   const fetchFavorites = async () => {
     try {
@@ -54,11 +65,11 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
       setFavoriteSports(favoriteSports);
     } catch (error) {
       console.error(error);
-      setErrorMessage('An error occurred. Please try again.');
+      // setErrorMessage('An error occurred. Please try again.');
 
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 10000);
+      // setTimeout(() => {
+      //   setErrorMessage('');
+      // }, 10000);
     }
   };
   useEffect(() => {
@@ -72,11 +83,11 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
     },
     {
       value: 'repeat',
-      label: 'Repeat',
+      label: 'Repeating',
     },
     {
       value: 'one-time',
-      label: 'Does not repeat',
+      label: 'By a deadline',
     },
   ]
 
@@ -84,7 +95,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
     <Modal open={openAddGoal} onClose={handleCloseAddGoal} >
       <Box sx={modalStyle} component='form' noValidate onSubmit={handleSubmit}>
         <Typography variant='h5' gutterBottom>{isEdit ? 'Edit goal' : 'Add a new goal'}</Typography>
-        <Card sx={{mb: 1, bgcolor: localStorage.getItem('brightnessMode') === 'dark' ? grey[900] : grey[50]}}>
+        <Card sx={{mb: 1, height: isLoading ? null : 270, bgcolor: localStorage.getItem('brightnessMode') === 'dark' ? grey[900] : grey[50]}}>
           {isLoading ? <CardContent sx={{m: 0.5}}><CircularProgress /></CardContent> :
           <CardContent sx={{ml: 2.5}}>
             <FormControl variant='standard' error={formErrors.includes('name')} sx={{ width: '30ch', paddingBottom: 2 }}>
@@ -97,10 +108,10 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                 }} />
             </FormControl>
             <Grid container>
-              <Grid xs={1} sx={{mt: 2.2, ml: -3.5, mr: 0.5}}>
+              <Grid item xs={1} sx={{mt: 2.2, ml: -3.5, mr: 0.5}}>
                 <SportIcon sport={addGoal.sport} />
               </Grid>
-              <Grid xs={6}>
+              <Grid item xs={6}>
                 <FormControl variant='standard' error={formErrors.includes('sport')} sx={{ width: '15ch', pb: 1 }}>
                   <InputLabel>Sport</InputLabel>
                   <Select
@@ -118,16 +129,18 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid xs={2}>
+              <Grid item xs={2}>
                 <FormControl variant='standard' error={formErrors.includes('distance')} sx={{ width: '12ch', pb: 1 }}>
                   <InputLabel>Distance</InputLabel>
                   <Input
                     label='Distance'
                     endAdornment={<InputAdornment position='end'>{dist_unit}</InputAdornment> }
+                    type='number'
+                    step='any'
                     value={addGoal.distance}
                     onChange={(e) => {
                       setFormErrors(formErrors.filter(e => e !== 'distance'));
-                      setAddGoal({ ...addGoal, distance: e.target.value });
+                      setAddGoal({ ...addGoal, distance: Math.max(0, Number.parseFloat(e.target.value).toFixed(2)) });
                     }} />
                 </FormControl>
               </Grid>
@@ -140,7 +153,12 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                 value={addGoal.type}
                 onChange={(e) => {
                   setFormErrors(formErrors.filter(e => e !== 'type'));
-                  setAddGoal({ ...addGoal, type: e.target.value });
+                  if (e.target.value === 'one-time') {
+                    setAddGoal({ ...addGoal, time: moment().toISOString(), type: e.target.value });
+                  }
+                  else {
+                    setAddGoal({ ...addGoal, time: 0, type: e.target.value });
+                  }
                 }}>
                   {types.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
@@ -151,40 +169,73 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
             </FormControl>
             {
               addGoal.type === 'race' ?
-                <FormControl error={formErrors.includes('time')} sx={{ width: '10ch', marginRight: 15, paddingBottom: 1 }}>
+                <Stack direction='row'>
+                <FormControl sx={{width: 100, mr: 2}} error={formErrors.includes('time')}>
                   <Input
                     endAdornment={<InputAdornment position='end'>min</InputAdornment> }
-                    placeholder='60'
-                    value={addGoal.time}
+                    type='number'
+                    placeholder='40'
+                    value={Math.floor(addGoal.time / 60)}
                     onChange={(e) => {
                       setFormErrors(formErrors.filter(e => e !== 'time'));
-                      setAddGoal({ ...addGoal, time: e.target.value });
+                      setAddGoal({ ...addGoal, time: Math.max(addGoal.time % 60, 60 * e.target.value + (addGoal.time % 60)) });
                     }} />
                 </FormControl>
+                <FormControl sx={{width: 100}} error={formErrors.includes('time')}>
+                  <Input
+                    endAdornment={<InputAdornment position='end'>sec</InputAdornment> }
+                    type='number'
+                    placeholder='0'
+                    value={addGoal.time % 60}
+                    onChange={(e) => {
+                      setFormErrors(formErrors.filter(e => e !== 'time'));
+                      setAddGoal({ ...addGoal, time: addGoal.time - (addGoal.time % 60) + Math.max(0, e.target.value) });
+                    }} />
+                </FormControl>
+                </Stack>
               : addGoal.type === 'repeat' ?
                 <FormControl error={formErrors.includes('time')} sx={{ width: '18ch', marginRight: 15, paddingBottom: 1 }}>
                   <Input
                     startAdornment={<InputAdornment position='start'>Every</InputAdornment> }
                     endAdornment={<InputAdornment position='end'>days</InputAdornment> }
+                    type='number'
                     placeholder='31'
                     value={addGoal.time}
                     onChange={(e) => {
                       setFormErrors(formErrors.filter(e => e !== 'time'));
-                      setAddGoal({ ...addGoal, time: e.target.value });
+                      setAddGoal({ ...addGoal, time: Math.max(1, e.target.value) });
                     }} />
                 </FormControl>
-              :
-                <FormControl error={formErrors.includes('time')} sx={{ width: '18ch', marginRight: 15, paddingBottom: 1 }}>
-                  <Input
-                    startAdornment={<InputAdornment position='start'>Within</InputAdornment> }
-                    endAdornment={<InputAdornment position='end'>days</InputAdornment> }
-                    placeholder='31'
+              : addGoal.type === 'one-time' ?
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <MobileDatePicker
+                    inputFormat='YYYY-MM-DD'
+                    disablePast
                     value={addGoal.time}
-                    onChange={(e) => {
-                      setFormErrors(formErrors.filter(e => e !== 'time'));
-                      setAddGoal({ ...addGoal, time: e.target.value });
-                    }} />
-                </FormControl>
+                    onChange={(value) =>
+                      setAddGoal((prevState) => ({
+                        ...prevState,
+                        time: value ? value.toISOString() : null,
+                      }))
+                    }
+                    renderInput={(params) => <TextField {...params}
+                      readOnly
+                      error={formErrors.includes('time')}
+                      placeholder='Deadline'
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton edge="end">
+                              <EventIcon />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />}
+                  />
+                </LocalizationProvider>
+                :
+                <></>
           }
           </CardContent>
           }
