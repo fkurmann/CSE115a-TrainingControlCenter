@@ -15,7 +15,7 @@ import {
 import EventIcon from '@mui/icons-material/Event';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 
 const localStorageUser = localStorage.getItem('user');
 
@@ -66,6 +66,7 @@ export default function AddPlannedActivityForm() {
     distance: '',
     time: null,
     start_date_local: '',
+    end_date_local: '',
     description: '',
   });
 
@@ -78,7 +79,8 @@ export default function AddPlannedActivityForm() {
     e.preventDefault();
     try {
       const descriptions = additionalInfo.description.trim() === '' ? null : additionalInfo.description;
-      const formattedDate = additionalInfo.start_date_local ? new Date(additionalInfo.start_date_local) : null;
+      const formattedDateStart = additionalInfo.start_date_local ? new Date(additionalInfo.start_date_local) : null;
+      const formattedDateEnd = additionalInfo.end_date_local ? new Date(additionalInfo.end_date_local) : null;
       const response = await fetch('http://localhost:3010/v0/plannedActivities?' , {
         method: "POST",
         body: JSON.stringify({
@@ -89,7 +91,8 @@ export default function AddPlannedActivityForm() {
           description: descriptions,
           distance: additionalInfo.distance * meters_per_unit,
           moving_time: additionalInfo.time,
-          start_date_local: formattedDate
+          start_date_local: formattedDateStart,
+          end_date_local: formattedDateEnd,
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -131,8 +134,9 @@ export default function AddPlannedActivityForm() {
 
   return (
     <>
-      <Typography variant="h5">Plan an Activity</Typography>
+      <Typography variant="h5">Plan an Activity</Typography><br/>
       <form onSubmit={handleSubmit}>
+        <Box sx={{ borderRadius:  '16px', pr: 4, py: 1, boxShadow: 3 }}>
         {/* Name */}
         <Typography variant="h6" ml={2}>Name of Activity*</Typography>
         <Box mb={2} ml={2}>
@@ -184,18 +188,47 @@ export default function AddPlannedActivityForm() {
             ))}
           </Select>
         </Box>
-        {/* Date */}
+        {/* Start Date */}
         <Box mb={2} ml={2}>
-        <Typography variant="h6">Date</Typography>
+        <Typography variant="h6">Start Date/Time</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <MobileDatePicker
-            inputFormat="YYYY-MM-DD"
+          <MobileDateTimePicker
+            inputFormat="YYYY-MM-DD, hh:mm A"
             disablePast
             value={additionalInfo.start_date_local}
             onChange={(value) =>
               setAdditionalInfo((prevState) => ({
                 ...prevState,
                 start_date_local: value ? value.toISOString() : null,
+              }))
+            }
+            renderInput={(params) => <TextField {...params}
+              readOnly
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton edge="end">
+                      <EventIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />}
+          />
+        </LocalizationProvider>
+        </Box>
+        {/* End Date */}
+        <Box mb={2} ml={2}>
+        <Typography variant="h6">End Date/Time</Typography>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <MobileDateTimePicker
+            inputFormat="YYYY-MM-DD, hh:mm A"
+            disablePast
+            value={additionalInfo.end_date_local}
+            onChange={(value) =>
+              setAdditionalInfo((prevState) => ({
+                ...prevState,
+                end_date_local: value ? value.toISOString() : null,
               }))
             }
             renderInput={(params) => <TextField {...params}
@@ -277,9 +310,11 @@ export default function AddPlannedActivityForm() {
           />
         </Box>
       </Collapse>
+      <Box mb={2} ml={2}>
       <Button variant="contained" color="primary" type="submit" ml={2}>
         Plan Activity
       </Button>
+      </Box>
         <Snackbar
           open={showSuccessMessage}
           autoHideDuration={10000}
@@ -300,6 +335,7 @@ export default function AddPlannedActivityForm() {
             {errorMessage}
           </Alert>
         </Snackbar>
+        </Box>
       </form>
     </>
   );

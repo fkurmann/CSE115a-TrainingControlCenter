@@ -20,9 +20,7 @@ A training plans tool will allow users to plan their training in advance to reac
 ## Installation
 ```
 $ git clone git@github.com:fkurmann/CSE115a-TrainingControlCenter.git
-$ cd TrainingControlCenter
-$ pip3 install -r requirements.txt
-$ npm install
+$ npm run install-pkg
 $ npm start
 ```
 
@@ -39,4 +37,10 @@ Collaborators
 ```
 
 ## Features
-- TBA
+- Manual activity entry
+- Strava activity upload
+- Activity statistic viewing and graph generation
+- Activity filtering and sorting
+- Plan activities and see resulting calendar
+- Goal setting
+- Mark favorite activities

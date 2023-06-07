@@ -1,0 +1,31 @@
+{
+  "name": "TrainingControlCenter",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "pyreqs": "pip install -q -r requirements.txt",
+    "start": "concurrently \"cd TrainingControlCenter/frontend && npm start\" \"cd TrainingControlCenter/backend && npm start\"",
+    "install-pkg": "concurrently \"npm run pyreqs && npm install\" \"cd TrainingControlCenter/frontend && npm install\" \"cd TrainingControlCenter/backend && npm install\""
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "concurrently": "^8.1.0"
+  }
+}

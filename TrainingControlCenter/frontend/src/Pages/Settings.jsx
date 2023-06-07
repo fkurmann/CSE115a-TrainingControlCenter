@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
-import { CssBaseline, Container } from '@mui/material';
+import { CssBaseline, Container, Typography } from '@mui/material';
 import ResponsiveAppBar from '../Components/appBar';
 import Favorites from '../Components/Settings/favorites';
 import Goals from '../Components/Settings/goals';
@@ -55,6 +55,7 @@ export default function Settings() {
       <Container component='main'>
       <CssBaseline />
       <ResponsiveAppBar /> 
+      <Typography variant="h4">Settings</Typography>
       <Grid container sx={{
         mt: 4,
         '--Grid-borderWidth': '1px',
@@ -69,13 +70,13 @@ export default function Settings() {
       }}>
         <Grid xs={4}>
           <Container>
-            <h1>Favorites</h1>
+          <Typography variant="h5">Favorites</Typography>
             <Favorites />
           </Container>
         </Grid>
         <Grid xs={4}>
           <Container disableGutters>
-            <h1>&nbsp;&nbsp;&nbsp;Preferences</h1>
+          <Typography variant="h5">Preferences</Typography>
             <Preferences
               colorTheme={colorTheme}
               setColorTheme={setColorTheme}
@@ -86,7 +87,7 @@ export default function Settings() {
         </Grid>
         <Grid xs={4}>
           <Container>
-            <h1>Goals</h1>
+          <Typography variant="h5">Goals</Typography>
             <Goals />
           </Container>
         </Grid>

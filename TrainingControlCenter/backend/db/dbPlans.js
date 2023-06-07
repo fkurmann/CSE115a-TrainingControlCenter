@@ -1,15 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://fkurmann:tcc@tcc.zfhwc4p.mongodb.net/?retryWrites=true&w=majority";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
 // Plans collection functions
 
 // Add planned activity to database
@@ -24,7 +15,20 @@ exports.createPlannedActivity = async (username, name, type, sport, description,
     start_date_local: json.start_date_local,
     distance: json.distance,
     moving_time: json.moving_time,
+    kind: "calendar#event",
+    summary: name,
+    start: {dateTime: json.start_date_local, timeZone: "UTC"},
+    end: {dateTime: json.end_date_local, timeZone: "UTC"},
+    eventType: "default",
   }
+
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
 
   // Access database
   try {
@@ -87,6 +91,13 @@ exports.findPlannedActivity = async (username, name, sport, type, minDuration, m
   }
 
   console.log(`Parameters: ${JSON.stringify(parameters)}`);
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
 
   // Access database
   try {
@@ -114,6 +125,14 @@ exports.deletePlannedActivity = async (username, name) => {
     username: username,
     name: name,
   }
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();
@@ -138,6 +157,14 @@ exports.clearPlannedActivities = async (username) => {
   const parameters = {
     username: username,
   }
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();

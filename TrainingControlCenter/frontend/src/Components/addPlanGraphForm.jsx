@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   TextField,
   Button,
@@ -8,8 +8,6 @@ import {
   MenuItem,
   Select,
   Typography,
-  FormControlLabel,
-  Switch,
   IconButton,
   InputAdornment,
 } from '@mui/material';
@@ -56,7 +54,7 @@ export default function AddPlanGraphForm() {
           sport: 'PlanPie',
           goal: goal,
           startDate: formattedDate,
-          outFile: 'planPieGraph' 
+          outFile: 'planPieGraph'
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -110,9 +108,9 @@ export default function AddPlanGraphForm() {
     <Box>
     <div className='parent'>
       <div style={{float: 'left'}}>
-        <Typography variant="h5">Generate a Graph</Typography>
+        <Typography variant="h5">Generate a Graph</Typography><br/>
         <form onSubmit={handleSubmit}>
-          
+          <Box sx={{ borderRadius:  '16px', pr: 5, py: 1, boxShadow: 3 }}>
           {/* Graph Type */}
           <Typography variant="h6" ml={2}>Graph Type*</Typography>
           <Box mb={2} ml={2}>
@@ -156,7 +154,7 @@ export default function AddPlanGraphForm() {
             ))}
           </Select>
           </Box>
-          
+
           {/* Date */}
           <Box mb={2} ml={2}>
           <Typography variant="h6">Start Date*</Typography>
@@ -186,10 +184,11 @@ export default function AddPlanGraphForm() {
             />
           </LocalizationProvider>
           </Box>
-
+          <Box mb={2} ml={2}>
           <Button variant="contained" color="primary" type="submit" ml={2}>
             Generate Graph
           </Button>
+          </Box>
           <Snackbar
             open={showSuccessMessage}
             autoHideDuration={10000}
@@ -210,19 +209,20 @@ export default function AddPlanGraphForm() {
               {errorMessage}
             </Alert>
           </Snackbar>
+          </Box>
         </form>
       </div>
       <div style={{float: 'right'}}>
-        <Typography variant="h5">Planned Training Distribution Graph:</Typography>
+        <Typography variant="h5" sx={{ px: 3 }}>Planned Training Distribution Graph:</Typography>
         <Box
-          graphGenerated
           component="img"
           sx={{
-            height: 300,
+            height: 400,
             width: 500,
+            px: 1
           }}
           alt={defaultImage}
-          src={graphGenerated? planPieGraph : defaultImage}
+          src={graphGenerated ? planPieGraph : defaultImage}
         />
       </div>
     </div>

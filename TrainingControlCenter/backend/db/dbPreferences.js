@@ -1,19 +1,18 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://fkurmann:tcc@tcc.zfhwc4p.mongodb.net/?retryWrites=true&w=majority";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
 // Preference collection functions
 
 // Update user's preferences. Second argument might be {isMetric: false, colorTheme: 'orange'}
 exports.updatePreferences = async (username, updatedPreferences) => {
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();
@@ -29,6 +28,14 @@ exports.updatePreferences = async (username, updatedPreferences) => {
 
 // Find preferences by username
 exports.findPreferences = async (username) => {
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // Access database
   try {
     await client.connect();

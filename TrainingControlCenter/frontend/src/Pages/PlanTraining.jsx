@@ -1,7 +1,6 @@
 import React from 'react';
 import {ThemeProvider} from '@mui/material/styles';
 // import Button from '@mui/material/Button';
-import Grid from '@mui/system/Unstable_Grid/Grid';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -24,15 +23,15 @@ export default function PlanTraining() {
       <CssBaseline />
       <Container component='main'>
         <ResponsiveAppBar />
-        <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}: Plan Training</Typography>
+        <Typography variant="h4">Plan Training</Typography>
         <Box mt={2} mb={2}>
           <div className='parent'>
             <div style={{float: 'left'}}>
-              <AddPlannedActivityForm />
-              <AddPlannedSummary />
-            </div>
-            <div style={{float: 'right'}}>
-              <AddPlanGraphForm />
+              <Box sx={{display: 'inline-flex', justifyContent: 'space-evenly'}}>
+                <Box sx={{p: 1, m: 1}}><AddPlannedActivityForm /></Box>
+                <Box sx={{p: 1, m: 1}}><AddPlannedSummary /></Box>
+              </Box>
+              <Box sx={{display: 'inline-flex', p: 1, m: 1}}><AddPlanGraphForm /></Box>
             </div>
           </div>
         </Box>
