@@ -167,7 +167,7 @@ export async function getFiveActivities() {
         'Authorization': `Bearer ${stravaAccessToken}`,
       },
       params: {
-        'per_page': 50,
+        'per_page': 5,
       },
     });
     if (res.status === 200) {
