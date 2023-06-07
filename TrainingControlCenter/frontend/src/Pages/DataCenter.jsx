@@ -1,10 +1,12 @@
 import React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import Grid from '@mui/system/Unstable_Grid/Grid';
-import CssBaseline from '@mui/material/CssBaseline';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
+import { 
+  Typography,
+  Box,
+  Container,
+  CssBaseline,
+  Grid,
+} from '@mui/material';
 import ResponsiveAppBar from '../Components/appBar';
 import AddGraphForm from '../Components/addGraphForm';
 import { userTheme } from '../Components/theme';
@@ -25,8 +27,8 @@ export default function DataCenter() {
       <CssBaseline />
       <Container component='main'>
         <ResponsiveAppBar />
+        <Box mt={10}>
         <Typography variant="h4">Data Center</Typography>
-        <Box mt={2}>
           <ActivitiesChart/>
           <Grid container>
             <Grid item xs={4}>

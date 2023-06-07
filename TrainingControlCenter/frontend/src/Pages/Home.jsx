@@ -1,8 +1,10 @@
 import React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
+import { 
+  Box,
+  Container,
+  CssBaseline,
+} from '@mui/material';
 import ResponsiveAppBar from '../Components/appBar';
 import AddActivityForm from '../Components/addActivityForm';
 import HomeCalendar from '../Components/weeklyHomeCalendar';
@@ -19,7 +21,7 @@ export default function Home() {
       <CssBaseline />
       <Container component='main'>
         <ResponsiveAppBar />
-        <Box mt={2}>
+        <Box mt={10}>
           <div className='parent'>
             <div style={{float: 'left'}}>
               <AddActivityForm />

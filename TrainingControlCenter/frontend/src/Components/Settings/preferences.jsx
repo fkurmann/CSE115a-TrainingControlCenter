@@ -1,12 +1,34 @@
 import React from 'react';
-import { Box, Button, Chip, List, ListItem, ListItemButton, ListItemIcon, ListItemText, MenuItem, Select, Switch, Typography } from '@mui/material';
+import { 
+  Box, 
+  Button, 
+  Chip, List, 
+  ListItem, 
+  ListItemButton, 
+  ListItemIcon, 
+  ListItemText, 
+  MenuItem, 
+  Select, 
+  Switch, 
+  Typography 
+} from '@mui/material';
 import ScaleIcon from '@mui/icons-material/Scale';
 import MapIcon from '@mui/icons-material/Map';
 import WebIcon from '@mui/icons-material/Web';
 import Brightness5Icon from '@mui/icons-material/Brightness5';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import { red, orange, yellow, green, blue, purple, pink, grey, brown } from '@mui/material/colors';
+import { 
+  red, 
+  orange, 
+  yellow, 
+  green, 
+  blue, 
+  purple, 
+  pink, 
+  grey, 
+  brown 
+} from '@mui/material/colors';
 
 function ColorChip({ color, isSmall=false }) {
   const myColors = {
@@ -264,7 +286,7 @@ export default function Preferences({ colorTheme, setColorTheme, brightnessMode,
                 }}
                 onChange={ (e) => setActivityMapColor(e.target.value) }
               >
-              { // // Red, orange, green, blue, purple, black, brown, magenta
+              {
                 ['red', 'orange', 'green', 'blue', 'purple', 'black', 'brown', 'magenta'].map((color) => (
                   <MenuItem key={color} value={color}><ColorChip color={color} /></MenuItem>
                 ))

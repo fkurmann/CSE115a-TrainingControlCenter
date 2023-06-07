@@ -1,12 +1,15 @@
 import React from 'react';
 import {ThemeProvider} from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
+import { 
+  Typography, 
+  Box,
+  CssBaseline,
+  Container 
+} from '@mui/material';
 import ResponsiveAppBar from '../Components/appBar';
 import ActivityGrid from '../Components/dataGrid';
 import { userTheme } from '../Components/theme';
-import { Typography } from '@mui/material';
+
 
 
 /**
@@ -20,8 +23,8 @@ export default function ActivityList() {
       <CssBaseline />
       <Container component='main'>
         <ResponsiveAppBar />
+        <Box mt={10}>
         <Typography variant="h4">Activities</Typography>
-        <Box mt={2}>
           <ActivityGrid />
         </Box>
       </Container>
