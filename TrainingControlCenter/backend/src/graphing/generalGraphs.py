@@ -9,7 +9,6 @@ import json
 
 from datetime import date, datetime
 
-
 def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile):
     startDate = date(int(startYear), int(startMonth) + 1, int(startDay))
     # Figure creation
@@ -25,11 +24,14 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
     activityIdList = []
     activityList = []
     for item in oldActivityList:
-        activityId = item['json']['id']
-        if activityId in activityIdList:
-            continue
-        elif activityId:
-            activityIdList.append(activityId)
+        if hasattr(item['json'], 'id'):
+            activityId = item['json']['id']
+            if activityId in activityIdList:
+                continue
+            elif activityId:
+                activityIdList.append(activityId)
+                activityList.append(item)
+        else:
             activityList.append(item)
 
     # Get totals for distance or time
@@ -60,11 +62,9 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
             if jsonKey[0] not in item['json']:
                 continue
             # Lots of translation
-            activityDate = datetime.strptime(item['start_date_local'], '%Y-%m-%dT%H:%M:%SZ').date()
-            # print(startDate, activityDate)
-            startDateDelta = (activityDate - startDate).days
-            startDateDelta = int(startDateDelta)
-            # print(startDateDelta)
+            dateFormatted = item['start_date_local'].replace(".000Z", "Z")
+            activityDate = datetime.strptime(dateFormatted, '%Y-%m-%dT%H:%M:%SZ').date()
+            startDateDelta = int((activityDate - startDate).days)
 
             if duration == 'Week':
                 startDateDelta = startDateDelta // 7
@@ -74,7 +74,6 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
             if (startDateDelta != 0):
                 startDateDelta -= 1
 
-            # print(startDateDelta)
             if (startDateDelta < maxX):
                 totals[startDateDelta][1] += (item['json'][jsonKey[0]] / jsonKey[1])
 
@@ -182,6 +181,4 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
     plt.savefig('../frontend/src/Components/images/' + outFile, dpi=600)
     return 'Graphing Complete'
 
-
-# generalHistoryGraph('fkurmann', 'Week', 'Distance', 'Run', False, 2023, 2, 19, 'string', 'test')
 generalHistoryGraph(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10])
