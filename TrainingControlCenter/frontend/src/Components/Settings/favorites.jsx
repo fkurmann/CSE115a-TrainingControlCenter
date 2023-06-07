@@ -12,6 +12,9 @@ import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import Divider from '@mui/material/Divider';
 import CircularProgress from '@mui/material/CircularProgress';
 
+/**
+ * Handles favorites page in settings.
+ */
 export default function Favorites() {
   const user = localStorage.getItem('user');
   const [addFav, setAddFav] = React.useState('');

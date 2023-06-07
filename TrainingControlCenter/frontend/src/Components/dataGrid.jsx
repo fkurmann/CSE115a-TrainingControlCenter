@@ -19,12 +19,26 @@ export default function ActivityGrid() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [selectedActivity, setSelectedActivity] = React.useState(null);
   const [anchorElActivityCard, setAnchorElActivityCard] = React.useState(null);
+  const [tempAnchor, setTempAnchor] = React.useState(null);
 
   const handleOpenActivityCard = (event, activity) => {
     setSelectedActivity(activity);
     setAnchorElActivityCard(event.currentTarget);
   }
   const handleCloseActivityCard = () => setAnchorElActivityCard(null);
+
+  const realign = () => {
+    let x = anchorElActivityCard;
+    setAnchorElActivityCard(null);
+    setTempAnchor(x);
+  }
+
+  React.useEffect(() => {
+    if (tempAnchor && !anchorElActivityCard) {
+      setAnchorElActivityCard(tempAnchor);
+      setTempAnchor(null);
+    }
+  }, [tempAnchor, anchorElActivityCard]);
 
   const columns = [
     { field: 'name', headerName: 'Name', width: 300 },
@@ -120,7 +134,7 @@ export default function ActivityGrid() {
           horizontal: 'right',
         }}
       >
-        <ActivityCard activity={selectedActivity} />
+        <ActivityCard activity={selectedActivity} realign={realign} />
       </Popover>
     </div>
     }

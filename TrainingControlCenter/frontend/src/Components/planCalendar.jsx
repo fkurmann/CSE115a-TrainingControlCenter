@@ -168,6 +168,7 @@ export default function PlanCalendar() {
     setIsLoading(true);
     getData(setData, setLoading);
     setIsLoading(false);
+    // eslint-disable-next-line
   }, [setData, currentViewName, currentDate, loading, isLoading, setLoading]);
 
   return (

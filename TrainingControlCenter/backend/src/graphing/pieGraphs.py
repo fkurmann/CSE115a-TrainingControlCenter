@@ -8,6 +8,7 @@ import json
 
 from datetime import date, datetime
 
+
 def pieGraph(username, duration, graphType, startYear, startMonth, startDay, jsonInput, outFile):
     activityList = json.loads(jsonInput)
     # Get totals for distance, time, or number of workouts
@@ -56,5 +57,6 @@ def pieGraph(username, duration, graphType, startYear, startMonth, startDay, jso
     # Save location in images folder
     plt.savefig('../frontend/src/Components/images/' + outFile, dpi=600)
     return 'Graphing Complete'
+
 
 pieGraph(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8])

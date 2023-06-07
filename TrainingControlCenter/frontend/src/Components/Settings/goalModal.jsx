@@ -30,6 +30,9 @@ import SportIcon from '../sportIcon';
 
 const localStorageUser = localStorage.getItem('user');
 
+/**
+ * Goal Model component to help save goals.
+ */
 export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleCloseAddGoal, handleSubmit, formErrors, setFormErrors, isEdit, isLoading }) {
   const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
   const dist_unit = isMetric ? 'km' : 'mi';

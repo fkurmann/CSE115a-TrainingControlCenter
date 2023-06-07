@@ -12,6 +12,7 @@ const BlueIcon = L.icon({
   shadowUrl: iconShadow,
   iconAnchor: [12.5, 41]
 });
+
 const RedIcon = L.icon({
   iconUrl: icon2,
   shadowUrl: iconShadow,

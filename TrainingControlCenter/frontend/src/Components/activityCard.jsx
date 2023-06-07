@@ -1,7 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
 import { Box, Card, CardActions, CardContent, CardHeader, CircularProgress, Collapse, Divider, IconButton, Tooltip, Typography } from '@mui/material';
-
 import SportIcon from './sportIcon';
 import StravaIcon from './images/strava_icon.png';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -17,7 +16,7 @@ import { grey } from '@mui/material/colors';
  * @param {int} [width] - optional parameter denoting width of MUI card.
  * @return {HTMLElement} - creates and returns the activity card for specified activity.
  */
-export default function ActivityCard({ activity, width = 300 }) {
+export default function ActivityCard({ activity, width = 300, realign = () => {} }) {
   const activityJson = activity.json;
   const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
   const dist_unit = isMetric ? 'km' : 'mi';
@@ -29,19 +28,18 @@ export default function ActivityCard({ activity, width = 300 }) {
   const moving_time = activityJson.moving_time;
   const pace = moment.utc((moving_time || 0) * 1000 / ((distance || 1000) / meters_per_unit)).format('m:ss');
   const strava_link = `http://strava.com/activities/${activityJson.id}`;
-  // const elapsed_time = activity.elapsed_time;
   const elevation_gain = isMetric ? activityJson.total_elevation_gain : activityJson.total_elevation_gain * 3.28;
   const elevation_unit = isMetric ? 'm' : 'ft';
   const date = activityJson.start_date ? moment(new Date(activityJson.start_date)) : null;
   const start_latlng = activityJson.start_latlng;
   const end_latlng = activityJson.end_latlng;
+  const map = activityJson.map;
+  const map_width = width - 33;
+  const map_height = map_width * 7 / 8;
   // const achievement_count = activity.achievement_count;
   // const kudos_count = activity.kudos_count;
   // const comment_count = activity.comment_count;
   // const photo_count = activity.total_photo_count;
-  const map = activityJson.map;
-  const map_width = width - 33;
-  const map_height = map_width * 7 / 8;
 
   const [expanded, setExpanded] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -66,9 +64,11 @@ export default function ActivityCard({ activity, width = 300 }) {
   React.useEffect(() => {
     if (!loading && expanded && detailedActivity == null) {
       setLoading(true);
+      realign();
       getActivityDetails(activityJson.id).then((res) => {
         setLoading(false);
         setDetailedActivity(res);
+        realign();
       }).catch((error) => {
         console.log('Error when getting detailed activity', error);
       });
@@ -129,7 +129,7 @@ export default function ActivityCard({ activity, width = 300 }) {
           <>
           <Tooltip title='View on Strava'>
             <IconButton target='_blank' href={strava_link}>
-              <img alt='Strava' src={StravaIcon} style={{width: 20, height: 20}} />
+              <img src={StravaIcon} style={{width: 20, height: 20}} alt='Strava Logo'/>
             </IconButton>
           </Tooltip>
           <Tooltip title='More details'>
@@ -146,15 +146,42 @@ export default function ActivityCard({ activity, width = 300 }) {
           { !detailedActivity ?
           <CircularProgress /> :
           <>
-          <Typography>
-            <strong>Description:</strong> {detailedActivity.description}
-          </Typography>
+          {
+            detailedActivity.description ?
+            <Typography>
+              <strong>Description:</strong> {detailedActivity.description}
+            </Typography> : <></>
+          }
+          {
+            detailedActivity.athlete_count > 1 ?
+            <Typography>
+              <strong>Number of athletes:</strong> {detailedActivity.athlete_count}
+            </Typography> : <></>
+          }
           <Typography>
             <strong>Calories:</strong> {detailedActivity.calories}
           </Typography>
           <Typography>
             <strong>Device:</strong> {detailedActivity.device_name}
           </Typography>
+          {
+            detailedActivity.kudos_count > 0 ?
+            <Typography>
+              <strong>Kudos:</strong> {detailedActivity.kudos_count}
+            </Typography> : <></>
+          }
+          {
+            detailedActivity.comment_count > 0 ?
+            <Typography>
+              <strong>Comments:</strong> {detailedActivity.comment_count}
+            </Typography> : <></>
+          }
+          {
+            detailedActivity.total_photo_count > 0 ?
+            <Typography>
+              <strong>Photos:</strong> {detailedActivity.total_photo_count}
+            </Typography> : <></>
+          }
           </>
           }
         </CardContent>
