@@ -46,35 +46,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
   };
 
   // Get user favorite sport types
-  const [favoriteSports, setFavoriteSports] = useState([]);
-
-  // Success and error message
-  // const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  // const [errorMessage, setErrorMessage] = useState('');
-
-  const fetchFavorites = async () => {
-    try {
-      const response = await fetch('http://localhost:3010/v0/favorites?'
-                        + new URLSearchParams({username: localStorageUser}));
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const favoriteSports = await response.json();
-      setFavoriteSports(favoriteSports);
-    } catch (error) {
-      console.error(error);
-      // setErrorMessage('An error occurred. Please try again.');
-
-      // setTimeout(() => {
-      //   setErrorMessage('');
-      // }, 10000);
-    }
-  };
-  useEffect(() => {
-    fetchFavorites();
-  }, []);
+  const [favoriteSports] = React.useState(localStorage.getItem('favorites') === null ? [] : JSON.parse(localStorage.getItem('favorites')));
 
   const types = [
     {
@@ -140,7 +112,9 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                     value={addGoal.distance}
                     onChange={(e) => {
                       setFormErrors(formErrors.filter(e => e !== 'distance'));
-                      setAddGoal({ ...addGoal, distance: Math.max(0, Number.parseFloat(e.target.value).toFixed(2)) });
+                      let d = Math.max(0, Number.parseFloat(e.target.value).toFixed(2));
+                      if(isNaN(d)) d = '';
+                      setAddGoal({ ...addGoal, distance: d });
                     }} />
                 </FormControl>
               </Grid>
@@ -157,7 +131,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                     setAddGoal({ ...addGoal, time: moment().toISOString(), type: e.target.value });
                   }
                   else {
-                    setAddGoal({ ...addGoal, time: 0, type: e.target.value });
+                    setAddGoal({ ...addGoal, time: '', type: e.target.value });
                   }
                 }}>
                   {types.map((option) => (
@@ -170,18 +144,29 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
             {
               addGoal.type === 'race' ?
                 <Stack direction='row'>
-                <FormControl sx={{width: 100, mr: 2}} error={formErrors.includes('time')}>
+                <FormControl sx={{width: 80, mr: 2}} error={formErrors.includes('time')}>
+                  <Input
+                    endAdornment={<InputAdornment position='end'>hr</InputAdornment> }
+                    type='number'
+                    placeholder='2'
+                    value={Math.floor(addGoal.time / 3600)}
+                    onChange={(e) => {
+                      setFormErrors(formErrors.filter(e => e !== 'time'));
+                      setAddGoal({ ...addGoal, time: Math.max(addGoal.time % 3600, 3600 * e.target.value + (addGoal.time % 3600)) });
+                    }} />
+                </FormControl>
+                <FormControl sx={{width: 80, mr: 2}} error={formErrors.includes('time')}>
                   <Input
                     endAdornment={<InputAdornment position='end'>min</InputAdornment> }
                     type='number'
                     placeholder='40'
-                    value={Math.floor(addGoal.time / 60)}
+                    value={Math.floor(addGoal.time % 3600 / 60)}
                     onChange={(e) => {
                       setFormErrors(formErrors.filter(e => e !== 'time'));
-                      setAddGoal({ ...addGoal, time: Math.max(addGoal.time % 60, 60 * e.target.value + (addGoal.time % 60)) });
+                      setAddGoal({ ...addGoal, time: Math.max(addGoal.time - (addGoal.time % 3600) + (addGoal.time % 60) + 60 * Math.max(0, e.target.value)) });
                     }} />
                 </FormControl>
-                <FormControl sx={{width: 100}} error={formErrors.includes('time')}>
+                <FormControl sx={{width: 80}} error={formErrors.includes('time')}>
                   <Input
                     endAdornment={<InputAdornment position='end'>sec</InputAdornment> }
                     type='number'
@@ -203,7 +188,8 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
                     value={addGoal.time}
                     onChange={(e) => {
                       setFormErrors(formErrors.filter(e => e !== 'time'));
-                      setAddGoal({ ...addGoal, time: Math.max(1, e.target.value) });
+                      let d = e.target.value ? Math.floor(e.target.value) : '';
+                      setAddGoal({ ...addGoal, time: d });
                     }} />
                 </FormControl>
               : addGoal.type === 'one-time' ?

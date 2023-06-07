@@ -27,7 +27,7 @@ import { grey } from '@mui/material/colors';
 
 export default function Goals() {
   const user = localStorage.getItem('user');
-  const emptyGoal = {username: user, name: '', type: '', sport: '', distance: 0, time: 0};
+  const emptyGoal = {username: user, name: '', type: '', sport: '', distance: '', time: ''};
   const [openSport, setOpenSport] = React.useState([]);
   const [myGoals, setMyGoals] = React.useState(localStorage.getItem('goals') ? JSON.parse(localStorage.getItem('goals')) : null);
   // const [myGoals, setMyGoals] = React.useState(null);
@@ -218,11 +218,11 @@ export default function Goals() {
       setFormErrors([ ...formErrors, 'sport']);
       validGoal = false;
     }
-    if (!('distance' in goal) || goal.distance == null || isNaN(goal.distance)) {
+    if (!('distance' in goal) || goal.distance == null || goal.distance === '' || goal.distance < 0) {
       setFormErrors([ ...formErrors, 'distance']);
       validGoal = false;
     }
-    if (!('time' in goal) || goal.time == null) {
+    if (!('time' in goal) || goal.time == null || goal.time === '' || goal.time < 0) {
       setFormErrors([ ...formErrors, 'time']);
       validGoal = false;
     }
@@ -256,8 +256,12 @@ export default function Goals() {
     if (!goal.sport) goal.sport = '';
     if (!goal.distance) goal.distance = '';
     if (!goal.time) goal.time = 0;
-    setEditedGoal(goal);
-    setAddGoal(goal);
+    let g = {...goal};
+    if (goal.type === 'one-time') {
+      g.time = moment(goal.time, 'X').format();
+    }
+    setEditedGoal(g);
+    setAddGoal(g);
     handleOpenAddGoal();
   }
   const handleClickSport = (sport) => {
