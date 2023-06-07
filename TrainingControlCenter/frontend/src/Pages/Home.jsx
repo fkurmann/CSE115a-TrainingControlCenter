@@ -7,7 +7,6 @@ import ResponsiveAppBar from '../Components/appBar';
 import AddActivityForm from '../Components/addActivityForm';
 import HomeCalendar from '../Components/weeklyHomeCalendar';
 import { userTheme } from '../Components/theme';
-import { Typography } from '@mui/material';
 
 /**
  * Creates the Home page upon successful user login.

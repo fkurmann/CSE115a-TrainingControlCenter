@@ -26,13 +26,12 @@ const localStorageUser = localStorage.getItem('user');
  * @return {HTMLElement} MUI form for specifying attributes for user specified graph.
  */
 export default function AddGraphForm() {
-  const [{ duration, startDate, graphType, goal, sport, outFile }, setState] = useState({
+  const [{ duration, startDate, graphType, goal, sport }, setState] = useState({
     duration: '',
     startDate: '',
     graphType: '',
     goal: '',
     sport: '',
-    outFile: '',
   });
 
   // Success and error message
@@ -53,7 +52,7 @@ export default function AddGraphForm() {
           sport: sport,
           goal: goal,
           startDate: formattedDate,
-          outFile: (sport === 'Pie') ? 'pieGraph' : 'generalGraph' 
+          outFile: (sport === 'Pie') ? 'pieGraph' : 'generalGraph'
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -120,7 +119,7 @@ export default function AddGraphForm() {
       let favoriteSports = await response.json();
       let length = (Object.keys(favoriteSports).length)
       favoriteSports[(length)] = "All Sports";
-      favoriteSports[(length+1)] = "Pie";      
+      favoriteSports[(length+1)] = "Pie";
       setFavoriteSports(favoriteSports);
     } catch (error) {
       console.error(error);
