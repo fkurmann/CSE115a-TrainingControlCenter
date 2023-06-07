@@ -29,6 +29,9 @@ function ColorChip({ color, isSmall=false }) {
   return <Chip size='small' sx={{bgcolor: myColors[color]}} label='&nbsp;&nbsp;' />
 }
 
+/**
+ * Assigns user preferences such as color scheme and units of measurements.
+ */
 export default function Preferences({ colorTheme, setColorTheme, brightnessMode, setBrightnessMode }) {
   const user = localStorage.getItem('user');
   const [isMetric, setIsMetric] = React.useState(localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : null);
@@ -111,7 +114,7 @@ export default function Preferences({ colorTheme, setColorTheme, brightnessMode,
         });
         console.error('Error when toggling preferences');
       });
-    
+
   }, [updatePreference, isUpdating, inQueue, user]);
 
   React.useEffect(() => {
