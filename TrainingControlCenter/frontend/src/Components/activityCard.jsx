@@ -1,6 +1,18 @@
 import * as React from 'react';
 import moment from 'moment';
-import { Box, Card, CardActions, CardContent, CardHeader, CircularProgress, Collapse, Divider, IconButton, Tooltip, Typography } from '@mui/material';
+import { 
+  Box, 
+  Card, 
+  CardActions, 
+  CardContent, 
+  CardHeader, 
+  CircularProgress, 
+  Collapse, 
+  Divider, 
+  IconButton, 
+  Tooltip, 
+  Typography 
+} from '@mui/material';
 import SportIcon from './sportIcon';
 import StravaIcon from './images/strava_icon.png';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';

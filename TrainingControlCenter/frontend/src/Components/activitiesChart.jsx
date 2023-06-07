@@ -1,9 +1,31 @@
 import moment from 'moment';
 import SportIcon from './sportIcon';
 import React, { useEffect, useState } from 'react';
-import { Grid, Typography, Paper, Button, ButtonGroup, Select, MenuItem, CircularProgress } from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { format, getISOWeek, getMonth, getYear, getDaysInMonth} from 'date-fns';
+import { 
+  Grid, 
+  Typography, 
+  Paper, 
+  Button, 
+  ButtonGroup, 
+  Select, 
+  MenuItem, 
+  CircularProgress 
+} from '@mui/material';
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend 
+} from 'recharts';
+import { format, 
+  getISOWeek, 
+  getMonth, 
+  getYear, 
+  getDaysInMonth
+} from 'date-fns';
 import { enUS } from 'date-fns/locale'
 
 const localStorageUser = localStorage.getItem('user');
@@ -21,7 +43,6 @@ const ActivityChart = () => {
   const [compareActivities, setCompareActivities] = useState([]);
   const [firstRankingLoading, setFirstRankingLoading] = useState(false);
   const [secondRankingLoading, setSecondRankingLoading] = useState(false);
-  // const [noRecords, setNoRecords] = useState(false);
   const [firstChartData, setFirstChartData] = useState([]);
   const [secondChartData, setSecondChartData] = useState([]);
   const metersToMiles = 0.000621371;

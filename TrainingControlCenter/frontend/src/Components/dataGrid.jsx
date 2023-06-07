@@ -65,7 +65,6 @@ export default function ActivityGrid() {
         },
       })
         .then((res) => {
-          // console.log(JSON.stringify(res));
           if (!res.ok) {
             console.log(`res is not ok`);
             throw res;
@@ -113,7 +112,7 @@ export default function ActivityGrid() {
     {
     isLoading ?
     <CircularProgress /> :
-    <div style={{ height: 700, width: '100%' }}>
+    <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
         rows={myActivities}
         getRowId={(row) => row._id}

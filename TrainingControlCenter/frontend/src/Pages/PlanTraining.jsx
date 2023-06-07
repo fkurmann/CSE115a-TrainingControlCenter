@@ -1,9 +1,11 @@
 import React from 'react';
 import {ThemeProvider} from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
+import { 
+  Typography,
+  Box,
+  Container,
+  CssBaseline,
+} from '@mui/material';
 import ResponsiveAppBar from '../Components/appBar';
 import { userTheme } from '../Components/theme';
 import AddPlannedActivityForm from '../Components/addPlannedActivityForm';
@@ -22,8 +24,8 @@ export default function PlanTraining() {
       <CssBaseline />
       <Container component='main'>
         <ResponsiveAppBar />
-        <Typography variant="h4">Plan Training</Typography>
-        <Box mt={2} mb={2}>
+        <Box mt={10} mb={2}>
+          <Typography variant="h4">Plan Training</Typography>
           <div className='parent'>
             <div style={{float: 'left'}}>
               <Box sx={{display: 'inline-flex', justifyContent: 'space-evenly'}}>
