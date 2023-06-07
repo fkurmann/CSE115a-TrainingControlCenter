@@ -215,7 +215,7 @@ export default function AddPlanGraphForm() {
         <Box
           component="img"
           sx={{
-            height: 300,
+            height: 400,
             width: 500,
             px: 1
           }}

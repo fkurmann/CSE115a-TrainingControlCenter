@@ -82,12 +82,16 @@ exports.drawGraph = async (req, res) => {
 
   // Line chart
   } else {
+    if (sport == "All Sports"){
+      sport = 'all sports';
+    }
     const python = await spawn('python3', ['./src/graphing/generalGraphs.py', username, duration, graphType, sport, goal,
     startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), JSON.stringify(returnValue), outFile]);
 
     // Stdout data
     python.stdout.on('data', (data) => {
       responseData = data.toString();
+      console.log(responseData);
     });
 
     // Error data

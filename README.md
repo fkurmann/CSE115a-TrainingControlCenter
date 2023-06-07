@@ -37,4 +37,10 @@ Collaborators
 ```
 
 ## Features
-- TBA
+- Manual activity entry
+- Strava activity upload
+- Activity statistic viewing and graph generation
+- Activity filtering and sorting
+- Plan activities and see resulting calendar
+- Goal setting
+- Mark favorite activities

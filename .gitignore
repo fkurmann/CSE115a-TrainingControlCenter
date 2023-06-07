@@ -1,3 +1,4 @@
+# Ignore Node Modules
 node_modules/
 
 .npm
@@ -6,3 +7,4 @@ node_modules/
 .stylelintcache
 
 .DS_Store
+
