@@ -65,7 +65,7 @@ export default function ActivityGrid() {
         },
       })
         .then((res) => {
-          console.log(JSON.stringify(res));
+          // console.log(JSON.stringify(res));
           if (!res.ok) {
             console.log(`res is not ok`);
             throw res;

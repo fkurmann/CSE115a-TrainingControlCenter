@@ -171,9 +171,6 @@ export default function Goals() {
 
   // Deletes goal whenever goalToDelete is set
   React.useEffect(() => {
-    if ('name' in goalToAdd) {
-      return;
-    }
     if (!('name' in goalToDelete)) {
       return;
     }
@@ -244,11 +241,11 @@ export default function Goals() {
     setAddGoal(emptyGoal);
     setIsAddLoading(true);
     if (editedGoal.username) {
-      console.log('Goal was edited, deleting old goal');
+      // console.log('Goal was edited, deleting old goal');
       const oldGoal = editedGoal;
       setEditedGoal({});
       setGoalToDelete(oldGoal);
-      await new Promise(r => setTimeout(r, 3000)); // Remove later once MongoDB is fixed
+      await new Promise(r => setTimeout(r, 500));
     }
     setGoalToAdd(goal);
   }
