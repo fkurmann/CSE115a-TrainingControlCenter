@@ -20,7 +20,7 @@ export default function ActivityList() {
       <CssBaseline />
       <Container component='main'>
         <ResponsiveAppBar />
-        <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}: Activities</Typography>
+        <Typography variant="h4">Activities</Typography>
         <Box mt={2}>
           <ActivityGrid />
         </Box>

@@ -20,7 +20,6 @@ export default function Home() {
       <CssBaseline />
       <Container component='main'>
         <ResponsiveAppBar />
-        <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}</Typography>
         <Box mt={2}>
           <div className='parent'>
             <div style={{float: 'left'}}>

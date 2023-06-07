@@ -25,7 +25,7 @@ export default function DataCenter() {
       <CssBaseline />
       <Container component='main'>
         <ResponsiveAppBar />
-        <Typography variant="h4">Training Control Center, {localStorage.getItem('user')}: Data Center</Typography>
+        <Typography variant="h4">Data Center</Typography>
         <Box mt={2}>
           <ActivitiesChart/>
           <Grid container>
