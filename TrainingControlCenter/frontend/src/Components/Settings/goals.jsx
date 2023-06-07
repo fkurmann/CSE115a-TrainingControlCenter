@@ -24,6 +24,9 @@ import GoalCard from './goalCard';
 import GoalModal from './goalModal';
 import { grey } from '@mui/material/colors';
 
+/**
+ * Goal component to be used when adding/removing goals.
+ */
 export default function Goals() {
   const user = localStorage.getItem('user');
   const emptyGoal = {username: user, name: '', type: '', sport: '', distance: '', time: ''};

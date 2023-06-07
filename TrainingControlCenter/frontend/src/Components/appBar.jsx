@@ -12,6 +12,8 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { getFiveActivities } from './stravaData';
+import { getAllActivities } from './stravaData';
 
 /**
  * Create the display for the webpage's application bar.
@@ -199,6 +201,8 @@ export default function ResponsiveAppBar() {
                                                                             `&scope=read_all,activity:read_all,profile:read_all`}>
                 Sync Strava Profile
                 </MenuItem>
+                <MenuItem component='a' onClick={() => getAllActivities()}>Upload ALL Strava Activities</MenuItem>
+                <MenuItem component='a' onClick={() => getFiveActivities()}>Upload 5 Strava Activities</MenuItem>
                 <MenuItem component='a' onClick={handleLogout} href='/login'>Logout</MenuItem>
             </Menu>
           </Box>

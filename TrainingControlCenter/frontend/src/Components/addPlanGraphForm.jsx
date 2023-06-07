@@ -27,13 +27,11 @@ const localStorageUser = localStorage.getItem('user');
  */
 export default function AddPlanGraphForm() {
   const [graphGenerated, setGraphGenerated] = useState(false);
-  const [{ duration, startDate, graphType, goal, sport, outFile }, setState] = useState({
+  const [{ duration, startDate, graphType, goal }, setState] = useState({
     duration: '',
     startDate: '',
     graphType: '',
     goal: '',
-    sport: '',
-    outFile: '',
   });
 
   // Success and error message

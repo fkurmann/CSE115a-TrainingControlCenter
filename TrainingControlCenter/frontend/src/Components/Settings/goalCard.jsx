@@ -4,12 +4,13 @@ import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-
 import SportIcon from '../sportIcon';
-
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { grey } from '@mui/material/colors';
 
+/**
+ * Displays goal card details upon clicking specific goal.
+ */
 export default function GoalCard({ goal, onClick }) {
   const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
   const dist_unit = isMetric ? 'kilometers' : 'miles';

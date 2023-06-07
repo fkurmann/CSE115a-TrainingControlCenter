@@ -1,7 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
 import { Box, Card, CardActions, CardContent, CardHeader, CircularProgress, Collapse, Divider, IconButton, Tooltip, Typography } from '@mui/material';
-
 import SportIcon from './sportIcon';
 import StravaIcon from './images/strava_icon.png';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -29,19 +28,18 @@ export default function ActivityCard({ activity, width = 300 }) {
   const moving_time = activityJson.moving_time;
   const pace = moment.utc((moving_time || 0) * 1000 / ((distance || 1000) / meters_per_unit)).format('m:ss');
   const strava_link = `http://strava.com/activities/${activityJson.id}`;
-  // const elapsed_time = activity.elapsed_time;
   const elevation_gain = isMetric ? activityJson.total_elevation_gain : activityJson.total_elevation_gain * 3.28;
   const elevation_unit = isMetric ? 'm' : 'ft';
   const date = activity.start_date ? moment(new Date(activity.start_date)) : moment(new Date());
   const start_latlng = activityJson.start_latlng;
   const end_latlng = activityJson.end_latlng;
+  const map = activityJson.map;
+  const map_width = width - 33;
+  const map_height = map_width * 7 / 8;
   // const achievement_count = activity.achievement_count;
   // const kudos_count = activity.kudos_count;
   // const comment_count = activity.comment_count;
   // const photo_count = activity.total_photo_count;
-  const map = activityJson.map;
-  const map_width = width - 33;
-  const map_height = map_width * 7 / 8;
 
   const [expanded, setExpanded] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -129,7 +127,7 @@ export default function ActivityCard({ activity, width = 300 }) {
           <>
           <Tooltip title='View on Strava'>
             <IconButton target='_blank' href={strava_link}>
-              <img src={StravaIcon} style={{width: 20, height: 20}} />
+              <img src={StravaIcon} style={{width: 20, height: 20}} alt='Strava Logo'/>
             </IconButton>
           </Tooltip>
           <Tooltip title='More details'>

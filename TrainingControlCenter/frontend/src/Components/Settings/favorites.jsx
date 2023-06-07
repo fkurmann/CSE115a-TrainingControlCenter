@@ -12,6 +12,9 @@ import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import Divider from '@mui/material/Divider';
 import CircularProgress from '@mui/material/CircularProgress';
 
+/**
+ * Handles favorites page in settings.
+ */
 export default function Favorites() {
   const user = localStorage.getItem('user');
   const [addFav, setAddFav] = React.useState({username: user, sport: ''});
@@ -148,9 +151,9 @@ export default function Favorites() {
     <Box component='form' noValidate onSubmit={handleSubmit}>
 
       <Select
-        name='sport' 
-        value={addFav.sport} 
-        required 
+        name='sport'
+        value={addFav.sport}
+        required
         onChange={(e) => setAddFav({ ...addFav, sport: e.target.value })}
       >
         {getFavoriteTypes().map((favoriteType, index) => (

@@ -21,7 +21,7 @@ const ActivityChart = () => {
   const [compareActivities, setCompareActivities] = useState([]);
   const [firstRankingLoading, setFirstRankingLoading] = useState(false);
   const [secondRankingLoading, setSecondRankingLoading] = useState(false);
-  const [noRecords, setNoRecords] = useState(false);
+  // const [noRecords, setNoRecords] = useState(false);
   const [firstChartData, setFirstChartData] = useState([]);
   const [secondChartData, setSecondChartData] = useState([]);
   const metersToMiles = 0.000621371;
@@ -208,11 +208,11 @@ const ActivityChart = () => {
       const activitySumArray = Object.values(activitySum);
       const periodSumArray = Object.values(filteredAndSorted);
 
-      if (activitySumArray.length === 0 &&  periodSumArray.periodSumArray) {
-        setNoRecords(true);
-      } else {
-        setNoRecords(false);
-      }
+      // if (activitySumArray.length === 0 &&  periodSumArray.periodSumArray) {
+      //   setNoRecords(true);
+      // } else {
+      //   setNoRecords(false);
+      // }
 
       setFilteredActivities(activitySumArray);
       getFirstChartData(periodSumArray, selectedPeriod);
@@ -225,6 +225,7 @@ const ActivityChart = () => {
 
   useEffect(() => {
     fetchDataForFirstRanking();
+  // eslint-disable-next-line
   }, [selectedPeriod, selectedWeek, selectedMonth, selectedYear]);
 
   /**
@@ -321,6 +322,7 @@ const ActivityChart = () => {
 
   useEffect(() => {
     fetchDataForSecondRanking();
+  // eslint-disable-next-line
   }, [selectedPeriod, selectedCompare]);
 
   /**
@@ -350,6 +352,7 @@ const ActivityChart = () => {
    * @param {Object} event - The event object triggered by the week selection.
    * @returns {void} - Returns nothing.
    */
+  // eslint-disable-next-line
   const handleWeekChange = (event) => {
     const selectedWeek = event.target.value;
     setSelectedWeek(selectedWeek);
@@ -361,6 +364,7 @@ const ActivityChart = () => {
    * @param {Object} event - The event object triggered by the month selection.
    * @returns {void} - Returns nothing.
    */
+  // eslint-disable-next-line
   const handleMonthChange = (event) => {
     const value = event.target.value;
     setSelectedMonth(value);
@@ -372,6 +376,7 @@ const ActivityChart = () => {
    * @param {Object} event - The event object triggered by the year selection.
    * @returns {void} - Returns nothing.
    */
+  // eslint-disable-next-line
   const handleYearChange = (event) => {
     const value = event.target.value;
     setSelectedYear(value);
@@ -529,6 +534,7 @@ const ActivityChart = () => {
    */
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
+      // eslint-disable-next-line
       const { name, time, distance } = payload[0].payload;
 
       const formattedTime =

@@ -14,11 +14,13 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CircularProgress from '@mui/material/CircularProgress';
 import { grey } from '@mui/material/colors';
-
 import SportIcon from '../sportIcon';
 
 const localStorageUser = localStorage.getItem('user');
 
+/**
+ * Goal Model component to help save goals.
+ */
 export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleCloseAddGoal, handleSubmit, formErrors, setFormErrors, isEdit, isLoading }) {
   const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
   const dist_unit = isMetric ? 'km' : 'mi';
@@ -38,7 +40,7 @@ export default function GoalModal({ addGoal, setAddGoal, openAddGoal, handleClos
   const [favoriteSports, setFavoriteSports] = useState([]);
 
   // Success and error message
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  // eslint-disable-next-line
   const [errorMessage, setErrorMessage] = useState('');
 
   const fetchFavorites = async () => {
