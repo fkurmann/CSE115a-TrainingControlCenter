@@ -9,6 +9,7 @@ import json
 
 from datetime import date, datetime
 
+
 def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, startMonth, startDay, jsonInput, outFile):
     startDate = date(int(startYear), int(startMonth) + 1, int(startDay))
     # Figure creation
@@ -123,35 +124,32 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
     for item in totals:
         if item[1] != 0:
             totalValues.append(item[1])
-    
-
 
     if (len(totalValues) != 0):
         averageValue = np.average(totalValues)
         medianValue = np.median(totalValues)
         lowerDev = averageValue - np.std(totalValues)
         upperDev = averageValue + np.std(totalValues)
-   
-        average = mplpatches.Rectangle([0, averageValue], 
-                                        width=maxX, height=0,
-                                        edgecolor='green', facecolor='green', linewidth=0.75)
-        median = mplpatches.Rectangle([0, medianValue], 
-                                        width=maxX, height=0,
-                                        edgecolor='orange', facecolor='orange', linewidth=0.75)
-        stdDevLow = mplpatches.Rectangle([0, lowerDev], 
-                                        width=maxX, height=0,
-                                        edgecolor='yellow', facecolor='yellow', linewidth=0.75)
-        stdDevHigh = mplpatches.Rectangle([0, upperDev], 
-                                        width=maxX, height=0,
-                                        edgecolor='yellow', facecolor='yellow', linewidth=0.75)
+
+        average = mplpatches.Rectangle([0, averageValue],
+                                       width=maxX, height=0,
+                                       edgecolor='green', facecolor='green', linewidth=0.75)
+        median = mplpatches.Rectangle([0, medianValue],
+                                      width=maxX, height=0,
+                                      edgecolor='orange', facecolor='orange', linewidth=0.75)
+        stdDevLow = mplpatches.Rectangle([0, lowerDev],
+                                         width=maxX, height=0,
+                                         edgecolor='yellow', facecolor='yellow', linewidth=0.75)
+        stdDevHigh = mplpatches.Rectangle([0, upperDev],
+                                          width=maxX, height=0,
+                                          edgecolor='yellow', facecolor='yellow', linewidth=0.75)
         panel1.add_patch(average)
         panel1.add_patch(median)
         panel1.add_patch(stdDevLow)
         panel1.add_patch(stdDevHigh)
-        
+
         # Legend
         panel1.legend([average, median, stdDevLow, stdDevHigh], ['Average', 'Median', '1 Standard Deviation'])
-
 
     # Goal overlay, optional
     # If goals selected, get goal for corresponding sport of type time/distance from database TODO
@@ -180,5 +178,6 @@ def generalHistoryGraph(username, duration, graphType, sport, goal, startYear, s
     # Save location in images folder
     plt.savefig('../frontend/src/Components/images/' + outFile, dpi=600)
     return 'Graphing Complete'
+
 
 generalHistoryGraph(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10])
