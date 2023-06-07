@@ -1,4 +1,5 @@
 import * as React from 'react';
+import moment from 'moment';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
@@ -19,6 +20,17 @@ export default function GoalCard({ goal, onClick }) {
   const sport = goal.sport;
   const distance = goal.distance;
   const time = goal.time;
+
+  const secondsToDigital = (secs) => {
+    let format = '';
+    if(secs / 60 < 10) format = 'm:ss';
+    else if(secs / 3600 < 1) format = 'mm:ss';
+    else if(secs / 3600 < 10) format = 'H:mm:ss';
+    else if(secs / 86400 < 1) format = 'HH:mm:ss';
+    else return Math.floor(secs / 86400) + 'd ' + moment.utc(secs*1000).format('HH:mm:ss');
+    return moment.utc(secs*1000).format(format);
+  }
+  
   return (
     <Card sx={{bgcolor: localStorage.getItem('brightnessMode') === 'dark' ? grey[800] : grey[100] }}>
       <CardHeader
@@ -37,7 +49,7 @@ export default function GoalCard({ goal, onClick }) {
         {
           type === 'race' ?
             <Typography variant='body2'>
-              <strong>{distance}</strong> {dist_unit} in <strong>{time}</strong> minutes
+              <strong>{distance}</strong> {dist_unit} in <strong>{secondsToDigital(time)}</strong>
             </Typography>
           : type === 'repeat' ?
             <Typography variant='body2'>
@@ -45,7 +57,7 @@ export default function GoalCard({ goal, onClick }) {
             </Typography>
           :
             <Typography variant='body2'>
-              <strong>{distance}</strong> {dist_unit} within the next <strong>{time}</strong> days
+              <strong>{distance}</strong> {dist_unit} by <strong>{moment(time * 1000).format('M/D/YYYY')}</strong>
             </Typography>
         }
       </CardContent>

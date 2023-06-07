@@ -44,8 +44,7 @@ app.get('/v0/token', auth.getToken);
 
 // Get, add, delete favorite sports
 app.get('/v0/favorites', settings.getFavorites); 
-app.post('/v0/favorites', settings.addFavorite); 
-app.delete('/v0/favorites', settings.deleteFavorite); 
+app.post('/v0/favorites', settings.updateFavorites); 
 
 // Get, add, delete goals
 app.get('/v0/goals', settings.getGoals); 

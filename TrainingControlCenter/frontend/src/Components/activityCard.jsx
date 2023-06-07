@@ -16,7 +16,7 @@ import { grey } from '@mui/material/colors';
  * @param {int} [width] - optional parameter denoting width of MUI card.
  * @return {HTMLElement} - creates and returns the activity card for specified activity.
  */
-export default function ActivityCard({ activity, width = 300 }) {
+export default function ActivityCard({ activity, width = 300, realign = () => {} }) {
   const activityJson = activity.json;
   const isMetric = localStorage.getItem('isMetric') ? localStorage.getItem('isMetric') === 'true' : false;
   const dist_unit = isMetric ? 'km' : 'mi';
@@ -30,7 +30,7 @@ export default function ActivityCard({ activity, width = 300 }) {
   const strava_link = `http://strava.com/activities/${activityJson.id}`;
   const elevation_gain = isMetric ? activityJson.total_elevation_gain : activityJson.total_elevation_gain * 3.28;
   const elevation_unit = isMetric ? 'm' : 'ft';
-  const date = activity.start_date ? moment(new Date(activity.start_date)) : moment(new Date());
+  const date = activityJson.start_date ? moment(new Date(activityJson.start_date)) : null;
   const start_latlng = activityJson.start_latlng;
   const end_latlng = activityJson.end_latlng;
   const map = activityJson.map;
@@ -64,9 +64,11 @@ export default function ActivityCard({ activity, width = 300 }) {
   React.useEffect(() => {
     if (!loading && expanded && detailedActivity == null) {
       setLoading(true);
+      realign();
       getActivityDetails(activityJson.id).then((res) => {
         setLoading(false);
         setDetailedActivity(res);
+        realign();
       }).catch((error) => {
         console.log('Error when getting detailed activity', error);
       });
@@ -78,7 +80,7 @@ export default function ActivityCard({ activity, width = 300 }) {
       {name == null ? <></> : <>
       <CardHeader
         title={name}
-        subheader={activity.username ? '' : date.format('llll')}
+        subheader={date ? date.format('llll') : ''}
         action={<Box sx={{mr: 1.3, mt: 1.5}}>
                   <SportIcon sport={sport} fontSize='large' />
                 </Box>}
@@ -144,15 +146,42 @@ export default function ActivityCard({ activity, width = 300 }) {
           { !detailedActivity ?
           <CircularProgress /> :
           <>
-          <Typography>
-            <strong>Description:</strong> {detailedActivity.description}
-          </Typography>
+          {
+            detailedActivity.description ?
+            <Typography>
+              <strong>Description:</strong> {detailedActivity.description}
+            </Typography> : <></>
+          }
+          {
+            detailedActivity.athlete_count > 1 ?
+            <Typography>
+              <strong>Number of athletes:</strong> {detailedActivity.athlete_count}
+            </Typography> : <></>
+          }
           <Typography>
             <strong>Calories:</strong> {detailedActivity.calories}
           </Typography>
           <Typography>
             <strong>Device:</strong> {detailedActivity.device_name}
           </Typography>
+          {
+            detailedActivity.kudos_count > 0 ?
+            <Typography>
+              <strong>Kudos:</strong> {detailedActivity.kudos_count}
+            </Typography> : <></>
+          }
+          {
+            detailedActivity.comment_count > 0 ?
+            <Typography>
+              <strong>Comments:</strong> {detailedActivity.comment_count}
+            </Typography> : <></>
+          }
+          {
+            detailedActivity.total_photo_count > 0 ?
+            <Typography>
+              <strong>Photos:</strong> {detailedActivity.total_photo_count}
+            </Typography> : <></>
+          }
           </>
           }
         </CardContent>

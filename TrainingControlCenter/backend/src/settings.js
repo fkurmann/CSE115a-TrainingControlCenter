@@ -3,30 +3,6 @@ const dbGoals = require('../db/dbGoals');
 
 // Manage favorites
 /**
- * Add sport to user's favorite sports
- */
-exports.addFavorite = async (req, res) => {
-  const username = req.query.username;
-  const sport = req.query.sport;
-
-  let returnValue = await dbUsers.findUser(username, null);
-  if (returnValue === -1) {
-    res.status(401).send('Error adding favorite, no such user');
-  } else if (returnValue.favorites.includes(sport)) {
-    res.status(401).send('Error, user already has this favorite');
-  } else {
-    returnValue = await dbUsers.addFavorite(username, sport);
-    // Error case
-    if (returnValue === -1) {
-      res.status(401).send('Error adding favorite');
-    } else {
-      // On success return 200
-      res.status(200).send(sport);
-    }
-  }
-};
-
-/**
  * Get all user's favorite sports
  */
 exports.getFavorites = async (req, res) => {
@@ -43,28 +19,30 @@ exports.getFavorites = async (req, res) => {
   }
 };
 
-
 /**
- * Delete sport from user's favorite sports
+ * Update multiple of user's favorite sports. Can add or delete favorites
  */
-exports.deleteFavorite = async (req, res) => {
+exports.updateFavorites = async (req, res) => {
   const username = req.query.username;
-  const sport = req.query.sport;
-
+  let add_favorites = req.query.add_favorites;
+  let delete_favorites = req.query.delete_favorites;
+  if (add_favorites) {
+    add_favorites = add_favorites[0].split('%2C');
+  }
+  if (delete_favorites) {
+    delete_favorites = delete_favorites[0].split('%2C');
+  }
   let returnValue = await dbUsers.findUser(username, null);
   if (returnValue === -1) {
     res.status(401).send('Error adding favorite, no such user');
-  } else if (!returnValue.favorites.includes(sport)) {
-    res.status(401).send('Error, user has no such favorite');
   } else {
-    console.log('In else condition');
-    returnValue = await dbUsers.deleteFavorite(username, sport);
+    returnValue = await dbUsers.updateFavorites(username, add_favorites, delete_favorites);
     // Error case
     if (returnValue === -1) {
-      res.status(401).send('Error deleting favorite');
+      res.status(401).send('Error adding favorite');
     } else {
       // On success return 200
-      res.status(200).send(sport);
+      res.status(200).send('ok');
     }
   }
 };
@@ -148,7 +126,7 @@ exports.getGoals = async (req, res) => {
  */
 exports.deleteGoal = async (req, res) => {
   const username = req.query.username;
-  const name = req.query.name;
+  const name = decodeURIComponent(req.query.name);
 
   returnValue = await dbGoals.deleteGoal(username, name);
   // Error case

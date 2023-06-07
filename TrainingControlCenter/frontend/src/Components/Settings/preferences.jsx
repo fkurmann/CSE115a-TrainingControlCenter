@@ -79,7 +79,7 @@ export default function Preferences({ colorTheme, setColorTheme, brightnessMode,
       return;
     }
     const body = updatePreference;
-    console.log(`Updating preferences: ${JSON.stringify(body)}`);
+    // console.log(`Updating preferences: ${JSON.stringify(body)}`);
     Object.keys(body).forEach((field) => {
       if (field !== 'username') {
         setIsUpdating([...isUpdating, field]);
@@ -104,7 +104,7 @@ export default function Preferences({ colorTheme, setColorTheme, brightnessMode,
             setIsUpdating(isUpdating.filter((f) => f !== field));
           }
         });
-        console.log(`Updated preferences: ${JSON.stringify(body)}`);
+        console.log(`Updated preferences`);
       })
       .catch((err) => {
         Object.keys(body).forEach((field) => {
