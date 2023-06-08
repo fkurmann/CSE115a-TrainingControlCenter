@@ -122,7 +122,7 @@ export async function getAllActivities() {
       },
       params: {
         'page': page,
-        'per_page': 100,
+        'per_page': 200,
       },
     });
     if (res.status === 200) {
