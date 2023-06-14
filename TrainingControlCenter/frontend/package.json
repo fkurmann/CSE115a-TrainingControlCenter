@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@devexpress/dx-react-scheduler-material-ui": "^4.0.4",
+    "@devexpress/dx-react-scheduler": "^4.04",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^4.5.8",
