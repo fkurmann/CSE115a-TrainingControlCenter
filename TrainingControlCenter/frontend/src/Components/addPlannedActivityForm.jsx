@@ -81,7 +81,7 @@ export default function AddPlannedActivityForm() {
       const descriptions = additionalInfo.description.trim() === '' ? null : additionalInfo.description;
       const formattedDateStart = additionalInfo.start_date_local ? new Date(additionalInfo.start_date_local) : null;
       const formattedDateEnd = additionalInfo.end_date_local ? new Date(additionalInfo.end_date_local) : null;
-      const response = await fetch('http://localhost:3010/v0/plannedActivities?' , {
+      const response = await fetch('https://training-control-center-1-0.onrender.com/v0/plannedActivities?' , {
         method: "POST",
         body: JSON.stringify({
           username: localStorageUser,

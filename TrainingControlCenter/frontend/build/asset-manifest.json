@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.d1beb657.css",
+    "main.js": "/static/js/main.15f436ad.js",
+    "static/media/pieGraph.png": "/static/media/pieGraph.d74f21d078904b366f7c.png",
+    "static/media/generalGraph.png": "/static/media/generalGraph.95c8a55eedda6898cf68.png",
+    "static/media/planPieGraph.png": "/static/media/planPieGraph.bff612d0003ae8e39eae.png",
+    "static/media/default.png": "/static/media/default.b0359b2331862d8e0531.png",
+    "static/media/strava_icon.png": "/static/media/strava_icon.95139ec0ebe1d3f40fb5.png",
+    "index.html": "/index.html"
+  },
+  "entrypoints": [
+    "static/css/main.d1beb657.css",
+    "static/js/main.15f436ad.js"
+  ]
+}

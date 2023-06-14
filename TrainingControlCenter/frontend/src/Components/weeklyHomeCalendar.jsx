@@ -28,7 +28,7 @@ export default function HomeCalendar() {
       console.log("Loading weekly activities");
         setIsLoading(true);
         const d = new Date();
-        fetch("http://localhost:3010/v0/activities?" +
+        fetch("https://training-control-center-1-0.onrender.com/v0/activities?" +
             new URLSearchParams({
               username: user,
               minDate: getFirstDayOfWeek(d),

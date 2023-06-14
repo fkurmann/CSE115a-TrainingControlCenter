@@ -135,7 +135,7 @@ export default function PlanCalendar() {
     setLoading(true);
     if (data.length === 0) {
       console.log("Loading planned activities");
-      fetch("http://localhost:3010/v0/plannedActivities?" +
+      fetch("https://training-control-center-1-0.onrender.com/v0/plannedActivities?" +
         new URLSearchParams({
           username: user,
         }),

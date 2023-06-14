@@ -43,7 +43,7 @@ export default function AddPlanGraphForm() {
     try {
       const formattedDate = startDate ? new Date(startDate) : null;
       console.log('Trying to call python function');
-      const response = await fetch('http://localhost:3010/v0/graphs?' , {
+      const response = await fetch('https://training-control-center-1-0.onrender.com/v0/graphs?' , {
         method: "POST",
         body: JSON.stringify({
           username: localStorageUser,

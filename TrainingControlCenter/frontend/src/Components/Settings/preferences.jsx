@@ -68,7 +68,7 @@ export default function Preferences({ colorTheme, setColorTheme, brightnessMode,
     if (isMetric == null && !isLoading) {
       console.log('Loading preferences');
       setIsLoading(true);
-      fetch('http://localhost:3010/v0/preferences?' + new URLSearchParams({username: user}), {
+      fetch('https://training-control-center-1-0.onrender.com/v0/preferences?' + new URLSearchParams({username: user}), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ export default function Preferences({ colorTheme, setColorTheme, brightnessMode,
       }
     });
     setUpdatePreference({username: user});
-    fetch('http://localhost:3010/v0/preferences', {
+    fetch('https://training-control-center-1-0.onrender.com/v0/preferences', {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {

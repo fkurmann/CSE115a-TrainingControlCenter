@@ -58,7 +58,7 @@ export default function ActivityGrid() {
     if(!myActivities){
       console.log('Loading activities');
       setIsLoading(true);
-      fetch('http://localhost:3010/v0/activities?' + new URLSearchParams({username: user}), {
+      fetch('https://training-control-center-1-0.onrender.com/v0/activities?' + new URLSearchParams({username: user}), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

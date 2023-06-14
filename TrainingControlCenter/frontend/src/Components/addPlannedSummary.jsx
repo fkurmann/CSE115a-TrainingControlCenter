@@ -32,7 +32,7 @@ function TrainingStats() {
    */
   const fetchWorkouts = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:3010/v0/plannedActivities?username=${localStorageUser}`);
+      const response = await fetch(`https://training-control-center-1-0.onrender.com/v0/plannedActivities?username=${localStorageUser}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

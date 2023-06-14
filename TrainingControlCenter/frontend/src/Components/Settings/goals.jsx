@@ -52,7 +52,7 @@ export default function Goals() {
     if(!myGoals){
       console.log('Loading goals');
       setIsLoading(true);
-      fetch('http://localhost:3010/v0/goals?' + new URLSearchParams({username: user}), {
+      fetch('https://training-control-center-1-0.onrender.com/v0/goals?' + new URLSearchParams({username: user}), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ export default function Goals() {
     if (goal.distance === '') delete goal.distance;
     if (goal.time === '') delete goal.time;
 
-    fetch('http://localhost:3010/v0/goals', {
+    fetch('https://training-control-center-1-0.onrender.com/v0/goals', {
       method: 'POST',
       body: JSON.stringify(goal),
       headers: {
@@ -183,7 +183,7 @@ export default function Goals() {
     if (anchorElGoal !== null) setAnchorElGoal(null);
     setMyGoals(myGoals.filter((g) => g.name !== goal.name));
 
-    fetch('http://localhost:3010/v0/goals?' + new URLSearchParams({username: user, name: encodeURIComponent(goal.name.trim())}), {
+    fetch('https://training-control-center-1-0.onrender.com/v0/goals?' + new URLSearchParams({username: user, name: encodeURIComponent(goal.name.trim())}), {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

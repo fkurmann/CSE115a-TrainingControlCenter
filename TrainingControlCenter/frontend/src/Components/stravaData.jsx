@@ -9,7 +9,7 @@ const stravaBaseURL = 'https://www.strava.com/api/v3';
  */
 const getRefreshToken = async () => {
   const user = localStorage.getItem('user');
-  const response = await fetch('http://localhost:3010/v0/token?' + new URLSearchParams({username: user}), {
+  const response = await fetch('https://training-control-center-1-0.onrender.com/v0/token?' + new URLSearchParams({username: user}), {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

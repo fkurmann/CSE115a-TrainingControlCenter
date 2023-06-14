@@ -63,7 +63,7 @@ export default function Favorites() {
       if (delete_favorites.length > 0) {
         params.delete_favorites = encodeURIComponent(delete_favorites);
       }
-      fetch('http://localhost:3010/v0/favorites?' + new URLSearchParams(params), {
+      fetch('https://training-control-center-1-0.onrender.com/v0/favorites?' + new URLSearchParams(params), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
