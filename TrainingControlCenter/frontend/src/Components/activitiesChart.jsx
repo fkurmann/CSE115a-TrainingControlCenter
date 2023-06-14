@@ -153,7 +153,7 @@ const ActivityChart = () => {
   const fetchDataForFirstRanking = async () => {
     try {
       setFirstRankingLoading(true);
-      const response = await fetch(`http://localhost:3010/v0/activities?username=${localStorageUser}`);
+      const response = await fetch(`https://training-control-center-1-0.onrender.com/v0/activities?username=${localStorageUser}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
