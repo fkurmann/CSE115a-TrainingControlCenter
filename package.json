@@ -2,10 +2,15 @@
   "name": "TrainingControlCenter",
   "version": "1.0.0",
   "private": true,
+  "homepage": "https://fkurmann.github.io/CSE115a-TrainingControlCenter",
+
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "pyreqs": "pip install -q -r requirements.txt",
     "start": "concurrently \"cd TrainingControlCenter/frontend && npm start\" \"cd TrainingControlCenter/backend && npm start\"",
-    "install-pkg": "concurrently \"npm run pyreqs && npm install\" \"cd TrainingControlCenter/frontend && npm install\" \"cd TrainingControlCenter/backend && npm install\""
+    "install-pkg": "concurrently \"npm run pyreqs && npm install\" \"cd TrainingControlCenter/frontend && npm install\" \"cd TrainingControlCenter/backend && npm install\"",
+    "build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [
@@ -26,6 +31,11 @@
     ]
   },
   "dependencies": {
-    "concurrently": "^8.1.0"
+    "concurrently": "^8.1.0",
+    
+    "react-scripts": "5.0.1"
+  },
+  "devDependencies": {
+    "gh-pages": "^5.0.0"
   }
 }
