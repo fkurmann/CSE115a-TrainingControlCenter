@@ -55,7 +55,7 @@ export default function Login() {
   const handleSubmit = (event) => {
     setOpenBackdrop(true);
     event.preventDefault();
-    fetch('http://localhost:3010/v0/login', {
+    fetch('https://training-control-center-1-0.onrender.com/v0/login', {
       method: 'POST',
       body: JSON.stringify(user),
       headers: {
@@ -94,7 +94,7 @@ export default function Login() {
   const handleRegister = (event) => {
     setOpenBackdrop(true);
     event.preventDefault();
-    fetch('http://localhost:3010/v0/register', {
+    fetch('https://training-control-center-1-0.onrender.com/v0/register', {
       method: 'POST',
       body: JSON.stringify(user),
       headers: {

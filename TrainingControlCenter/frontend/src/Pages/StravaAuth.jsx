@@ -42,7 +42,7 @@ async function storeAccessTokenInDB(data) {
   const token = data["refresh_token"]
   console.log(data["access_token"])
   console.log(token);
-  await fetch('http://localhost:3010/v0/token?' + new URLSearchParams({username: user, token: token}), {
+  await fetch('https://training-control-center-1-0.onrender.com/v0/token?' + new URLSearchParams({username: user, token: token}), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
