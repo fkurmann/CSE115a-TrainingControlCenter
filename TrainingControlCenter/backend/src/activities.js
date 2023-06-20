@@ -32,6 +32,7 @@ exports.addActivity = async (req, res) => {
     sport_type: sport,
     distance: distance || undefined,
     moving_time: moving_time * 60 || undefined,
+    start_date: formattedDate || undefined,
     start_date_local: formattedDate || undefined
   };
 

@@ -89,7 +89,8 @@ export default function AddActivityForm() {
           description: descriptions,
           distance: additionalInfo.distance * meters_per_unit,
           moving_time: additionalInfo.time,
-          start_date_local: formattedDate
+          start_date: formattedDate,
+          start_date_local: formattedDate,
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"

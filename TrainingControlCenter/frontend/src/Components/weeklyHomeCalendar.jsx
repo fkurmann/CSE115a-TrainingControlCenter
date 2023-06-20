@@ -263,7 +263,7 @@ function getActivitiesForDay(activities, day) {
           return activities[i].json.distance === a.distance &&
                  activities[i].json.moving_time === a.moving_time &&
                  activities[i].json.name === a.json.name &&
-                 activities[i].json.start_date_local === a.json.start_date_local &&
+                 activities[i].json.start_date === a.json.start_date &&
                  activities[i].json.sport_type === a.json.sport_type
         }).length > 0) {
         continue;
