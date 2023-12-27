@@ -1,4 +1,5 @@
 # Training Control Center
+[Presentation Overview](https://docs.google.com/presentation/d/1NPcGvvrljtSOWHNb97KBUqVmmRf137QheI-Phfp3VAU/edit?usp=sharing)
 
 ## Description
 A powerful tool for anyone interested in smart training, whether for endurance sports such as running, cycling, swimming, triathlon, rowing, or strength based sports such as weight lifting or crossfit.
